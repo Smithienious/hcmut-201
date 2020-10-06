@@ -4,6 +4,12 @@ using namespace std;
 
 void realHailstone(int number, bool first_time = false)
 {
+    if (first_time && number == 1)
+    {
+        cout << number;
+        return;
+    }
+
     if (number == 1)
     {
         cout << " " << number;
@@ -32,7 +38,7 @@ void printHailstone(int number)
 
 int main()
 {
-    printHailstone(5);
+    printHailstone(1);
 
     return 0;
 }

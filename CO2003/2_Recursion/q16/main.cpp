@@ -15,10 +15,7 @@ void realPattern(int n, bool first_time)
     }
 
     if (first_time)
-    {
         cout << n;
-        first_time = false;
-    }
     else
         cout << " " << n;
 

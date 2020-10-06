@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void realPattern(int n, bool first_time)
+void realPattern(int n, bool first_time = false)
 {
     if (n <= 0)
     {
@@ -19,7 +19,7 @@ void realPattern(int n, bool first_time)
     else
         cout << " " << n;
 
-    realPattern(n - 5, false);
+    realPattern(n - 5);
     cout << " " << n;
     return;
 }

@@ -18,7 +18,7 @@ public:
     virtual bool empty() = 0;
     virtual int size() = 0;
     virtual void clear() = 0;
-    virtual T &get(int index) = 0;
+    virtual T get(int index) = 0;
     virtual void set(int index, const T &element) = 0;
     virtual int indexOf(const T &item) = 0;
     virtual bool contains(const T &item) = 0;
@@ -119,7 +119,7 @@ public:
     virtual bool empty();
     virtual int size();
     virtual void clear();
-    virtual T &get(int index);
+    virtual T get(int index);
     virtual void set(int index, const T &element);
     virtual int indexOf(const T &item);
     virtual bool contains(const T &item);
@@ -393,7 +393,7 @@ void FragmentLinkedList<T>::clear()
 
 // * Find and return the element at index position
 template <class T>
-T &FragmentLinkedList<T>::get(int index)
+T FragmentLinkedList<T>::get(int index)
 {
     if (empty() || index < 0 || index > count - 1)
         throw out_of_range("The index is out of range!");
@@ -699,6 +699,7 @@ int main()
     for (int i = 0; i < 26; i++)
         charList.add(i, (char)(i + 97));
 
+    cout << charList.get(5) << endl;
     cout << charList.toString() << endl;
 
     return 0;

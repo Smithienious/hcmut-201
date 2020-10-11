@@ -572,7 +572,8 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, int frag
 template <typename T>
 typename FragmentLinkedList<T>::Iterator &FragmentLinkedList<T>::Iterator::operator=(const Iterator &iterator)
 {
-    Iterator *itr = new Iterator(pList, true);
+    Iterator *itr = new Iterator(iterator.pList, true);
+    itr->pNode = iterator.pNode;
     return *itr;
 }
 

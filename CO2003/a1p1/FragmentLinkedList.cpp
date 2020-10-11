@@ -234,6 +234,12 @@ void FragmentLinkedList<T>::add(int index, const T &element)
     if (index < 0 || index > count)
         throw out_of_range("The index is out of range!");
 
+    if (index == count)
+    {
+        add(element);
+        return;
+    }
+
     if (empty())
     {
         Node *newNode = new Node(element, nullptr, nullptr);
@@ -241,12 +247,6 @@ void FragmentLinkedList<T>::add(int index, const T &element)
         fragmentPointers[1] = newNode;
 
         count += 1;
-        return;
-    }
-
-    if (index >= count)
-    {
-        add(element);
         return;
     }
 
@@ -510,6 +510,8 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::begin(int index)
 {
     if (index > fragmentCount - 1)
         index = fragmentCount - 1;
+    if (index < 0)
+        index = 0;
 
     Iterator itr(this, index, true);
     return itr;
@@ -520,8 +522,12 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::begin(int index)
 template <typename T>
 typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::end(int index)
 {
+    if (index > fragmentCount - 1)
+        index = fragmentCount - 1;
     if (index == -1)
         index = fragmentCount - 1;
+    if (index < -1)
+        index = 0;
 
     Iterator itr(this, index, false);
 
@@ -535,12 +541,10 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, bool beg
     this->pList = pList;
     pNode = pList->fragmentPointers[0];
 
-    if (pList == nullptr)
+    if (pList == nullptr || begin)
         return;
 
-    if (!begin)
-        for (int i = 0; i < pList->fragmentMaxSize && pNode != nullptr; i += 1)
-            pNode = pNode->next;
+    pNode = nullptr;
 }
 
 // * Constructor with defaults: *pList = nullptr, fragmentIndex = 0, begin = true
@@ -555,12 +559,13 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, int frag
     else
         pNode = pList->fragmentPointers[fragmentIndex];
 
-    if (pList == nullptr)
+    if (pList == nullptr || begin)
         return;
 
-    if (!begin)
-        for (int i = 0; i < pList->fragmentMaxSize && pNode != nullptr; i += 1)
-            pNode = pNode->next;
+    if (fragmentIndex == pList->fragmentCount - 1)
+        pNode = nullptr;
+    else
+        pNode = pList->fragmentPointers[fragmentIndex + 1];
 }
 
 // * Copy constructor
@@ -594,6 +599,9 @@ bool FragmentLinkedList<T>::Iterator::operator!=(const Iterator &iterator)
 template <typename T>
 void FragmentLinkedList<T>::Iterator::remove()
 {
+    if (pNode == nullptr)
+        return;
+
     Node *ptr = pNode;
 
     if (pNode->next != nullptr)
@@ -624,6 +632,7 @@ void FragmentLinkedList<T>::Iterator::remove()
         delete pNode;
     }
 
+    pList->count -= 1;
     FragmentLinkedList<T> tmpList;
     tmpList.rebuildFragmentList(pList->fragmentMaxSize);
     return;
@@ -670,14 +679,27 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::Iterator::operat
 
 int main()
 {
-    FragmentLinkedList<int> fList(3);
+    FragmentLinkedList<int> intList;
 
     for (int i = 0; i < 20; i++)
-        fList.add(i, i * i);
+        intList.add(0, i * i);
 
-    for (FragmentLinkedList<int>::Iterator it = fList.begin(); it != fList.end(); it++)
+    cout << *(intList.end(0)) << endl;
+    cout << *(intList.begin(1)) << endl;
+
+    FragmentLinkedList<int>::Iterator tmp(&intList, 3, true);
+    tmp.remove();
+    for (FragmentLinkedList<int>::Iterator it = intList.begin(); it != intList.end(); it++)
         cout << *it << " ";
     cout << endl;
+    cout << intList.size() << endl;
+
+    FragmentLinkedList<char> charList;
+
+    for (int i = 0; i < 26; i++)
+        charList.add(i, (char)(i + 97));
+
+    cout << charList.toString() << endl;
 
     return 0;
 }

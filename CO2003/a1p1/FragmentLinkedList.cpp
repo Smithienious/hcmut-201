@@ -698,12 +698,10 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::Iterator::operat
 
     if (pNode != nullptr)
         pNode = pNode->next;
-
     if (pNode == nullptr && index == -1)
         pNode = pList->fragmentPointers[0];
 
     index += 1;
-
     return itr;
 }
 

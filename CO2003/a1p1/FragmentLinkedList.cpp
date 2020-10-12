@@ -216,9 +216,7 @@ void FragmentLinkedList<T>::add(const T &element)
         return;
     }
 
-    Node *ptr = fragmentPointers[0];
-    while (ptr->next != nullptr)
-        ptr = ptr->next;
+    Node *ptr = fragmentPointers[fragmentCount - 1];
 
     Node *newNode = new Node(element, nullptr, ptr);
     ptr->next = newNode;
@@ -259,8 +257,9 @@ void FragmentLinkedList<T>::add(int index, const T &element)
     }
     else
     {
-        Node *ptr = fragmentPointers[0];
-        int pos = 0;
+        int fragmentIndex = (index - 1) / fragmentMaxSize;
+        Node *ptr = fragmentPointers[fragmentIndex];
+        int pos = fragmentIndex * fragmentMaxSize;
         while (pos < index - 1)
         {
             ptr = ptr->next;
@@ -294,15 +293,14 @@ T FragmentLinkedList<T>::removeAt(int index)
     }
     else if (index == count - 1)
     {
-        while (ptr->next != nullptr)
-            ptr = ptr->next;
-
+        ptr = fragmentPointers[fragmentCount - 1];
         ptr->prev->next = nullptr;
-        ptr->prev = nullptr;
     }
     else
     {
-        int pos = 0;
+        int fragmentIndex = (index - 1) / fragmentMaxSize;
+        ptr = fragmentPointers[fragmentIndex];
+        int pos = fragmentIndex * fragmentMaxSize;
         while (pos < index)
         {
             ptr = ptr->next;
@@ -388,7 +386,6 @@ template <class T>
 void FragmentLinkedList<T>::clear()
 {
     this->~FragmentLinkedList();
-
     return;
 }
 
@@ -399,8 +396,9 @@ T FragmentLinkedList<T>::get(int index)
     if (empty() || index < 0 || index > count - 1)
         throw out_of_range("The index is out of range!");
 
-    Node *ptr = fragmentPointers[0];
-    int pos = 0;
+    int fragmentIndex = (index - 1) / fragmentMaxSize;
+    Node *ptr = fragmentPointers[fragmentIndex];
+    int pos = fragmentIndex * fragmentMaxSize;
 
     while (pos < index)
     {
@@ -418,8 +416,9 @@ void FragmentLinkedList<T>::set(int index, const T &element)
     if (empty() || index < 0 || index > count - 1)
         return;
 
-    Node *ptr = fragmentPointers[0];
-    int pos = 0;
+    int fragmentIndex = (index - 1) / fragmentMaxSize;
+    Node *ptr = fragmentPointers[fragmentIndex];
+    int pos = fragmentIndex * fragmentMaxSize;
 
     while (pos < index)
     {
@@ -597,7 +596,11 @@ typename FragmentLinkedList<T>::Iterator &FragmentLinkedList<T>::Iterator::opera
 template <typename T>
 T &FragmentLinkedList<T>::Iterator::operator*()
 {
-    return pNode->data;
+    if (pNode)
+        return pNode->data;
+
+    T temp;
+    return temp;
 }
 
 // * Comparison operator
@@ -612,7 +615,7 @@ bool FragmentLinkedList<T>::Iterator::operator!=(const Iterator &iterator)
     return pNode->data != iterator.pNode->data;
 }
 
-// * Pop iterator
+// * Remove iterator
 template <typename T>
 void FragmentLinkedList<T>::Iterator::remove()
 {
@@ -631,6 +634,7 @@ void FragmentLinkedList<T>::Iterator::remove()
 
     if (pNode != nullptr)
     {
+        index = pList->indexOf(pNode->data);
         pNode->next = ptr->next;
 
         if (ptr->next != nullptr)
@@ -648,8 +652,7 @@ void FragmentLinkedList<T>::Iterator::remove()
     }
 
     pList->count -= 1;
-    FragmentLinkedList<T> tmpList;
-    tmpList.rebuildFragmentList(pList->fragmentMaxSize);
+    pList->rebuildFragmentList(pList->fragmentMaxSize);
     return;
 }
 
@@ -670,8 +673,9 @@ typename FragmentLinkedList<T>::Iterator &FragmentLinkedList<T>::Iterator::opera
 {
     if (pNode == nullptr)
         return *this;
-    else
-        pNode = pNode->next;
+
+    index = pList->indexOf(pNode->data);
+    pNode = pNode->next;
 
     if (pNode == nullptr && index == -1)
         pNode = pList->fragmentPointers[0];
@@ -686,6 +690,8 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::Iterator::operat
 {
     if (pNode == nullptr)
         return *this;
+
+    index = pList->indexOf(pNode->data);
 
     Iterator itr(pList, true);
     itr.pNode = pNode;

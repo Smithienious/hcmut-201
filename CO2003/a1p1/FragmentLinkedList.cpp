@@ -546,7 +546,7 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, bool beg
         return;
 
     pNode = nullptr;
-    this->index += 1;
+    this->index = pList->count;
 }
 
 // * Constructor with defaults: *pList = nullptr, fragmentIndex = 0, begin = true
@@ -556,30 +556,21 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, int frag
     this->pList = pList;
 
     if (fragmentIndex < 0)
-    {
         fragmentIndex = 0;
-        this->index = 0;
-    }
-    else if (fragmentIndex > pList->fragmentCount - 1)
-    {
+    if (fragmentIndex >= pList->fragmentCount - 1)
         fragmentIndex = pList->fragmentCount - 1;
-        this->index = pList->count - 1;
-    }
-    else
-    {
-        this->index = (fragmentIndex == pList->fragmentCount - 1) ? (pList->count - 1) : (fragmentIndex * pList->fragmentMaxSize);
-    }
 
     this->pNode = pList->fragmentPointers[fragmentIndex];
+    this->index = (fragmentIndex == pList->fragmentCount - 1) ? (pList->count - 1) : (fragmentIndex * pList->fragmentMaxSize);
 
     if (pList == nullptr || begin)
         return;
 
-    if (fragmentIndex == pList->fragmentCount - 1)
-        pNode = nullptr;
-    else
-        pNode = pList->fragmentPointers[fragmentIndex + 1];
-    this->index += 1;
+    for (int i = 0; i < this->pList->fragmentMaxSize && this->pNode != nullptr; i += 1)
+    {
+        pNode = pNode->next;
+        this->index += 1;
+    }
 }
 
 // * Copy operator
@@ -708,7 +699,7 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::Iterator::operat
 #endif
 // END: STUDENT ANSWER
 
-int main()
+int main(int argc, char **argv)
 {
     FragmentLinkedList<int> intList;
 

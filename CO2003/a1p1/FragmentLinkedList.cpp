@@ -164,7 +164,7 @@ public:
 
     public:
         Iterator(FragmentLinkedList<T> *pList = nullptr, bool begin = true);
-        Iterator(FragmentLinkedList<T> *pList = nullptr, int fragmentIndex = 0, bool begin = true);
+        Iterator(int fragmentIndex, FragmentLinkedList<T> *pList = nullptr, bool begin = true);
         Iterator &operator=(const Iterator &iterator);
         T &operator*();
         bool operator!=(const Iterator &iterator);
@@ -513,7 +513,7 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::begin(int index)
     if (index < 0)
         index = 0;
 
-    Iterator itr(this, index, true);
+    Iterator itr(index, this, true);
     return itr;
 }
 
@@ -529,7 +529,7 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::end(int index)
     if (index < -1)
         index = 0;
 
-    Iterator itr(this, index, false);
+    Iterator itr(index, this, false);
     return itr;
 }
 
@@ -545,19 +545,19 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, bool beg
     if (pList == nullptr || begin)
         return;
 
-    pNode = nullptr;
+    this->pNode = nullptr;
     this->index = pList->count;
 }
 
 // * Constructor with defaults: *pList = nullptr, fragmentIndex = 0, begin = true
 template <typename T>
-FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, int fragmentIndex, bool begin)
+FragmentLinkedList<T>::Iterator::Iterator(int fragmentIndex, FragmentLinkedList<T> *pList, bool begin)
 {
     this->pList = pList;
 
     if (fragmentIndex < 0)
         fragmentIndex = 0;
-    if (fragmentIndex >= pList->fragmentCount - 1)
+    if (fragmentIndex > pList->fragmentCount - 1)
         fragmentIndex = pList->fragmentCount - 1;
 
     this->pNode = pList->fragmentPointers[fragmentIndex];
@@ -568,7 +568,7 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, int frag
 
     for (int i = 0; i < this->pList->fragmentMaxSize && this->pNode != nullptr; i += 1)
     {
-        pNode = pNode->next;
+        this->pNode = pNode->next;
         this->index += 1;
     }
 }
@@ -590,20 +590,18 @@ T &FragmentLinkedList<T>::Iterator::operator*()
     if (pNode)
         return pNode->data;
 
-    T temp;
-    return temp;
+    throw out_of_range("Segmentation fault!");
 }
 
 // * Comparison operator
 template <typename T>
 bool FragmentLinkedList<T>::Iterator::operator!=(const Iterator &iterator)
 {
-    if (pNode == nullptr && iterator.pNode == nullptr)
+    if ((pNode == iterator.pNode || index == iterator.index) &&
+        pNode == nullptr && iterator.pNode == nullptr)
         return false;
-    if (pNode == nullptr || iterator.pNode == nullptr)
-        return true;
 
-    return pNode->data != iterator.pNode->data;
+    return true;
 }
 
 // * Remove iterator
@@ -709,7 +707,7 @@ int main(int argc, char **argv)
     cout << *(intList.end(0)) << endl;
     cout << *(intList.begin(1)) << endl;
 
-    FragmentLinkedList<int>::Iterator tmp(&intList, 3, true);
+    FragmentLinkedList<int>::Iterator tmp(3, &intList, true);
     tmp.remove();
     for (FragmentLinkedList<int>::Iterator it = intList.begin(); it != intList.end(); it++)
         cout << *it << " ";

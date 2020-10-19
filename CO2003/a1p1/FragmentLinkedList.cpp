@@ -547,9 +547,6 @@ FragmentLinkedList<T>::Iterator::Iterator(FragmentLinkedList<T> *pList, bool beg
 
     this->pNode = nullptr;
     this->index = pList->count;
-
-    if (this->index == 0)
-        this->index = -1;
 }
 
 // * Constructor with defaults: *pList = nullptr, fragmentIndex = 0, begin = true
@@ -574,9 +571,6 @@ FragmentLinkedList<T>::Iterator::Iterator(int fragmentIndex, FragmentLinkedList<
         this->pNode = pNode->next;
         this->index += 1;
     }
-
-    if (this->index == 0)
-        this->index = -1;
 }
 
 // * Copy operator

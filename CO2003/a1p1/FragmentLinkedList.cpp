@@ -413,7 +413,10 @@ T FragmentLinkedList<T>::get(int index)
 template <class T>
 void FragmentLinkedList<T>::set(int index, const T &element)
 {
-    if (empty() || index < 0 || index > count - 1)
+    if (index < 0 || index > count - 1)
+        throw out_of_range("The index is out of range!");
+
+    if (empty())
         return;
 
     int fragmentIndex = (index - 1) / fragmentMaxSize;
@@ -508,10 +511,8 @@ string FragmentLinkedList<T>::toString()
 template <typename T>
 typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::begin(int index)
 {
-    if (index > fragmentCount - 1)
-        index = fragmentCount - 1;
-    if (index < 0)
-        index = 0;
+    if (index < 0 || index > fragmentCount - 1)
+        throw out_of_range("The index is out of range!");
 
     Iterator itr(index, this, true);
     return itr;
@@ -522,12 +523,11 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::begin(int index)
 template <typename T>
 typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::end(int index)
 {
-    if (index > fragmentCount - 1)
-        index = fragmentCount - 1;
+    if (index < 0 || index > fragmentCount - 1)
+        throw out_of_range("The index is out of range!");
+
     if (index == -1)
         index = fragmentCount - 1;
-    if (index < -1)
-        index = 0;
 
     Iterator itr(index, this, false);
     return itr;
@@ -615,7 +615,7 @@ template <typename T>
 void FragmentLinkedList<T>::Iterator::remove()
 {
     if (pNode == nullptr)
-        return;
+        throw out_of_range("Segmentation fault!");
 
     Node *ptr = pNode;
     pNode = pNode->prev;
@@ -656,8 +656,7 @@ template <typename T>
 void FragmentLinkedList<T>::Iterator::set(const T &element)
 {
     if (pNode == nullptr)
-        return;
-
+        throw out_of_range("Segmentation fault!");
     pNode->data = element;
     return;
 }

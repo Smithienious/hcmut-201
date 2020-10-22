@@ -523,7 +523,7 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::begin(int index)
 template <typename T>
 typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::end(int index)
 {
-    if (index < 0 || index > fragmentCount - 1)
+    if (index < -1 || index > fragmentCount - 1)
         throw out_of_range("The index is out of range!");
 
     if (index == -1)

@@ -659,6 +659,9 @@ void FragmentLinkedList<T>::Iterator::set(const T &element)
 template <typename T>
 typename FragmentLinkedList<T>::Iterator &FragmentLinkedList<T>::Iterator::operator++()
 {
+    if (index > pList->count - 1)
+        return *this;
+
     index += 1;
 
     if (pNode == nullptr)
@@ -677,6 +680,9 @@ typename FragmentLinkedList<T>::Iterator &FragmentLinkedList<T>::Iterator::opera
 template <typename T>
 typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::Iterator::operator++(int)
 {
+    if (index > pList->count - 1)
+        return *this;
+
     index += 1;
 
     if (pNode == nullptr)

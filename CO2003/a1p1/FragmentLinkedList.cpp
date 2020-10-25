@@ -659,20 +659,20 @@ void FragmentLinkedList<T>::Iterator::set(const T &element)
 template <typename T>
 typename FragmentLinkedList<T>::Iterator &FragmentLinkedList<T>::Iterator::operator++()
 {
+    if (pNode == nullptr && index < 0)
+    {
+        pNode = pList->fragmentPointers[0];
+        index = 0;
+        return *this;
+    }
+
+    if (pNode != nullptr)
+        pNode = pNode->next;
+
     if (index > pList->count - 1)
         return *this;
 
     index += 1;
-
-    if (pNode == nullptr)
-        return *this;
-
-    index = pList->indexOf(pNode->data);
-    pNode = pNode->next;
-
-    if (pNode == nullptr && index == -1)
-        pNode = pList->fragmentPointers[0];
-
     return *this;
 }
 
@@ -680,24 +680,23 @@ typename FragmentLinkedList<T>::Iterator &FragmentLinkedList<T>::Iterator::opera
 template <typename T>
 typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::Iterator::operator++(int)
 {
-    if (index > pList->count - 1)
-        return *this;
-
-    index += 1;
-
-    if (pNode == nullptr)
-        return *this;
-
-    index = pList->indexOf(pNode->data);
-
     Iterator itr(pList, true);
     itr.pNode = pNode;
 
+    if (pNode == nullptr && index < 0)
+    {
+        pNode = pList->fragmentPointers[0];
+        index = 0;
+        return itr;
+    }
+
     if (pNode != nullptr)
         pNode = pNode->next;
-    if (pNode == nullptr && index == -1)
-        pNode = pList->fragmentPointers[0];
 
+    if (index > pList->count - 1)
+        return itr;
+
+    index += 1;
     return itr;
 }
 

@@ -286,6 +286,16 @@ T FragmentLinkedList<T>::removeAt(int index)
 
     Node *ptr = fragmentPointers[0];
 
+    if (count == 1)
+    {
+        count = 0;
+        T tmp = ptr->data;
+        delete ptr;
+        fragmentPointers[0] = nullptr;
+        fragmentPointers[1] = nullptr;
+        return tmp;
+    }
+
     if (index == 0)
     {
         fragmentPointers[0]->next->prev = nullptr;
@@ -707,141 +717,3 @@ typename FragmentLinkedList<T>::Iterator FragmentLinkedList<T>::Iterator::operat
 
 #endif
 // END: STUDENT ANSWER
-
-int main(int argc, char **argv)
-{
-    /*
-    FragmentLinkedList<int> intList;
-
-    for (int i = 0; i < 20; i++)
-        intList.add(0, i * i);
-
-    cout << *(intList.end(0)) << endl;
-    cout << *(intList.begin(1)) << endl;
-
-    FragmentLinkedList<int>::Iterator tmp(3, &intList, true);
-    tmp.remove();
-    for (FragmentLinkedList<int>::Iterator it = intList.begin(); it != intList.end(); it++)
-        cout << *it << " ";
-    cout << endl;
-    cout << intList.size() << endl;
-
-    FragmentLinkedList<char> charList;
-
-    for (int i = 0; i < 26; i++)
-        charList.add(i, (char)(i + 97));
-
-    cout << charList.get(5) << endl;
-    cout << charList.toString() << endl;
-
-    return 0;
-    */
-
-    // TESTCASE INPUT
-    // === Example
-    int a = 5, n = 16;
-    FragmentLinkedList<int> fList(a);
-    for (int i = 0; i < n; i++)
-    {
-        fList.add(i * i);
-    }
-    cout << "- Add i*i to list (i from 0 to " << n - 1 << "): " << endl;
-    cout << fList.toString() << endl;
-
-    fList.add(4, 7);
-    cout << "- Add 7 to index 4:" << endl
-         << fList.toString() << endl;
-
-    cout << "- Remove index 4, return: " << fList.removeAt(4) << endl;
-    cout << fList.toString() << endl;
-
-    cout << "- Remove index last, return: " << fList.removeAt(fList.size() - 1) << endl;
-    cout << fList.toString() << endl;
-
-    cout << "- Remove index 5, return: " << fList.removeAt(5) << endl;
-    cout << fList.toString() << endl;
-
-    fList.set(4, 69);
-    cout << "- Set index 4 to 69:" << endl
-         << fList.toString() << endl;
-
-    cout << "- Check index of 6: " << fList.indexOf(6) << endl
-         << endl;
-    cout << "- Check index of 10: " << fList.indexOf(10) << endl
-         << endl;
-    cout << "- Check item with value of 6: " << fList.contains(6) << endl
-         << endl;
-    cout << "- Check item with value of 64: " << fList.contains(64) << endl
-         << endl;
-    cout << "- Get value of index 5: " << fList.get(5) << endl
-         << endl;
-
-    using iterator = FragmentLinkedList<int>::Iterator;
-
-    cout << "Original list:     " << fList.toString() << endl;
-    cout << "Iterator checking: "
-         << "[";
-    string x = ", ";
-    for (iterator i = fList.begin(); i != fList.end(); i++)
-    {
-        if (*i == fList.get(fList.size() - 1))
-        {
-            i.set(96);
-            x = "";
-        }
-        cout << *i << x;
-    }
-    cout << "]" << endl
-         << endl;
-
-    iterator it = fList.begin();
-    cout << "Prefix checking: " << *(it++) << " = " << *it << endl
-         << endl;
-
-    it = fList.begin();
-    it.remove();
-    it++;
-    cout << "List after modified: " << endl
-         << fList.toString() << endl;
-    cout << "Remove & Increase the first node checking: " << *it;
-    if (*it == fList.get(0))
-        cout << "   --TRUE--";
-    else
-        cout << "  --FALSE--";
-    cout << endl
-         << endl;
-
-    //Problem M
-    it = fList.begin();
-    fList.add(0, 69);
-    it.remove();
-    it++;
-    cout << "List after modified: " << endl
-         << fList.toString() << endl;
-    cout << "Remove & Increase the first iterator points node checking: " << *it;
-    cout << endl
-         << endl;
-
-    //Problem M repeat
-    it = fList.begin();
-    fList.add(0, 6969);
-    it.remove();
-    it++;
-    cout << "List after modified: " << endl
-         << fList.toString() << endl;
-    cout << "Remove & Increase the first iterator points node checking: " << *it;
-    cout << endl
-         << endl;
-
-    // for(FragmentLinkedList<int>::Iterator it = fList.begin(); it != fList.end(); it++)
-    //     cout << *it << " ";
-    // cout << endl;
-    // === END: Example
-    // END: TESTCASE INPUT
-
-    fList.clear();
-    cout << "Check clear:  " << fList.toString() << endl
-         << endl;
-
-    return 0;
-}

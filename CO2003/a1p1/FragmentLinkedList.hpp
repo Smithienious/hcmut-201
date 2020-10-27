@@ -179,27 +179,7 @@ public:
 template <class T>
 FragmentLinkedList<T>::~FragmentLinkedList()
 {
-    if (empty())
-        return;
-
-    count = 0;
-    fragmentCount = 2;
-
-    Node *ptr = fragmentPointers[0];
-    Node *tmp = nullptr;
-
-    while (ptr != nullptr)
-    {
-        tmp = ptr;
-        ptr = ptr->next;
-        delete tmp;
-    }
-
-    delete[] fragmentPointers;
-
-    fragmentPointers = new Node *[2];
-    fragmentPointers[0] = nullptr;
-    fragmentPointers[1] = nullptr;
+    this->clear();
 }
 
 // * Add a new element into the end of the list
@@ -395,7 +375,28 @@ int FragmentLinkedList<T>::size()
 template <class T>
 void FragmentLinkedList<T>::clear()
 {
-    this->~FragmentLinkedList();
+    if (empty())
+        return;
+
+    count = 0;
+    fragmentCount = 2;
+
+    Node *ptr = fragmentPointers[0];
+    Node *tmp = nullptr;
+
+    while (ptr != nullptr)
+    {
+        tmp = ptr;
+        ptr = ptr->next;
+        delete tmp;
+    }
+
+    delete[] fragmentPointers;
+
+    fragmentPointers = new Node *[2];
+    fragmentPointers[0] = nullptr;
+    fragmentPointers[1] = nullptr;
+
     return;
 }
 

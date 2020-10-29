@@ -1,0 +1,311 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vntex}
+\usepackage[utf8]{inputenc}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{bookmark}
+\usepackage{comment}
+\usepackage{pifont}
+\usepackage{lastpage}
+\usepackage{color}
+\usepackage{natbib}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{listings}
+\usepackage{anyfontsize}
+\usepackage{lastpage}
+
+\usetikzlibrary{calc}
+\newcommand\HRule{\rule{12cm}{1pt}}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+	\color{blue}
+	\begin{tabular}{rl}
+		\begin{picture}(25,15)(0,0)
+		\put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+		\end{picture}
+		\begin{tabular}{l}
+			\textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+			\textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+		\end{tabular}
+	\end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{l}
+		\tiny \bf \\
+		\tiny \bf
+	\end{tabular}
+}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 1}
+\fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width = 2pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+  \end{tikzpicture}
+
+  \begin{center}
+
+    % Upper part of the page
+    \textbf{\fontsize{12pt}{1pt}\selectfont HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\[0.5cm]
+    {\fontsize{13pt}{1pt}\selectfont Faculty of Computer Science \& Engineering}\\[0.5cm]
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1.7in,height=1.7in]{BK.png}
+    \end{figure}
+
+    % Title
+    \HRule\\[0.5cm]
+    { \textbf{\fontsize{25pt}{1pt}\selectfont Computer Architecture Week 1}}\\[0.4cm]
+
+    \HRule\\[0.8cm]
+    \begin{minipage}{0.545\textwidth}
+      \begin{flushleft}
+        \textbf{Authors:}\\
+        \begin{tabular}{l l}
+          Lưu Nguyễn Hoàng Minh & 1952845 \\
+          Vũ Anh Nhi            & 1952380 \\
+          Nguyễn Chính Khôi     & 1952793 \\
+          Nguyễn Hoàng          & 1952255 \\
+        \end{tabular}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \textbf{Class:}\\
+        CO2008\_CC02\\
+        \textbf{Lecturer:}\\
+        Kiều Đỗ Nguyên Bình\\
+
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    \vspace{2cm}
+    {\large} %{\large \today}
+  \end{center}
+\end{titlepage}
+
+
+\pdfbookmark[0]{Question 1}{ques1}
+\section*{Question 1:}
+\begin{enumerate}[label=\alph*.]
+  \item%
+        \begin{equation*}
+          IPS = \frac{CPS}{CPI}
+        \end{equation*}
+        IPS of each processor
+        \begin{align*}
+          IPS_1 & = \frac{3.0 \times 10^9}{1.5} = 2.0 \times 10^9       \\
+          IPS_2 & = \frac{2.5 \times 10^9}{1.0} = 2.5 \times 10^9       \\
+          IPS_3 & = \frac{4.0 \times 10^9}{2.2} \approx 1.8 \times 10^9
+        \end{align*}
+        \(\Rightarrow\) P2 has the highest performance in terms of instructions per second.
+  \item%
+        \begin{align*}
+          C & = CPS \times S \\
+          I & = IPS \times I
+        \end{align*}
+        The number of cycles and instructions after 10 seconds
+        \begin{align*}
+          C_1 & = 3.0 \times 10^9 \times 10 = 30.0 \times 10^9 \\
+          I_1 & = 2.0 \times 10^9 \times 10 = 20.0 \times 10^9 \\
+          C_2 & = 2.5 \times 10^9 \times 10 = 25.0 \times 10^9 \\
+          I_2 & = 2.5 \times 10^9 \times 10 = 25.0 \times 10^9 \\
+          C_3 & = 4.0 \times 10^9 \times 10 = 40.0 \times 10^9 \\
+          I_3 & = 1.8 \times 10^9 \times 10 = 18.1 \times 10^9
+        \end{align*}
+  \item%
+        \begin{align*}
+                          & \frac{S_{new}}{S_{old}} = {(\frac{CPI}{CPS})}_{new} \times {(\frac{CPS}{CPI})}_{old} \\
+          \Rightarrow     & 70\% = 120\% \times \frac{CPS_{old}}{CPS_{new}}                                      \\
+          \Leftrightarrow & CPS_{new} = CPS_{old} \times \frac{12}{7}
+        \end{align*}
+        New clock rate to reduce the time by 30\% and increase the CPI by 20\%
+        \begin{align*}
+          CPS_1 & = 3.0 \times \frac{12}{7} \approx 5.1\;\text{GHz} \\
+          CPS_2 & = 2.5 \times \frac{12}{7} \approx 4.3\;\text{GHz} \\
+          CPS_3 & = 4.0 \times \frac{12}{7} \approx 6.9\;\text{GHz}
+        \end{align*}
+\end{enumerate}
+
+\pdfbookmark[0]{Question 2}{ques2}
+\section*{Question 2:}
+\begin{enumerate}[label=\alph*.]
+  \item%
+        \begin{equation*}
+          IPC = \frac{IPS}{CPS} = \frac{I}{S \times CPS}
+        \end{equation*}
+        IPC of each processor
+        \begin{align*}
+          IPC_1 & = \frac{20}{7 \times 3.0} \approx 0.9 \\
+          IPC_2 & = \frac{30}{10 \times 2.5} = 1.2      \\
+          IPC_3 & = \frac{90}{9 \times 4.0} = 2.5
+        \end{align*}
+  \item%
+        \begin{equation*}
+          S = I / IPC / CPS
+        \end{equation*}
+        New clock rate of P2 to reduce its execution time to that of P1
+        \begin{align*}
+          CPS_{new} & = I / IPC / S_{new}        \\
+                    & = 30 \times 10^9 / 1.2 / 7 \\
+                    & \approx 3.6\;\text{GHz}
+        \end{align*}
+  \item\mbox{}\\
+        New number of instructions for P2 to reduce its execution time to that of P3
+        \begin{align*}
+          I_{new} & = S_{new} \times IPC \times CPS       \\
+                  & = 9 \times 1.2 \times 2.5 \times 10^9 \\
+                  & = 27 \times 10^9
+        \end{align*}
+\end{enumerate}
+
+\pdfbookmark[0]{Question 3}{ques3}
+\section*{Question 3:}
+\begin{enumerate}[label=\alph*.]
+  \item%
+        \begin{equation*}
+          S = I \times \frac{CPI}{CPS}
+        \end{equation*}
+        Execution time of each implementation
+        \begin{align*}
+          S_1 & = 10^6 \times \frac{1 + 2 + 3 + 3}{2.5 \times 10^9} \\
+              & = 3.6\;(ms)                                         \\
+          S_2 & = 10^6 \times \frac{2 + 2 + 2 + 2}{3 \times 10^9}   \\
+              & \approx 2.7\;(ms)
+        \end{align*}
+  \item%
+        \begin{equation*}
+          CPI = \frac{\sum C}{\sum I}
+        \end{equation*}
+        Global CPI of each implementation
+        \begin{align*}
+          CPI_1 & = \frac{10^5 \times (1 \times 1 + 2 \times 2 + 5 \times 3 + 2 \times 3)}{10^6} \\
+                & = 2.6                                                                          \\
+          CPI_2 & = \frac{10^5 \times (1 \times 2 + 2 \times 2 + 5 \times 2 + 2 \times 2)}{10^6} \\
+                & = 2
+        \end{align*}
+  \item%
+        \begin{equation*}
+          C = CPI \times I
+        \end{equation*}
+        Total clock cycles of each case
+        \begin{align*}
+          C_1 & = 2.6 \times 10^6 \\
+          C_2 & = 2.0 \times 10^6
+        \end{align*}
+\end{enumerate}
+
+\pdfbookmark[0]{Question 4}{ques4}
+\section*{Question 4:}
+Execution time of the program
+\begin{align*}
+  S & = \frac{\sum {(I \times CPI)}_i}{CPS}                                                 \\
+    & = \frac{200 \times 2.5 + 100 \times 1 + 200 \times 1.5 + 500 \times 2}{2 \times 10^9} \\
+    & = 950\;(ns)
+\end{align*}
+Average CPI of the program
+\begin{align*}
+  CPI_{avg} & = \frac{\sum C_i}{\sum I_i}                                                  \\
+            & = \frac{\sum {(I \times CPI)}_i}{CPS}                                        \\
+            & = \frac{200 \times 2.5 + 100 \times 1 + 200 \times 1.5 + 500 \times 2}{1000} \\
+            & = 1.9
+\end{align*}
+Speed up after improving the loadstore execution time by 2
+\begin{align*}
+  \frac{S_{old}}{S_{new}} & = \frac{CPI_{old}}{CPI_{new}}                                                                                                             \\
+                          & = \frac{200 \times 2.5 + 100 \times 1 + 200 \times 1.5 + 500 \times 2}{200 \times 2.5 / 2 + 100 \times 1 + 200 \times 1.5 + 500 \times 2} \\
+                          & \approx 1.15
+\end{align*}
+
+\pdfbookmark[0]{Question 5}{ques5}
+\section*{Question 5:}
+Iron law:
+\begin{equation*}
+  CPU\;time = I \times CPI \times Cycle\;time
+\end{equation*}
+Given the program, the instruction count and cycle time are constant, thus we only need to care about the CPI\@.
+\begin{itemize}
+  \item Alternative 1:\\
+        Base CPI of FPSQR
+        \begin{align*}
+          CPI & = 0.02 \times 20 \\
+              & = 0.4
+        \end{align*}
+        New CPI of FPSQR
+        \begin{align*}
+          CPI & = 0.02 \times 2 \\
+              & = 0.04
+        \end{align*}
+        Weighted CPI improvement
+        \begin{equation*}
+          0.4 - 0.04 = 0.36
+        \end{equation*}
+  \item Alternative 2:\\
+        Base CPI of FP
+        \begin{align*}
+          CPI & = 0.25 \times 4.0 \\
+              & = 1
+        \end{align*}
+        New CPI of FP
+        \begin{align*}
+          CPI & = 0.25 \times 2.5 \\
+              & = 0.625
+        \end{align*}
+        Weighted CPI improvement
+        \begin{equation*}
+          1 - 0.625 = 0.375
+        \end{equation*}
+\end{itemize}
+We want to decrease CPU time, so greater CPI improvement is better. Despite the great drop in CPI of FPSQR, it is too rare in the program to be of significance with respect to that of FP\@.
+
+\pdfbookmark[0]{Question 6}{ques6}
+\section*{Question 6:}
+\begin{enumerate}[label=\alph*.]
+  \item%
+        \begin{align*}
+          \frac{S_{new}}{S_{old}} & = \frac{\sum {(I \times CPI)}_{new}}{\sum {(I \times CPI)}_{old}}                                                                     \\
+                                  & = \frac{50 \times x + 110 \times 1 + 80 \times 4 + 16 \times 2}{50 \times 1 + 110 \times 1 + 80 \times 4 + 16 \times 2} = \frac{1}{2} \\
+          \Rightarrow x           & = -4.12
+        \end{align*}
+        Since \(x < 0\), there is no solution.
+  \item%
+        \begin{align*}
+          \frac{S_{new}}{S_{old}} & = \frac{\sum {(I \times CPI)}_{new}}{\sum {(I \times CPI)}_{old}}                                                                     \\
+                                  & = \frac{50 \times 1 + 110 \times 1 + 80 \times x + 16 \times 2}{50 \times 1 + 110 \times 1 + 80 \times 4 + 16 \times 2} = \frac{1}{2} \\
+          \Rightarrow x           & = 0.8
+        \end{align*}
+        We must reduce the CPI of L/S instruction by \(80\%\).
+  \item%
+        New execution time
+        \begin{align*}
+            & \frac{10^6}{2 \times 10^9}((50 \times 1 + 110 \times 1) \times 60\% + (80 \times 4 + 16 \times 2) \times 70\%) \\
+          = & 0.1712
+        \end{align*}
+        \begin{equation*}
+          \frac{S_{old}}{S_{new}} = \frac{0.256}{0.1712} \approx 1.4953
+        \end{equation*}
+        The execution time of the program is improved by \(33.125\%\).
+\end{enumerate}
+
+\end{document}

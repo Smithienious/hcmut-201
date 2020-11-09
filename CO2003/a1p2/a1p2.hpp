@@ -236,9 +236,14 @@ string BusSystem::ge(string code, int time_a, bool to_terminus)
 }
 
 //
-string BusSystem::query(string instrucion)
+string BusSystem::query(string instruction)
 {
-    //
+    // * Pre-process
+    instruction = trim(instruction);
+    if (instruction.find("  ") != string::npos)
+        return "-1";
+
+    // * Set up variables
     vector<string> parameters;
     vector<string> keywords{"SQ", "INS", "DEL", "CS", "CE", "GS", "GE"};
     stringstream ss;
@@ -249,7 +254,7 @@ string BusSystem::query(string instrucion)
     string code = "", lp = "";
 
     // * Split string by spaces, null terminator included
-    istringstream iss(instrucion);
+    istringstream iss(instruction);
     string word;
     while (iss >> word)
         parameters.push_back(word);

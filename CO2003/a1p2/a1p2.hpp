@@ -16,28 +16,25 @@
     * This query method should return the output of each instruction
 */
 
-#include <string.h>
 #include <bits/stdc++.h>
+#include <unordered_map>
 
 using namespace std;
 
 class BusSystem
 {
 public:
-    class Station; // * Node
-    class Bus;     // * Bus
+    class Route;
 
 protected:
-    int max_trips; // * universal maximum number of trips
+    int max_trips;
+    unordered_map<string, Route *> system_map; // * route code, pointer to coded route
 
 public:
-    BusSystem()
-    {
-        // TODO
-    }
+    BusSystem() : max_trips(0) {}
     ~BusSystem()
     {
-        // TODO
+        this->clear();
     }
     void clear();
     int command2int(string);
@@ -55,43 +52,41 @@ public:
     string ce(string, int, bool);
     string gs(string, int, bool);
     string ge(string, int, bool);
-    string query(string);
 
 public:
-    class Station
+    class Route
     {
+    public:
+        class Trip;
+        unordered_map<string, Trip *> route_map; // * license plate, pointer to buses
+
     private:
-        string route_code;
+        int quan_trips;
 
     public:
-        Station()
+        Route() : quan_trips(0) {}
+        ~Route()
         {
-            // TODO
+            this->clear();
         }
-        ~Station()
-        {
-            // TODO
-        }
-    };
-
-    class Bus
-    {
-    private:
-        string lic_plate;
-        bool to_terminus;
-        int time_a;
-        int time_b;
+        void clear();
 
     public:
-        Bus()
+        class Trip
         {
-            // TODO
-        }
-        ~Bus()
-        {
-            // TODO
-        }
+        private:
+            bool to_origin; // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425476
+            int time_a, time_b;
+            friend class Route;
+
+        public:
+            Trip() : to_origin(0), time_a(-1), time_b(-1) {}
+            Trip(bool dir, int a, int b) : to_origin(dir), time_a(a), time_b(b) {}
+        };
     };
+
+public:
+    string query(string);
 };
 
 //
@@ -101,7 +96,6 @@ void BusSystem::clear()
 }
 
 // * Convert command to integer
-// {"SQ", "INS", "DEL", "CS", "CE", "GS", "GE"}
 int BusSystem::command2int(string cmd)
 {
     // * Could use map/enum here but meh
@@ -122,7 +116,7 @@ int BusSystem::command2int(string cmd)
     return -1;
 }
 
-// * Convert string to integer, returns -1 if fail
+// * Convert string to integer, return -1 if fail
 int BusSystem::string2int(string str)
 {
     int n = 0;
@@ -149,7 +143,7 @@ int BusSystem::string2int(string str)
     return -1;
 }
 
-// * Self-explanatory
+// * Find string in vector of string
 bool BusSystem::isInStringVector(string str, vector<string> dict)
 {
     if (find(begin(dict), end(dict), str) != end(dict))
@@ -189,7 +183,7 @@ void BusSystem::sq(int N)
 
 //
 // <CODE> <LP> [<CASE>] <TIME_A> <TIME_B>
-void BusSystem::ins(string code, string lp, bool to_terminus, int time_a, int time_b)
+void BusSystem::ins(string code, string lp, bool to_origin, int time_a, int time_b)
 {
     // TODO
     return;
@@ -205,7 +199,7 @@ void BusSystem::del(string code, int time_a, int time_b)
 
 //
 // <CODE> <TIME_A> [<CASE>]
-string BusSystem::cs(string code, int time_a, bool to_terminus)
+string BusSystem::cs(string code, int time_a, bool to_origin)
 {
     // TODO
     return "-1";
@@ -213,7 +207,7 @@ string BusSystem::cs(string code, int time_a, bool to_terminus)
 
 //
 // <CODE> <TIME_A> [<CASE>]
-string BusSystem::ce(string code, int time_a, bool to_terminus)
+string BusSystem::ce(string code, int time_a, bool to_origin)
 {
     // TODO
     return "-1";
@@ -221,7 +215,7 @@ string BusSystem::ce(string code, int time_a, bool to_terminus)
 
 //
 // <CODE> <TIME_A> [<CASE>]
-string BusSystem::gs(string code, int time_a, bool to_terminus)
+string BusSystem::gs(string code, int time_a, bool to_origin)
 {
     // TODO
     return "-1";
@@ -229,10 +223,16 @@ string BusSystem::gs(string code, int time_a, bool to_terminus)
 
 //
 // <CODE> <TIME_A> [<CASE>]
-string BusSystem::ge(string code, int time_a, bool to_terminus)
+string BusSystem::ge(string code, int time_a, bool to_origin)
 {
     // TODO
     return "-1";
+}
+
+//
+void BusSystem::Route::clear()
+{
+    // TODO
 }
 
 //
@@ -249,9 +249,9 @@ string BusSystem::query(string instruction)
     stringstream ss;
     int N = -1,
         time_a = -1, time_b = -1, // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425466
-        test_terminus = -1, switch_sel = -1;
-    bool to_terminus = true, faulty = false;
-    string code = "", lp = "";
+        test_origin_tmp = -1, switch_sel = -1;
+    bool to_origin = true, faulty = false;
+    string code = "", lp = ""; // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425680
 
     // * Split string by spaces, null terminator included
     istringstream iss(instruction);
@@ -262,6 +262,9 @@ string BusSystem::query(string instruction)
     //
     for (vector<string>::iterator itr = parameters.begin(); itr != parameters.end() && !faulty;)
     {
+        if (N == -1 && *itr != "SQ")
+            return "-1";
+
         if (isInStringVector(*itr, keywords))
         {
             switch_sel = command2int(*itr++);
@@ -284,21 +287,21 @@ string BusSystem::query(string instruction)
 
             case 1:
                 code = *itr++;
-                if (isInStringVector(code, keywords))
+                if (isInStringVector(code, keywords) || code.length() > 5)
                 {
                     faulty = true;
                     break;
                 }
 
                 lp = *itr++;
-                if (isInStringVector(lp, keywords))
+                if (isInStringVector(lp, keywords) || lp.length() > 5)
                 {
                     faulty = true;
                     break;
                 }
 
-                test_terminus = string2int(*itr++);
-                if (test_terminus == -1)
+                test_origin_tmp = string2int(*itr++);
+                if (test_origin_tmp == -1)
                 {
                     faulty = true;
                     break;
@@ -320,14 +323,14 @@ string BusSystem::query(string instruction)
                 if (time_b == -1)
                 {
                     time_b = time_a;
-                    time_a = test_terminus;
-                    to_terminus = true;
+                    time_a = test_origin_tmp;
+                    to_origin = true;
                     itr--;
                 }
                 else
                 {
-                    if (test_terminus == 0 || test_terminus == 1)
-                        to_terminus = test_terminus;
+                    if (test_origin_tmp == 0 || test_origin_tmp == 1)
+                        to_origin = test_origin_tmp;
                     else
                     {
                         faulty = true;
@@ -341,12 +344,12 @@ string BusSystem::query(string instruction)
                     break;
                 }
 
-                ins(code, lp, to_terminus, time_a, time_b);
+                ins(code, lp, to_origin, time_a, time_b);
                 break;
 
             case 2:
                 code = *itr++;
-                if (isInStringVector(code, keywords))
+                if (isInStringVector(code, keywords) || code.length() > 5)
                 {
                     faulty = true;
                     break;
@@ -381,7 +384,7 @@ string BusSystem::query(string instruction)
 
             default:
                 code = *itr++;
-                if (isInStringVector(code, keywords))
+                if (isInStringVector(code, keywords) || code.length() > 5)
                 {
                     faulty = true;
                     break;
@@ -394,31 +397,31 @@ string BusSystem::query(string instruction)
                     break;
                 }
 
-                test_terminus = string2int(*itr++);
-                if (test_terminus < 0 || test_terminus > 1)
+                test_origin_tmp = string2int(*itr++);
+                if (test_origin_tmp < 0 || test_origin_tmp > 1)
                 {
-                    to_terminus = true;
+                    to_origin = true;
                     itr--;
                 }
                 else
-                    to_terminus = test_terminus;
+                    to_origin = test_origin_tmp;
 
                 switch (switch_sel)
                 {
                 case 3:
-                    ss << cs(code, time_a, to_terminus) << " ";
+                    ss << cs(code, time_a, to_origin) << " ";
                     break;
 
                 case 4:
-                    ss << ce(code, time_a, to_terminus) << " ";
+                    ss << ce(code, time_a, to_origin) << " ";
                     break;
 
                 case 5:
-                    ss << gs(code, time_a, to_terminus) << " ";
+                    ss << gs(code, time_a, to_origin) << " ";
                     break;
 
                 case 6:
-                    ss << ge(code, time_a, to_terminus) << " ";
+                    ss << ge(code, time_a, to_origin) << " ";
                     break;
                 }
             }

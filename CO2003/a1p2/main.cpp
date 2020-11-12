@@ -1,4 +1,3 @@
-#include <iostream>
 #include "a1p2.hpp"
 
 using namespace std;
@@ -15,8 +14,8 @@ int main(int argc, char **argv)
      * GE <CODE> <TIME_A> [<CASE>]
      */
     BusSystem *bs = new BusSystem();
-    cout << bs->query("SQ 050 INS 50 50D1-23342 1234 5678") << endl;
-    //cout << bs->query("CS 50 2134") << endl;
+    cout << bs->query("SQ 50 INS 602 50D1-23342 1234 5678 INS 601 51D1-23342 1234 5678 INS 601 50D2-23342 1234 5678") << endl;
+    cout << bs->query("CS 50 2134") << endl;
 
     return 0;
 }

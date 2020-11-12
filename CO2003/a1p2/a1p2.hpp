@@ -16,8 +16,9 @@
     * This query method should return the output of each instruction
 */
 
-#include <bits/stdc++.h>
+// ! #include <bits/stdc++.h>
 #include <unordered_map>
+#include <sstream>
 
 using namespace std;
 
@@ -27,11 +28,11 @@ public:
     class Route;
 
 protected:
-    int max_trips;
+    int max_trips, quan_routes;
     unordered_map<string, Route *> system_map; // * route code, pointer to coded route
 
 public:
-    BusSystem() : max_trips(0) {}
+    BusSystem() : max_trips(0), quan_routes(0) {}
     ~BusSystem()
     {
         this->clear();
@@ -45,9 +46,9 @@ public:
     string &trim(string &);
 
 public:
-    void sq(int);
-    void ins(string, string, bool, int, int);
-    void del(string, int, int);
+    string sq(int);
+    string ins(string, string, bool, int, int);
+    string del(string, int, int);
     string cs(string, int, bool);
     string ce(string, int, bool);
     string gs(string, int, bool);
@@ -65,11 +66,16 @@ public:
 
     public:
         Route() : quan_trips(0) {}
+        Route(string lp, bool to_origin, int time_a, int time_b)
+        {
+            this->add(lp, to_origin, time_a, time_b);
+        }
         ~Route()
         {
             this->clear();
         }
         void clear();
+        int add(string lp, bool to_origin, int time_a, int time_b);
 
     public:
         class Trip
@@ -77,11 +83,10 @@ public:
         private:
             bool to_origin; // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425476
             int time_a, time_b;
-            friend class Route;
 
         public:
             Trip() : to_origin(0), time_a(-1), time_b(-1) {}
-            Trip(bool dir, int a, int b) : to_origin(dir), time_a(a), time_b(b) {}
+            Trip(bool to_origin, int time_a, int time_b) : to_origin(to_origin), time_a(time_a), time_b(time_b) {}
         };
     };
 
@@ -89,10 +94,16 @@ public:
     string query(string);
 };
 
-//
+// Delete all routes
 void BusSystem::clear()
 {
-    // TODO
+    for (auto itr : system_map)
+    {
+        itr.second->clear();
+        delete itr.second;
+    }
+
+    system_map.clear();
 }
 
 // * Convert command to integer
@@ -174,65 +185,91 @@ string &BusSystem::trim(string &str)
 }
 
 // * Set quantity of trips
-// <N>
-void BusSystem::sq(int N)
+// * Return 1 if succeed, otherwise -1
+string BusSystem::sq(int N)
 {
-    this->max_trips = N;
-    return;
+    max_trips = N;
+    return to_string(max_trips);
 }
 
-//
-// <CODE> <LP> [<CASE>] <TIME_A> <TIME_B>
-void BusSystem::ins(string code, string lp, bool to_origin, int time_a, int time_b)
+// Insert trip to route
+// * Return the number of trips if succeed, otherwise -1
+string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int time_b)
 {
-    // TODO
-    return;
+    auto system_itr = system_map.find(code);
+    int result = 0;
+
+    if (system_itr != system_map.end()) // * found
+    {
+        result = system_itr->second->add(lp, to_origin, time_a, time_b);
+    }
+    else
+    {
+        Route *new_route = new Route(lp, to_origin, time_a, time_b);
+        system_map.insert({code, new_route});
+        result = 1;
+    }
+
+    return to_string(result);
 }
 
-//
-// <CODE> [<TIME_A> [<TIME_B>]]
-void BusSystem::del(string code, int time_a, int time_b)
-{
-    // TODO
-    return;
-}
-
-//
-// <CODE> <TIME_A> [<CASE>]
-string BusSystem::cs(string code, int time_a, bool to_origin)
-{
-    // TODO
-    return "-1";
-}
-
-//
-// <CODE> <TIME_A> [<CASE>]
-string BusSystem::ce(string code, int time_a, bool to_origin)
+// Delete saved trips on route considering [<TIME_A> [<TIME_B>]]
+// * Return number of trips deleted
+string BusSystem::del(string code, int time_a, int time_b)
 {
     // TODO
-    return "-1";
+    return "0";
 }
 
-//
-// <CODE> <TIME_A> [<CASE>]
-string BusSystem::gs(string code, int time_a, bool to_origin)
+// Count started trips
+// * Return number of started trips
+string BusSystem::cs(string code, int time, bool to_origin)
 {
     // TODO
-    return "-1";
+    return "0";
 }
 
-//
-// <CODE> <TIME_A> [<CASE>]
+// Count ended trips
+// * Return number of ended trips
+string BusSystem::ce(string code, int time, bool to_origin)
+{
+    // TODO
+    return "0";
+}
+
+// Get the trip started at the time closest to TIME
+// * Return the license plate, otherwise -1
+string BusSystem::gs(string code, int time, bool to_origin)
+{
+    // TODO
+    return "0";
+}
+
+// Get the trip ended at the time closest to TIME
+// * Return the license plate, otherwise -1
 string BusSystem::ge(string code, int time_a, bool to_origin)
 {
     // TODO
-    return "-1";
+    return "0";
 }
 
-//
+// Delete all trips in route
 void BusSystem::Route::clear()
 {
-    // TODO
+    quan_trips = 0;
+
+    for (auto itr : route_map)
+        delete itr.second;
+
+    route_map.clear();
+}
+
+// Add new trip to route
+int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
+{
+    Trip *new_trip = new Trip(to_origin, time_a, time_b);
+    route_map.insert({lp, new_trip});
+    return ++quan_trips;
 }
 
 //
@@ -249,7 +286,7 @@ string BusSystem::query(string instruction)
     stringstream ss;
     int N = -1,
         time_a = -1, time_b = -1, // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425466
-        test_origin_tmp = -1, switch_sel = -1;
+        to_origin_test = -1, switch_sel = -1;
     bool to_origin = true, faulty = false;
     string code = "", lp = ""; // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425680
 
@@ -260,181 +297,185 @@ string BusSystem::query(string instruction)
         parameters.push_back(word);
 
     //
-    for (vector<string>::iterator itr = parameters.begin(); itr != parameters.end() && !faulty;)
+    for (auto itr = parameters.begin(); itr != parameters.end();)
     {
         if (N == -1 && *itr != "SQ")
-            return "-1";
+        {
+            ss << "-1 ";
+            break;
+        }
 
         if (isInStringVector(*itr, keywords))
         {
             switch_sel = command2int(*itr++);
             switch (switch_sel)
             {
-            case -1:
-                faulty = true;
-                break;
-
             case 0:
                 N = string2int(*itr++);
-                if (N == -1)
-                {
-                    faulty = true;
-                    break;
-                }
-
-                sq(N);
+                ss << sq(N) << " ";
                 break;
 
             case 1:
                 code = *itr++;
                 if (isInStringVector(code, keywords) || code.length() > 5)
                 {
-                    faulty = true;
+                    ss << "-1 ";
                     break;
-                }
-
-                lp = *itr++;
-                if (isInStringVector(lp, keywords) || lp.length() > 5)
-                {
-                    faulty = true;
-                    break;
-                }
-
-                test_origin_tmp = string2int(*itr++);
-                if (test_origin_tmp == -1)
-                {
-                    faulty = true;
-                    break;
-                }
-
-                time_a = string2int(*itr++);
-                if (time_a == -1 || time_a > 999999999)
-                {
-                    faulty = true;
-                    break;
-                }
-
-                time_b = string2int(*itr++);
-                if (time_b > 999999999)
-                {
-                    faulty = true;
-                    break;
-                }
-                if (time_b == -1)
-                {
-                    time_b = time_a;
-                    time_a = test_origin_tmp;
-                    to_origin = true;
-                    itr--;
                 }
                 else
                 {
-                    if (test_origin_tmp == 0 || test_origin_tmp == 1)
-                        to_origin = test_origin_tmp;
-                    else
+                    lp = *itr++;
+                    if (isInStringVector(lp, keywords) || lp.length() > 10)
                     {
-                        faulty = true;
+                        ss << "-1 ";
                         break;
                     }
-                }
+                    else
+                    {
+                        to_origin_test = string2int(*itr++);
+                        if (to_origin_test == -1)
+                        {
+                            ss << "-1 ";
+                            break;
+                        }
+                        else
+                        {
+                            time_a = string2int(*itr++);
+                            if (time_a == -1 || time_a > 999999999)
+                            {
+                                ss << "-1 ";
+                                break;
+                            }
+                            else
+                            {
+                                time_b = string2int(*itr++);
+                                if (time_b > 999999999)
+                                {
+                                    ss << "-1 ";
+                                    break;
+                                }
+                                if (time_b == -1)
+                                {
+                                    time_b = time_a;
+                                    time_a = to_origin_test;
+                                    to_origin = true;
+                                    itr--;
+                                }
+                                else
+                                {
+                                    if (to_origin_test == 0 || to_origin_test == 1)
+                                        to_origin = to_origin_test;
+                                    else
+                                    {
+                                        ss << "-1 ";
+                                        break;
+                                    }
+                                }
 
-                if (time_a > time_b)
-                {
-                    faulty = true;
-                    break;
-                }
+                                if (time_a > time_b)
+                                {
+                                    ss << "-1 ";
+                                    break;
+                                }
 
-                ins(code, lp, to_origin, time_a, time_b);
+                                ss << ins(code, lp, to_origin, time_a, time_b) << " ";
+                            }
+                        }
+                    }
+                }
                 break;
 
             case 2:
                 code = *itr++;
                 if (isInStringVector(code, keywords) || code.length() > 5)
                 {
-                    faulty = true;
+                    ss << "-1 ";
                     break;
-                }
-
-                time_a = string2int(*itr++);
-                if (time_a > 999999999)
-                {
-                    faulty = true;
-                    break;
-                }
-                if (time_a == -1)
-                {
-                    itr--;
                 }
                 else
                 {
-                    time_b = string2int(*itr++);
-                    if (time_b > 999999999 || time_a > time_b)
+                    time_a = string2int(*itr++);
+                    if (time_a > 999999999)
                     {
-                        faulty = true;
+                        ss << "-1 ";
                         break;
                     }
-                    if (time_b == -1)
+                    if (time_a == -1)
                     {
                         itr--;
                     }
-                }
+                    else
+                    {
+                        time_b = string2int(*itr++);
+                        if (time_b > 999999999 || time_a > time_b)
+                        {
+                            ss << "-1 ";
+                            break;
+                        }
+                        if (time_b == -1)
+                        {
+                            itr--;
+                        }
+                    }
 
-                del(code, time_a, time_b);
+                    ss << del(code, time_a, time_b) << " ";
+                }
                 break;
 
             default:
                 code = *itr++;
                 if (isInStringVector(code, keywords) || code.length() > 5)
                 {
-                    faulty = true;
+                    ss << "-1 ";
                     break;
-                }
-
-                time_a = string2int(*itr++);
-                if (time_a == -1 || time_a > 999999999)
-                {
-                    faulty = true;
-                    break;
-                }
-
-                test_origin_tmp = string2int(*itr++);
-                if (test_origin_tmp < 0 || test_origin_tmp > 1)
-                {
-                    to_origin = true;
-                    itr--;
                 }
                 else
-                    to_origin = test_origin_tmp;
-
-                switch (switch_sel)
                 {
-                case 3:
-                    ss << cs(code, time_a, to_origin) << " ";
-                    break;
+                    time_a = string2int(*itr++);
+                    if (time_a == -1 || time_a > 999999999)
+                    {
+                        ss << "-1 ";
+                        break;
+                    }
+                    else
+                    {
+                        to_origin_test = string2int(*itr++);
+                        if (to_origin_test < 0 || to_origin_test > 1)
+                        {
+                            to_origin = true;
+                            itr--;
+                        }
+                        else
+                            to_origin = to_origin_test;
 
-                case 4:
-                    ss << ce(code, time_a, to_origin) << " ";
-                    break;
+                        switch (switch_sel)
+                        {
+                        case 3:
+                            ss << cs(code, time_a, to_origin) << " ";
+                            break;
 
-                case 5:
-                    ss << gs(code, time_a, to_origin) << " ";
-                    break;
+                        case 4:
+                            ss << ce(code, time_a, to_origin) << " ";
+                            break;
 
-                case 6:
-                    ss << ge(code, time_a, to_origin) << " ";
-                    break;
+                        case 5:
+                            ss << gs(code, time_a, to_origin) << " ";
+                            break;
+
+                        case 6:
+                            ss << ge(code, time_a, to_origin) << " ";
+                            break;
+                        }
+                    }
                 }
             }
         }
+        else
+            itr++;
     }
 
-    if (!faulty)
-    {
-        string str = ss.str();
-        return trim(str);
-    }
-    else
-        return "-1";
+    string str = ss.str();
+    return trim(str);
 }
 
 //

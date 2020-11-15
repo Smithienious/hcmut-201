@@ -2,7 +2,7 @@
 #define A1P2_HPP
 
 // * Included libraries
-// http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425477
+// ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425477
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -59,14 +59,14 @@ public:
     {
     public:
         class Trip;
-        unordered_map<string, Trip *> route_map; // * license plate, pointer to buses
 
     private:
-        int quan_trips;
+        int max_trips_sub, quan_trips;
+        Trip *head;
 
     public:
-        Route() : quan_trips(0) {}
-        Route(string lp, bool to_origin, int time_a, int time_b)
+        Route() : max_trips_sub(0), quan_trips(0) {}
+        Route(int max_trips_sub, string lp, bool to_origin, int time_a, int time_b) : max_trips_sub(max_trips_sub)
         {
             this->add(lp, to_origin, time_a, time_b);
         }
@@ -75,18 +75,34 @@ public:
             this->clear();
         }
         void clear();
-        int add(string lp, bool to_origin, int time_a, int time_b);
+        int add(string, bool, int, int);
+        int remove(int, int);
+        int count_started(int, int);
+        int count_ended(int, int);
+        string get_started(int, int);
+        string get_ended(int, int);
 
     public:
         class Trip
         {
         private:
-            bool to_origin; // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425476
+            string lp;
+            bool to_origin; // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425476
             int time_a, time_b;
+            Trip *prev, *next;
+            friend class Route;
 
         public:
-            Trip() : to_origin(0), time_a(-1), time_b(-1) {}
-            Trip(bool to_origin, int time_a, int time_b) : to_origin(to_origin), time_a(time_a), time_b(time_b) {}
+            Trip() : lp(""), to_origin(0), time_a(-1), time_b(-1)
+            {
+                this->prev = nullptr;
+                this->next = nullptr;
+            }
+            Trip(string lp, bool to_origin, int time_a, int time_b) : lp(lp), to_origin(to_origin), time_a(time_a), time_b(time_b)
+            {
+                this->prev = nullptr;
+                this->next = nullptr;
+            }
         };
     };
 
@@ -94,7 +110,7 @@ public:
     string query(string);
 };
 
-// Delete all routes
+// * Delete all routes
 void BusSystem::clear()
 {
     for (auto itr : system_map)
@@ -205,7 +221,7 @@ string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int ti
     }
     else
     {
-        Route *new_route = new Route(lp, to_origin, time_a, time_b);
+        Route *new_route = new Route(max_trips, lp, to_origin, time_a, time_b);
         system_map.insert({code, new_route});
         result = 1;
     }
@@ -217,8 +233,15 @@ string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int ti
 // * Return number of trips deleted
 string BusSystem::del(string code, int time_a, int time_b)
 {
-    // TODO
-    return "0";
+    auto system_itr = system_map.find(code);
+    int result = 0;
+
+    if (system_itr != system_map.end()) // * found
+        result = system_itr->second->remove(time_a, time_b);
+    else
+        result = 0;
+
+    return to_string(result);
 }
 
 // Count started trips
@@ -247,37 +270,117 @@ string BusSystem::gs(string code, int time, bool to_origin)
 
 // Get the trip ended at the time closest to TIME
 // * Return the license plate, otherwise -1
-string BusSystem::ge(string code, int time_a, bool to_origin)
+string BusSystem::ge(string code, int time, bool to_origin)
 {
     // TODO
     return "0";
 }
 
-// Delete all trips in route
+// Remove all trips in route
 void BusSystem::Route::clear()
 {
     quan_trips = 0;
+    Trip *itr = head, *del = itr;
 
-    for (auto itr : route_map)
-        delete itr.second;
-
-    route_map.clear();
+    while (itr != nullptr)
+    {
+        del = itr;
+        itr = itr->next;
+        delete del;
+    }
 }
 
-// Add new trip to route
+// Add trip to route
 int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
 {
-    Trip *new_trip = new Trip(to_origin, time_a, time_b);
-    route_map.insert({lp, new_trip});
+    if (quan_trips >= max_trips_sub - 1)
+        return -1;
+
+    if (quan_trips == 0)
+    {
+        Trip *new_trip = new Trip(lp, to_origin, time_a, time_b);
+        head = new_trip;
+        quan_trips = 1;
+        return 1;
+    }
+
+    Trip *route_itr = head;
+    while (route_itr->next != nullptr)
+        if (route_itr->lp == lp &&
+            (route_itr->time_a <= time_b || route_itr->time_b >= time_a))
+            return -1;
+
+    Trip *new_trip = new Trip(lp, to_origin, time_a, time_b);
+    route_itr->next = new_trip;
+    new_trip->prev = route_itr;
+
     return ++quan_trips;
 }
 
+// Remove saved trips on route considering [<TIME_A> [<TIME_B>]]
+int BusSystem::Route::remove(int time_a, int time_b)
+{
+    int result = 0;
+
+    Trip *route_itr = head, *tmp_itr = nullptr;
+    while (route_itr != nullptr)
+    {
+        if ((time_a == -1) ||
+            (time_a <= route_itr->time_a && time_b == -1) ||
+            (time_a <= route_itr->time_a && route_itr->time_b <= time_b))
+        {
+            tmp_itr = route_itr;
+
+            if (route_itr->prev != nullptr)
+                route_itr->prev->next = route_itr->next;
+            if (route_itr->next != nullptr)
+                route_itr->next->prev = route_itr->prev;
+            route_itr = route_itr->next;
+
+            delete tmp_itr;
+
+            quan_trips -= 1;
+            result += 1;
+        }
+    }
+
+    return result;
+}
+
 //
+int BusSystem::Route::count_started(int time, int to_origin)
+{
+    // TODO
+    return 0;
+}
+
+//
+int BusSystem::Route::count_ended(int time, int to_origin)
+{
+    // TODO
+    return 0;
+}
+
+//
+string BusSystem::Route::get_started(int time, int to_origin)
+{
+    // TODO
+    return "0";
+}
+
+//
+string BusSystem::Route::get_ended(int time, int to_origin)
+{
+    // TODO
+    return "0";
+}
+
+// * Main
 string BusSystem::query(string instruction)
 {
     // * Pre-process
-    instruction = trim(instruction);
-    if (instruction.find("  ") != string::npos)
+    // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426328
+    if (instruction != trim(instruction) || instruction.find("  ") != string::npos)
         return "-1";
 
     // * Set up variables
@@ -285,10 +388,10 @@ string BusSystem::query(string instruction)
     vector<string> keywords{"SQ", "INS", "DEL", "CS", "CE", "GS", "GE"};
     stringstream ss;
     int N = -1,
-        time_a = -1, time_b = -1, // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425466
+        time_a = -1, time_b = -1, // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425466
         to_origin_test = -1, switch_sel = -1;
-    bool to_origin = true, faulty = false;
-    string code = "", lp = ""; // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425680
+    bool to_origin = false, faulty = false;
+    string code = "", lp = ""; // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425680
 
     // * Split string by spaces, null terminator included
     istringstream iss(instruction);
@@ -296,18 +399,28 @@ string BusSystem::query(string instruction)
     while (iss >> word)
         parameters.push_back(word);
 
-    //
+    // * Main
     for (auto itr = parameters.begin(); itr != parameters.end();)
     {
+        // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425922
+        /*
         if (N == -1 && *itr != "SQ")
         {
             ss << "-1 ";
             break;
         }
+        */
 
         if (isInStringVector(*itr, keywords))
         {
             switch_sel = command2int(*itr++);
+
+            if (itr == parameters.end())
+            {
+                ss << "-1 ";
+                break;
+            }
+
             switch (switch_sel)
             {
             case 0:
@@ -317,7 +430,7 @@ string BusSystem::query(string instruction)
 
             case 1:
                 code = *itr++;
-                if (isInStringVector(code, keywords) || code.length() > 5)
+                if (itr == parameters.end() || isInStringVector(code, keywords) || code.length() > 5)
                 {
                     ss << "-1 ";
                     break;
@@ -325,7 +438,7 @@ string BusSystem::query(string instruction)
                 else
                 {
                     lp = *itr++;
-                    if (isInStringVector(lp, keywords) || lp.length() > 10)
+                    if (itr == parameters.end() || isInStringVector(lp, keywords) || lp.length() > 10)
                     {
                         ss << "-1 ";
                         break;
@@ -333,7 +446,7 @@ string BusSystem::query(string instruction)
                     else
                     {
                         to_origin_test = string2int(*itr++);
-                        if (to_origin_test == -1)
+                        if (itr == parameters.end() || to_origin_test == -1)
                         {
                             ss << "-1 ";
                             break;
@@ -345,6 +458,18 @@ string BusSystem::query(string instruction)
                             {
                                 ss << "-1 ";
                                 break;
+                            }
+                            else if (itr == parameters.end())
+                            {
+                                time_b = time_a;
+                                time_a = to_origin_test;
+                                to_origin = false;
+
+                                if (time_a > time_b)
+                                {
+                                    ss << "-1 ";
+                                    break;
+                                }
                             }
                             else
                             {
@@ -358,7 +483,7 @@ string BusSystem::query(string instruction)
                                 {
                                     time_b = time_a;
                                     time_a = to_origin_test;
-                                    to_origin = true;
+                                    to_origin = false;
                                     itr--;
                                 }
                                 else
@@ -377,12 +502,12 @@ string BusSystem::query(string instruction)
                                     ss << "-1 ";
                                     break;
                                 }
-
-                                ss << ins(code, lp, to_origin, time_a, time_b) << " ";
                             }
                         }
                     }
                 }
+
+                ss << ins(code, lp, to_origin, time_a, time_b) << " ";
                 break;
 
             case 2:
@@ -391,6 +516,11 @@ string BusSystem::query(string instruction)
                 {
                     ss << "-1 ";
                     break;
+                }
+                else if (itr == parameters.end())
+                {
+                    time_a = -1;
+                    time_b = -1;
                 }
                 else
                 {
@@ -403,6 +533,10 @@ string BusSystem::query(string instruction)
                     if (time_a == -1)
                     {
                         itr--;
+                    }
+                    else if (itr == parameters.end())
+                    {
+                        time_b = -1;
                     }
                     else
                     {
@@ -417,14 +551,14 @@ string BusSystem::query(string instruction)
                             itr--;
                         }
                     }
-
-                    ss << del(code, time_a, time_b) << " ";
                 }
+
+                ss << del(code, time_a, time_b) << " ";
                 break;
 
             default:
                 code = *itr++;
-                if (isInStringVector(code, keywords) || code.length() > 5)
+                if (itr == parameters.end() || isInStringVector(code, keywords) || code.length() > 5)
                 {
                     ss << "-1 ";
                     break;
@@ -439,14 +573,21 @@ string BusSystem::query(string instruction)
                     }
                     else
                     {
-                        to_origin_test = string2int(*itr++);
-                        if (to_origin_test < 0 || to_origin_test > 1)
+                        if (itr == parameters.end())
                         {
-                            to_origin = true;
-                            itr--;
+                            to_origin = false;
                         }
                         else
-                            to_origin = to_origin_test;
+                        {
+                            to_origin_test = string2int(*itr++);
+                            if (to_origin_test < 0 || to_origin_test > 1)
+                            {
+                                to_origin = false;
+                                itr--;
+                            }
+                            else
+                                to_origin = to_origin_test;
+                        }
 
                         switch (switch_sel)
                         {

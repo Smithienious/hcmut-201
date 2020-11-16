@@ -28,7 +28,7 @@ public:
     class Route;
 
 protected:
-    int max_trips, quan_routes;
+    long long int max_trips, quan_routes;      // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426461
     unordered_map<string, Route *> system_map; // * route code, pointer to coded route
 
 public:
@@ -49,10 +49,10 @@ public:
     string sq(int);
     string ins(string, string, bool, int, int);
     string del(string, int, int);
-    string cs(string, int, bool);
-    string ce(string, int, bool);
-    string gs(string, int, bool);
-    string ge(string, int, bool);
+    string cs(string, int, int);
+    string ce(string, int, int);
+    string gs(string, int, int);
+    string ge(string, int, int);
 
 public:
     class Route
@@ -61,7 +61,7 @@ public:
         class Trip;
 
     private:
-        int max_trips_sub, quan_trips;
+        long long int max_trips_sub, quan_trips; // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426461
         Trip *head;
 
     public:
@@ -204,11 +204,13 @@ string &BusSystem::trim(string &str)
 // * Return 1 if succeed, otherwise -1
 string BusSystem::sq(int N)
 {
+    if (N == -1)
+        return "-1";
     max_trips = N;
-    return to_string(max_trips);
+    return "1";
 }
 
-// Insert trip to route
+// * Insert trip to route
 // * Return the number of trips if succeed, otherwise -1
 string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int time_b)
 {
@@ -229,7 +231,7 @@ string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int ti
     return to_string(result);
 }
 
-// Delete saved trips on route considering [<TIME_A> [<TIME_B>]]
+// * Delete saved trips on route considering [<TIME_A> [<TIME_B>]]
 // * Return number of trips deleted
 string BusSystem::del(string code, int time_a, int time_b)
 {
@@ -244,39 +246,67 @@ string BusSystem::del(string code, int time_a, int time_b)
     return to_string(result);
 }
 
-// Count started trips
+// * Count started trips
 // * Return number of started trips
-string BusSystem::cs(string code, int time, bool to_origin)
+string BusSystem::cs(string code, int time, int to_origin)
 {
-    // TODO
-    return "0";
+    auto system_itr = system_map.find(code);
+    int result = 0;
+
+    if (system_itr != system_map.end()) // * found
+        result = system_itr->second->count_started(time, to_origin);
+    else
+        result = 0;
+
+    return to_string(result);
 }
 
-// Count ended trips
+// * Count ended trips
 // * Return number of ended trips
-string BusSystem::ce(string code, int time, bool to_origin)
+string BusSystem::ce(string code, int time, int to_origin)
 {
-    // TODO
-    return "0";
+    auto system_itr = system_map.find(code);
+    int result = 0;
+
+    if (system_itr != system_map.end()) // * found
+        result = system_itr->second->count_ended(time, to_origin);
+    else
+        result = 0;
+
+    return to_string(result);
 }
 
-// Get the trip started at the time closest to TIME
+// * Get the trip started at the time closest to TIME
 // * Return the license plate, otherwise -1
-string BusSystem::gs(string code, int time, bool to_origin)
+string BusSystem::gs(string code, int time, int to_origin)
 {
-    // TODO
-    return "0";
+    auto system_itr = system_map.find(code);
+    string result;
+
+    if (system_itr != system_map.end()) // * found
+        result = system_itr->second->get_started(time, to_origin);
+    else
+        result = "-1";
+
+    return result;
 }
 
-// Get the trip ended at the time closest to TIME
+// * Get the trip ended at the time closest to TIME
 // * Return the license plate, otherwise -1
-string BusSystem::ge(string code, int time, bool to_origin)
+string BusSystem::ge(string code, int time, int to_origin)
 {
-    // TODO
-    return "0";
+    auto system_itr = system_map.find(code);
+    string result;
+
+    if (system_itr != system_map.end()) // * found
+        result = system_itr->second->get_ended(time, to_origin);
+    else
+        result = "-1";
+
+    return result;
 }
 
-// Remove all trips in route
+// * Remove all trips in route
 void BusSystem::Route::clear()
 {
     quan_trips = 0;
@@ -290,7 +320,7 @@ void BusSystem::Route::clear()
     }
 }
 
-// Add trip to route
+// * Add trip to route
 int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
 {
     if (quan_trips >= max_trips_sub - 1)
@@ -304,75 +334,130 @@ int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
         return 1;
     }
 
-    Trip *route_itr = head;
-    while (route_itr->next != nullptr)
-        if (route_itr->lp == lp &&
-            (route_itr->time_a <= time_b || route_itr->time_b >= time_a))
+    Trip *route_itr = head, *route_itr_prev = nullptr;
+    while (route_itr != nullptr)
+    {
+        if ((route_itr->lp == lp) &&
+            (route_itr->time_a <= time_a && time_a <= route_itr->time_b ||
+             route_itr->time_a <= time_b && time_b <= route_itr->time_b))
             return -1;
+        route_itr_prev = route_itr;
+        route_itr = route_itr->next;
+    }
 
     Trip *new_trip = new Trip(lp, to_origin, time_a, time_b);
-    route_itr->next = new_trip;
-    new_trip->prev = route_itr;
+    route_itr_prev->next = new_trip;
+    new_trip->prev = route_itr_prev;
 
     return ++quan_trips;
 }
 
-// Remove saved trips on route considering [<TIME_A> [<TIME_B>]]
+// * Remove saved trips on route considering [<TIME_A> [<TIME_B>]]
 int BusSystem::Route::remove(int time_a, int time_b)
 {
     int result = 0;
 
-    Trip *route_itr = head, *tmp_itr = nullptr;
+    Trip *route_itr = head, *del = nullptr;
     while (route_itr != nullptr)
     {
         if ((time_a == -1) ||
             (time_a <= route_itr->time_a && time_b == -1) ||
             (time_a <= route_itr->time_a && route_itr->time_b <= time_b))
         {
-            tmp_itr = route_itr;
+            del = route_itr;
 
             if (route_itr->prev != nullptr)
                 route_itr->prev->next = route_itr->next;
             if (route_itr->next != nullptr)
                 route_itr->next->prev = route_itr->prev;
-            route_itr = route_itr->next;
-
-            delete tmp_itr;
 
             quan_trips -= 1;
             result += 1;
         }
+
+        route_itr = route_itr->next;
+        delete del;
     }
 
     return result;
 }
 
-//
+// * Count started trips
 int BusSystem::Route::count_started(int time, int to_origin)
 {
-    // TODO
-    return 0;
+    int result = 0;
+
+    Trip *route_itr = head;
+    while (route_itr != nullptr)
+    {
+        if ((route_itr->time_a <= time) &&
+            (route_itr->to_origin == to_origin || to_origin == -1))
+            result += 1;
+        route_itr = route_itr->next;
+    }
+
+    return result;
 }
 
-//
+// * Count ended trips
 int BusSystem::Route::count_ended(int time, int to_origin)
 {
-    // TODO
-    return 0;
+    int result = 0;
+
+    Trip *route_itr = head;
+    while (route_itr != nullptr)
+    {
+        if ((route_itr->time_b >= time) &&
+            (route_itr->to_origin == to_origin || to_origin == -1))
+            result += 1;
+        route_itr = route_itr->next;
+    }
+
+    return result;
 }
 
-//
+// Return license plate of trip started closest to TIME
 string BusSystem::Route::get_started(int time, int to_origin)
 {
-    // TODO
-    return "0";
+    int offset = -1;
+
+    Trip *route_itr = head, *result = nullptr;
+    while (route_itr != nullptr)
+    {
+        if (offset == -1 || abs(time - route_itr->time_a) < offset)
+        {
+            result = route_itr;
+            offset = abs(time - route_itr->time_a);
+        }
+
+        route_itr = route_itr->next;
+    }
+
+    if (result == nullptr)
+        return "-1";
+    return result->lp;
 }
 
-//
+// Return license plate of trip ended closest to TIME
 string BusSystem::Route::get_ended(int time, int to_origin)
 {
-    // TODO
-    return "0";
+    int offset = -1;
+
+    Trip *route_itr = head, *result = nullptr;
+    while (route_itr != nullptr)
+    {
+        if (offset == -1 || abs(time - route_itr->time_b) < offset)
+        {
+            result = route_itr;
+            offset = abs(time - route_itr->time_b);
+        }
+
+        route_itr = route_itr->next;
+    }
+
+    if (result == nullptr)
+        return "-1";
+    return result->lp;
 }
 
 // * Main
@@ -389,8 +474,7 @@ string BusSystem::query(string instruction)
     stringstream ss;
     int N = -1,
         time_a = -1, time_b = -1, // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425466
-        to_origin_test = -1, switch_sel = -1;
-    bool to_origin = false, faulty = false;
+        to_origin = 0, to_origin_test = -1, switch_sel = -1;
     string code = "", lp = ""; // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425680
 
     // * Split string by spaces, null terminator included
@@ -463,7 +547,7 @@ string BusSystem::query(string instruction)
                             {
                                 time_b = time_a;
                                 time_a = to_origin_test;
-                                to_origin = false;
+                                to_origin = 0;
 
                                 if (time_a > time_b)
                                 {
@@ -483,7 +567,7 @@ string BusSystem::query(string instruction)
                                 {
                                     time_b = time_a;
                                     time_a = to_origin_test;
-                                    to_origin = false;
+                                    to_origin = 0;
                                     itr--;
                                 }
                                 else
@@ -541,14 +625,14 @@ string BusSystem::query(string instruction)
                     else
                     {
                         time_b = string2int(*itr++);
-                        if (time_b > 999999999 || time_a > time_b)
-                        {
-                            ss << "-1 ";
-                            break;
-                        }
                         if (time_b == -1)
                         {
                             itr--;
+                        }
+                        else if (time_b > 999999999 || time_a > time_b)
+                        {
+                            ss << "-1 ";
+                            break;
                         }
                     }
                 }
@@ -575,14 +659,14 @@ string BusSystem::query(string instruction)
                     {
                         if (itr == parameters.end())
                         {
-                            to_origin = false;
+                            to_origin = -1;
                         }
                         else
                         {
                             to_origin_test = string2int(*itr++);
                             if (to_origin_test < 0 || to_origin_test > 1)
                             {
-                                to_origin = false;
+                                to_origin = -1;
                                 itr--;
                             }
                             else

@@ -1,5 +1,5 @@
-#ifndef A1P2_HPP
-#define A1P2_HPP
+#ifndef A1P2_UMAP_LINKEDLIST_HPP
+#define A1P2_UMAP_LINKEDLIST_HPP
 
 // * Included libraries
 // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425477

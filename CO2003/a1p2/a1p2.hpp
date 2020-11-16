@@ -338,8 +338,8 @@ int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
     while (route_itr != nullptr)
     {
         if ((route_itr->lp == lp) &&
-            (route_itr->time_a <= time_a && time_a <= route_itr->time_b ||
-             route_itr->time_a <= time_b && time_b <= route_itr->time_b))
+            ((route_itr->time_a <= time_a && time_a <= route_itr->time_b) ||
+             (route_itr->time_a <= time_b && time_b <= route_itr->time_b)))
             return -1;
         route_itr_prev = route_itr;
         route_itr = route_itr->next;

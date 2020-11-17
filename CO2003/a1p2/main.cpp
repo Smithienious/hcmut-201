@@ -230,6 +230,14 @@ void LocalTest()
     return;
 }
 
+void BKeL()
+{
+    BusSystem *bs = new BusSystem();
+    cout << bs->query("SQ 500") << endl;                      // 1
+    cout << bs->query("INS 50 50D1-23342 1234 5678") << endl; // 1
+    cout << bs->query("CS 50 2134") << endl;                  // 1
+}
+
 int main(int argc, char **argv)
 {
     /*
@@ -241,6 +249,8 @@ int main(int argc, char **argv)
      * GS <CODE> <TIME> [<CASE>]
      * GE <CODE> <TIME> [<CASE>]
      */
+
+    BKeL();
 
     return 0;
 }

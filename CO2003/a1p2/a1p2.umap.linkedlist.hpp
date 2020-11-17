@@ -40,7 +40,7 @@ public:
     void clear();
     int command2int(string);
     int string2int(string);
-    bool isInStringVector(string, vector<string>);
+    bool isCommand(string, vector<string>);
     string &ltrim(string &);
     string &rtrim(string &);
     string &trim(string &);
@@ -171,7 +171,7 @@ int BusSystem::string2int(string str)
 }
 
 // * Find string in vector of string
-bool BusSystem::isInStringVector(string str, vector<string> dict)
+bool BusSystem::isCommand(string str, vector<string> dict)
 {
     if (find(begin(dict), end(dict), str) != end(dict))
         return true;
@@ -360,6 +360,8 @@ int BusSystem::Route::remove(int time_a, int time_b)
     Trip *route_itr = head, *del = nullptr;
     while (route_itr != nullptr)
     {
+        del = nullptr;
+
         if ((time_a == -1) ||
             (time_a <= route_itr->time_a && time_b == -1) ||
             (time_a <= route_itr->time_a && route_itr->time_b <= time_b))
@@ -376,7 +378,9 @@ int BusSystem::Route::remove(int time_a, int time_b)
         }
 
         route_itr = route_itr->next;
-        delete del;
+
+        if (del != nullptr)
+            delete del;
     }
 
     return result;
@@ -495,7 +499,7 @@ string BusSystem::query(string instruction)
         }
         */
 
-        if (isInStringVector(*itr, keywords))
+        if (isCommand(*itr, keywords))
         {
             switch_sel = command2int(*itr++);
 
@@ -514,7 +518,7 @@ string BusSystem::query(string instruction)
 
             case 1:
                 code = *itr++;
-                if (itr == parameters.end() || isInStringVector(code, keywords) || code.length() > 5)
+                if (itr == parameters.end() || isCommand(code, keywords) || code.length() > 5)
                 {
                     ss << "-1 ";
                     break;
@@ -522,7 +526,7 @@ string BusSystem::query(string instruction)
                 else
                 {
                     lp = *itr++;
-                    if (itr == parameters.end() || isInStringVector(lp, keywords) || lp.length() > 10)
+                    if (itr == parameters.end() || isCommand(lp, keywords) || lp.length() > 10)
                     {
                         ss << "-1 ";
                         break;
@@ -596,7 +600,7 @@ string BusSystem::query(string instruction)
 
             case 2:
                 code = *itr++;
-                if (isInStringVector(code, keywords) || code.length() > 5)
+                if (isCommand(code, keywords) || code.length() > 5)
                 {
                     ss << "-1 ";
                     break;
@@ -642,7 +646,7 @@ string BusSystem::query(string instruction)
 
             default:
                 code = *itr++;
-                if (itr == parameters.end() || isInStringVector(code, keywords) || code.length() > 5)
+                if (itr == parameters.end() || isCommand(code, keywords) || code.length() > 5)
                 {
                     ss << "-1 ";
                     break;

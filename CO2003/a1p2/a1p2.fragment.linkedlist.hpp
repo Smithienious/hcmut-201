@@ -423,9 +423,7 @@ int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
     Trip *trip_itr = trip_fragment, *trip_itr_prev = nullptr;
     while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((trip_itr->lp == lp) &&
-            ((trip_itr->time_a <= time_a && time_a <= trip_itr->time_b) ||
-             (trip_itr->time_a <= time_b && time_b <= trip_itr->time_b)))
+        if (trip_itr->lp == lp && time_a <= trip_itr->time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130182#p426734
             return -1;
         trip_itr_prev = trip_itr;
         trip_itr = trip_itr->next;

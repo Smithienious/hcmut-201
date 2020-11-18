@@ -588,6 +588,7 @@ string BusSystem::query(string instruction)
                 break;
             }
 
+            //
             switch (switch_sel)
             {
             case 0:

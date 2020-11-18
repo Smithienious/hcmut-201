@@ -37,9 +37,11 @@ public:
     BusSystem() : max_trips(0), quan_routes(0), route_head(nullptr), trip_head(nullptr) {}
     ~BusSystem()
     {
+        //
         max_trips = 0;
         quan_routes = 0;
 
+        //
         Trip *trip_itr = trip_head, *trip_del = nullptr;
         while (trip_itr != nullptr)
         {
@@ -48,6 +50,7 @@ public:
             delete trip_del;
         }
 
+        //
         Route *route_itr = route_head, *route_del = nullptr;
         while (route_itr != nullptr)
         {
@@ -472,6 +475,12 @@ int BusSystem::Route::remove(int time_a, int time_b)
     return result;
 }
 
+/*
+ * The following counters and getters have the same problems but I decided to not fix them
+ ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426337
+ * where CASE has higher priority than TIME_A
+ */
+
 // * Count started trips
 int BusSystem::Route::count_started(int time, int to_origin)
 {
@@ -547,7 +556,8 @@ string BusSystem::Route::get_ended(int time, int to_origin)
     while (trip_itr != nullptr && trip_itr->code == code)
     {
         if ((trip_itr->to_origin == to_origin || to_origin == -1) &&
-            (0 < time - trip_itr->time_b && time - trip_itr->time_b < offset && trip_itr->time_b - trip_itr->time_a < travel_time))
+            (0 < time - trip_itr->time_b && time - trip_itr->time_b < offset &&
+             trip_itr->time_b - trip_itr->time_a < travel_time)) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425933
         {
             result = trip_itr;
             offset = time - trip_itr->time_b;

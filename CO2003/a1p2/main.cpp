@@ -222,8 +222,9 @@ void LocalTest()
     cout << bs->query("DEL 69 0100 0900 DEL 69 1300 DEL 69") << endl;                        // 2 1 1
     cout << bs->query("INS 10 59Z2-1283 1 0800 1600 INS 10 56H7-39791 1 1400 2000") << endl; // 4 5
     cout << bs->query("CS 10 1300 1 CS 10 1300 0 CS 10 1300 CS 69") << endl;                 // 1 3 4 -1
-    cout << bs->query("CE 10 1300 1 CE 10 1300 0 CE 10 1300 CE 69") << endl;                 // 2 1 3 -1
-    cout << bs->query("GS 10 0700 1 GS 10 0700 0 GS 10 0700 GS 10") << endl;                 // 51D1-1829 51D1-1829 51D1-1829 -1
+    cout << bs->query("CE 10 1300 1 CE 10 1300 0 CE 10 1300 CE 69") << endl;                 // 0 2 2 -1
+    cout << bs->query("GS 10 0700 1 GS 10 0700 0 GS 10 0700 GS 10") << endl;                 // -1 51D1-1829 51D1-1829 -1
+    cout << bs->query("GE 10 1200 1 GE 10 1200 0 GE 10 1200 GE 10") << endl;                 // -1 51D1-1829 51D1-1829 -1
 
     delete bs;
     return;

@@ -59,7 +59,6 @@ public:
     int command2int(string);
     int string2int(string);
     bool isCommand(string);
-    int get_max_trips(const BusSystem &);
     string &ltrim(string &);
     string &rtrim(string &);
     string &trim(string &);
@@ -85,24 +84,22 @@ public:
 
     public:
         Route() : quan_trips(0), code(""), prev(nullptr), next(nullptr), trip_fragment(nullptr) {}
-        Route(int max_trips_sub, string code, string lp, bool to_origin, int time_a, int time_b) : quan_trips(0), code(code), prev(nullptr), next(nullptr), trip_fragment(nullptr)
+        Route(string code, string lp, bool to_origin, int time_a, int time_b) : quan_trips(0), code(code), prev(nullptr), next(nullptr), trip_fragment(nullptr)
         {
             this->add(lp, to_origin, time_a, time_b);
         }
-        void set_quantity(int);
         int add(string, bool, int, int);
         int remove(int, int);
         int count_started(int, int);
         int count_ended(int, int);
         string get_started(int, int);
         string get_ended(int, int);
-        Trip *operator*();
     };
 
     class Trip
     {
     private:
-        string lp;
+        string code, lp;
         bool to_origin; // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425476
         int time_a, time_b;
         Trip *prev, *next;
@@ -110,8 +107,8 @@ public:
         friend class BusSystem;
 
     public:
-        Trip() : lp(""), to_origin(0), time_a(-1), time_b(-1), prev(nullptr), next(nullptr) {}
-        Trip(string lp, bool to_origin, int time_a, int time_b) : lp(lp), to_origin(to_origin), time_a(time_a), time_b(time_b), prev(nullptr), next(nullptr) {}
+        Trip() : code(""), lp(""), to_origin(0), time_a(-1), time_b(-1), prev(nullptr), next(nullptr) {}
+        Trip(string code, string lp, bool to_origin, int time_a, int time_b) : code(code), lp(lp), to_origin(to_origin), time_a(time_a), time_b(time_b), prev(nullptr), next(nullptr) {}
     };
 
 public:
@@ -201,8 +198,28 @@ string &BusSystem::trim(string &str)
 // * Return 1 if succeed, otherwise -1
 string BusSystem::sq(int N)
 {
+    //
     if (N == -1)
         return "-1";
+
+    // ! Maintain O(1)
+    /*
+    int max_size = 0;
+    Route *route_itr = route_head;
+
+    //
+    while (route_itr != nullptr)
+    {
+        if (route_itr->quan_trips > max_size)
+            max_size = route_itr->quan_trips;
+        route_itr = route_itr->next;
+    }
+
+    if (max_size > N)
+        return "-1";
+*/
+
+    //
     max_trips = N;
     return "1";
 }
@@ -211,6 +228,7 @@ string BusSystem::sq(int N)
 // * Return the number of trips if succeed, otherwise -1
 string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int time_b)
 {
+    //
     Route *route_itr = route_head, *route_itr_prev = nullptr;
 
     while (route_itr != nullptr)
@@ -221,6 +239,7 @@ string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int ti
         route_itr = route_itr->next;
     }
 
+    //
     int result = 0;
 
     if (route_itr != nullptr) // * found
@@ -231,7 +250,7 @@ string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int ti
     }
     else
     {
-        Route *new_route = new Route(max_trips, code, lp, to_origin, time_a, time_b);
+        Route *new_route = new Route(code, lp, to_origin, time_a, time_b);
         quan_routes += 1;
         if (route_itr_prev == nullptr)
             route_head = new_route;
@@ -250,16 +269,17 @@ string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int ti
 // * Return number of trips deleted
 string BusSystem::del(string code, int time_a, int time_b)
 {
-    Route *route_itr = route_head, *route_itr_prev = nullptr;
+    //
+    Route *route_itr = route_head;
 
     while (route_itr != nullptr)
     {
-        route_itr_prev = route_itr;
         if (route_itr->code == code)
             break;
         route_itr = route_itr->next;
     }
 
+    //
     int result = 0;
 
     if (route_itr != nullptr) // * found
@@ -288,16 +308,17 @@ string BusSystem::del(string code, int time_a, int time_b)
 // * Return number of started trips
 string BusSystem::cs(string code, int time, int to_origin)
 {
-    Route *route_itr = route_head, *route_itr_prev = nullptr;
+    //
+    Route *route_itr = route_head;
 
     while (route_itr != nullptr)
     {
-        route_itr_prev = route_itr;
         if (route_itr->code == code)
             break;
         route_itr = route_itr->next;
     }
 
+    //
     int result = 0;
 
     if (route_itr != nullptr) // * found
@@ -312,16 +333,17 @@ string BusSystem::cs(string code, int time, int to_origin)
 // * Return number of ended trips
 string BusSystem::ce(string code, int time, int to_origin)
 {
-    Route *route_itr = route_head, *route_itr_prev = nullptr;
+    //
+    Route *route_itr = route_head;
 
     while (route_itr != nullptr)
     {
-        route_itr_prev = route_itr;
         if (route_itr->code == code)
             break;
         route_itr = route_itr->next;
     }
 
+    //
     int result = 0;
 
     if (route_itr != nullptr) // * found
@@ -336,16 +358,17 @@ string BusSystem::ce(string code, int time, int to_origin)
 // * Return the license plate, otherwise -1
 string BusSystem::gs(string code, int time, int to_origin)
 {
-    Route *route_itr = route_head, *route_itr_prev = nullptr;
+    //
+    Route *route_itr = route_head;
 
     while (route_itr != nullptr)
     {
-        route_itr_prev = route_itr;
         if (route_itr->code == code)
             break;
         route_itr = route_itr->next;
     }
 
+    //
     string result;
 
     if (route_itr != nullptr) // * found
@@ -360,16 +383,17 @@ string BusSystem::gs(string code, int time, int to_origin)
 // * Return the license plate, otherwise -1
 string BusSystem::ge(string code, int time, int to_origin)
 {
-    Route *route_itr = route_head, *route_itr_prev = nullptr;
+    //
+    Route *route_itr = route_head;
 
     while (route_itr != nullptr)
     {
-        route_itr_prev = route_itr;
         if (route_itr->code == code)
             break;
         route_itr = route_itr->next;
     }
 
+    //
     string result;
 
     if (route_itr != nullptr) // * found
@@ -383,28 +407,31 @@ string BusSystem::ge(string code, int time, int to_origin)
 // * Add trip to route
 int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
 {
+    //
     if (quan_trips == 0)
     {
-        Trip *new_trip = new Trip(lp, to_origin, time_a, time_b);
+        Trip *new_trip = new Trip(code, lp, to_origin, time_a, time_b);
         trip_fragment = new_trip;
         quan_trips += 1;
         return 1;
     }
 
-    Trip *route_itr = trip_fragment, *route_itr_prev = nullptr;
-    while (route_itr != nullptr)
+    //
+    Trip *trip_itr = trip_fragment, *trip_itr_prev = nullptr;
+    while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((route_itr->lp == lp) &&
-            ((route_itr->time_a <= time_a && time_a <= route_itr->time_b) ||
-             (route_itr->time_a <= time_b && time_b <= route_itr->time_b)))
+        if ((trip_itr->lp == lp) &&
+            ((trip_itr->time_a <= time_a && time_a <= trip_itr->time_b) ||
+             (trip_itr->time_a <= time_b && time_b <= trip_itr->time_b)))
             return -1;
-        route_itr_prev = route_itr;
-        route_itr = route_itr->next;
+        trip_itr_prev = trip_itr;
+        trip_itr = trip_itr->next;
     }
 
-    Trip *new_trip = new Trip(lp, to_origin, time_a, time_b);
-    route_itr_prev->next = new_trip;
-    new_trip->prev = route_itr_prev;
+    //
+    Trip *new_trip = new Trip(code, lp, to_origin, time_a, time_b);
+    trip_itr_prev->next = new_trip;
+    new_trip->prev = trip_itr_prev;
     quan_trips += 1;
 
     return quan_trips;
@@ -413,10 +440,12 @@ int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
 // * Remove saved trips on route considering [<TIME_A> [<TIME_B>]]
 int BusSystem::Route::remove(int time_a, int time_b)
 {
+    //
     int result = 0;
 
+    //
     Trip *trip_itr = trip_fragment, *trip_del = nullptr;
-    while (trip_itr != nullptr)
+    while (trip_itr != nullptr && trip_itr->code == code)
     {
         trip_del = nullptr;
 
@@ -446,15 +475,17 @@ int BusSystem::Route::remove(int time_a, int time_b)
 // * Count started trips
 int BusSystem::Route::count_started(int time, int to_origin)
 {
+    //
     int result = 0;
 
-    Trip *route_itr = trip_fragment;
-    while (route_itr != nullptr)
+    //
+    Trip *trip_itr = trip_fragment;
+    while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((route_itr->time_a <= time) &&
-            (route_itr->to_origin == to_origin || to_origin == -1))
+        if ((trip_itr->time_a <= time) &&
+            (trip_itr->to_origin == to_origin || to_origin == -1))
             result += 1;
-        route_itr = route_itr->next;
+        trip_itr = trip_itr->next;
     }
 
     return result;
@@ -463,15 +494,17 @@ int BusSystem::Route::count_started(int time, int to_origin)
 // * Count ended trips
 int BusSystem::Route::count_ended(int time, int to_origin)
 {
+    //
     int result = 0;
 
-    Trip *route_itr = trip_fragment;
-    while (route_itr != nullptr)
+    //
+    Trip *trip_itr = trip_fragment;
+    while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((route_itr->time_b < time) &&
-            (route_itr->to_origin == to_origin || to_origin == -1))
+        if ((trip_itr->time_b < time) &&
+            (trip_itr->to_origin == to_origin || to_origin == -1))
             result += 1;
-        route_itr = route_itr->next;
+        trip_itr = trip_itr->next;
     }
 
     return result;
@@ -480,19 +513,21 @@ int BusSystem::Route::count_ended(int time, int to_origin)
 // * Return license plate of trip started closest to TIME
 string BusSystem::Route::get_started(int time, int to_origin)
 {
+    //
     int offset = numeric_limits<int>::max();
 
-    Trip *route_itr = trip_fragment, *result = nullptr;
-    while (route_itr != nullptr)
+    //
+    Trip *trip_itr = trip_fragment, *result = nullptr;
+    while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((route_itr->to_origin == to_origin || to_origin == -1) &&
-            (0 <= time - route_itr->time_a && time - route_itr->time_a < offset))
+        if ((trip_itr->to_origin == to_origin || to_origin == -1) &&
+            (0 <= time - trip_itr->time_a && time - trip_itr->time_a < offset))
         {
-            result = route_itr;
-            offset = time - route_itr->time_a;
+            result = trip_itr;
+            offset = time - trip_itr->time_a;
         }
 
-        route_itr = route_itr->next;
+        trip_itr = trip_itr->next;
     }
 
     if (result == nullptr)
@@ -503,21 +538,23 @@ string BusSystem::Route::get_started(int time, int to_origin)
 // * Return license plate of trip ended closest to TIME
 string BusSystem::Route::get_ended(int time, int to_origin)
 {
+    //
     int offset = numeric_limits<int>::max(),
         travel_time = numeric_limits<int>::max(); // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426719
 
-    Trip *route_itr = trip_fragment, *result = nullptr;
-    while (route_itr != nullptr)
+    //
+    Trip *trip_itr = trip_fragment, *result = nullptr;
+    while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((route_itr->to_origin == to_origin || to_origin == -1) &&
-            (0 < time - route_itr->time_b && time - route_itr->time_b < offset && route_itr->time_b - route_itr->time_a < travel_time))
+        if ((trip_itr->to_origin == to_origin || to_origin == -1) &&
+            (0 < time - trip_itr->time_b && time - trip_itr->time_b < offset && trip_itr->time_b - trip_itr->time_a < travel_time))
         {
-            result = route_itr;
-            offset = time - route_itr->time_b;
-            travel_time = route_itr->time_b - route_itr->time_a;
+            result = trip_itr;
+            offset = time - trip_itr->time_b;
+            travel_time = trip_itr->time_b - trip_itr->time_a;
         }
 
-        route_itr = route_itr->next;
+        trip_itr = trip_itr->next;
     }
 
     if (result == nullptr)
@@ -569,6 +606,7 @@ string BusSystem::query(string instruction)
                 break;
             }
 
+            //
             switch (switch_sel)
             {
             case 0:
@@ -737,6 +775,7 @@ string BusSystem::query(string instruction)
                                 to_origin = to_origin_test;
                         }
 
+                        //
                         switch (switch_sel)
                         {
                         case 3:

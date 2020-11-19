@@ -211,6 +211,42 @@ void TrinhTest()
     return;
 }
 
+void PhatTest()
+{
+    BusSystem *bs = new BusSystem();
+    cout << bs->query("SQ 9") << endl;                             // 1
+    cout << bs->query("INS 8 11A1-0000 0000 1000") << endl;        // 1
+    cout << bs->query("INS 50 22B2-0000 0000 1000") << endl;       // 1
+    cout << bs->query("INS 8 33C3-0000 1000 2000") << endl;        // 2
+    cout << bs->query("INS 50 44D4-0000 1000 2000") << endl;       // 2
+    cout << bs->query("INS 8 55E5-0000 2000 3000") << endl;        // 3
+    cout << bs->query("INS 50 66F6-0000 2000 3000") << endl;       // 3
+    cout << bs->query("INS 8 77G7-0000 3000 4000") << endl;        // 4
+    cout << bs->query("INS 8 11A1-0000 1 4000 5000") << endl;      // 5
+    cout << bs->query("INS 8 11A1-0000 0 5001 6000") << endl;      // 6
+    cout << bs->query("INS 8 11A1-0000 0 6001 7000") << endl;      // 7
+    cout << bs->query("INS 8 11A1-0000 1 6001 7000") << endl;      // -1
+    cout << bs->query("INS 8 11A1-0000 1 7001 8000") << endl;      // 8
+    cout << bs->query("INS 8 11A1-0000 0 7001 8000") << endl;      // -1
+    cout << bs->query("INS 8 11A1-0000 1 ") << endl;               // -1
+    cout << bs->query("INS 8 11A1-0000 1 8001 9000 1") << endl;    // -1
+    cout << bs->query(" INS 8 11A1-0000 1 8001 9000") << endl;     // -1
+    cout << bs->query("INS 8 11A1-0000 1 8001 9000 ") << endl;     // -1
+    cout << bs->query("INS 8 11A1-0000 1 8001  9000") << endl;     // -1
+    cout << bs->query("INS 8 11A1-0000 2 8001 9000") << endl;      // -1
+    cout << bs->query("INS 8 11A1-0000 1 8001 7000") << endl;      // -1
+    cout << bs->query("INS 8 11A1-000000 1 8001 7000") << endl;    // -1
+    cout << bs->query("INS 8098 11A1-0000 1 8001 9000") << endl;   // -1
+    cout << bs->query("INS 809888 69A1-0000 1 8001 9000") << endl; // -1
+    cout << bs->query("INS 8098 69A1-0000 1 8001 9000") << endl;   // 1
+    cout << bs->query("INS 8 11A1-0000 1 8001 9000") << endl;      // 9
+    cout << bs->query("INS 8 11A1-0000 0 9001 9500") << endl;      // -1
+    cout << bs->query("INS 50 88H8-0000 1 2000 3000") << endl;     // 4
+
+    delete bs;
+    return;
+}
+
 void LocalTest()
 {
     BusSystem *bs = new BusSystem();

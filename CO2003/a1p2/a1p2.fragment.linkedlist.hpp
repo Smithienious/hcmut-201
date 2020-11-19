@@ -452,7 +452,7 @@ int BusSystem::Route::remove(int time_a, int time_b)
 
         if ((time_a == -1) ||
             (time_a <= trip_itr->time_a && time_b == -1) ||
-            (time_a <= trip_itr->time_a && trip_itr->time_b <= time_b))
+            (time_a <= trip_itr->time_a && trip_itr->time_b <= time_b)) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426715
         {
             trip_del = trip_itr;
 
@@ -739,7 +739,7 @@ string BusSystem::query(string instruction)
                         {
                             itr--;
                         }
-                        else if (time_b > 999999999 || time_a > time_b)
+                        else if (time_b > 999999999 || time_a > time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426715
                         {
                             ss << "-1 ";
                             break;

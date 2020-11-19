@@ -97,7 +97,7 @@ public:
         int count_ended(int, int);
         string get_started(int, int);
         string get_ended(int, int);
-    };
+    }; // class Route
 
     class Trip
     {
@@ -112,11 +112,11 @@ public:
     public:
         Trip() : code(""), lp(""), to_origin(0), time_a(-1), time_b(-1), prev(nullptr), next(nullptr) {}
         Trip(string code, string lp, bool to_origin, int time_a, int time_b) : code(code), lp(lp), to_origin(to_origin), time_a(time_a), time_b(time_b), prev(nullptr), next(nullptr) {}
-    };
+    }; // class Trip
 
 public:
     string query(string);
-};
+}; // class BusSystem
 
 // * Convert command to integer
 int BusSystem::command2int(string cmd)
@@ -229,6 +229,8 @@ string BusSystem::sq(int N)
 
 // * Insert trip to route
 // * Return the number of trips if succeed, otherwise -1
+// !! http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426465
+// !! http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130182#p427019
 string BusSystem::ins(string code, string lp, bool to_origin, int time_a, int time_b)
 {
     //
@@ -423,6 +425,15 @@ int BusSystem::Route::add(string lp, bool to_origin, int time_a, int time_b)
     Trip *trip_itr = trip_fragment, *trip_itr_prev = nullptr;
     while (trip_itr != nullptr && trip_itr->code == code)
     {
+        // ! Invalidated because this is not reality
+        // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426335
+        /*
+        if ((trip_itr->lp == lp) &&
+            ((trip_itr->time_a <= time_a && time_a <= trip_itr->time_b) ||
+             (trip_itr->time_a <= time_b && time_b <= trip_itr->time_b)))
+            return -1;
+        */
+
         if (trip_itr->lp == lp && time_a <= trip_itr->time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130182#p426734
             return -1;
         trip_itr_prev = trip_itr;
@@ -473,12 +484,6 @@ int BusSystem::Route::remove(int time_a, int time_b)
     return result;
 }
 
-/*
- * The following counters and getters have the same problems but I decided to not fix them
- ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426337
- * where CASE has higher priority than TIME_A
- */
-
 // * Count started trips
 int BusSystem::Route::count_started(int time, int to_origin)
 {
@@ -521,17 +526,30 @@ int BusSystem::Route::count_ended(int time, int to_origin)
 string BusSystem::Route::get_started(int time, int to_origin)
 {
     //
-    int offset = numeric_limits<int>::max();
+    int offset = numeric_limits<int>::max(),
+        latest_b = 0; // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426719
 
     //
     Trip *trip_itr = trip_fragment, *result = nullptr;
     while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((trip_itr->to_origin == to_origin || to_origin == -1) &&
-            (0 <= time - trip_itr->time_a && time - trip_itr->time_a < offset))
+        if (0 <= time - trip_itr->time_a && time - trip_itr->time_a < offset &&
+            latest_b < trip_itr->time_b)
         {
-            result = trip_itr;
+            if (to_origin == -1) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426337
+            {
+                if (trip_itr->to_origin == 0)
+                    result = trip_itr;
+                if (trip_itr->to_origin == 1)
+                    result = trip_itr;
+            }
+            else if (trip_itr->to_origin == to_origin)
+            {
+                result = trip_itr;
+            }
+
             offset = time - trip_itr->time_a;
+            latest_b = trip_itr->time_b;
         }
 
         trip_itr = trip_itr->next;
@@ -547,19 +565,29 @@ string BusSystem::Route::get_ended(int time, int to_origin)
 {
     //
     int offset = numeric_limits<int>::max(),
-        travel_time = numeric_limits<int>::max(); // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426719
+        latest_a = 0; // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426719
 
     //
     Trip *trip_itr = trip_fragment, *result = nullptr;
     while (trip_itr != nullptr && trip_itr->code == code)
     {
-        if ((trip_itr->to_origin == to_origin || to_origin == -1) &&
-            (0 < time - trip_itr->time_b && time - trip_itr->time_b < offset &&
-             trip_itr->time_b - trip_itr->time_a < travel_time)) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425933
+        if (0 < time - trip_itr->time_b && time - trip_itr->time_b < offset &&
+            latest_a < trip_itr->time_a) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425933
         {
-            result = trip_itr;
+            if (to_origin == -1) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426337
+            {
+                if (trip_itr->to_origin == 0)
+                    result = trip_itr;
+                if (trip_itr->to_origin == 1)
+                    result = trip_itr;
+            }
+            else if (trip_itr->to_origin == to_origin)
+            {
+                result = trip_itr;
+            }
+
             offset = time - trip_itr->time_b;
-            travel_time = trip_itr->time_b - trip_itr->time_a;
+            latest_a = trip_itr->time_a;
         }
 
         trip_itr = trip_itr->next;
@@ -691,7 +719,7 @@ string BusSystem::query(string instruction)
                                     }
                                 }
 
-                                if (time_a >= time_b)
+                                if (time_a > time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426715
                                 {
                                     ss << "-1 ";
                                     break;

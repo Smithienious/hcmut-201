@@ -620,7 +620,7 @@ string BusSystem::query(string instruction)
     while (iss >> word)
         parameters.push_back(word);
 
-    // * Main
+    // * Will work if string has multiple commands
     for (auto itr = parameters.begin(); itr != parameters.end();)
     {
         // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p425922
@@ -719,7 +719,7 @@ string BusSystem::query(string instruction)
                                     }
                                 }
 
-                                if (time_a > time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426715
+                                if (time_a >= time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130182#p427088
                                 {
                                     ss << "-1 ";
                                     break;
@@ -767,7 +767,7 @@ string BusSystem::query(string instruction)
                         {
                             itr--;
                         }
-                        else if (time_b > 999999999 || time_a > time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=129519#p426715
+                        else if (time_b > 999999999 || time_a > time_b) // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130182#p427088
                         {
                             ss << "-1 ";
                             break;

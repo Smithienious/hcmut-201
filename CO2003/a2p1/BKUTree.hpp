@@ -6,15 +6,19 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.1.1
+ * @version 0.1.2
  * @date 2020-11-22
  *
  * @copyright Copyright (c) 2020
  ************/
 
+#ifndef BKU_TREE_HPP
+#define BKU_TREE_HPP
+
 #include <iostream>
 #include <queue>
 #include <vector>
+#include <functional>
 
 using namespace std;
 
@@ -46,7 +50,7 @@ public:
 private:
     AVLTree *avl;
     SplayTree *splay;
-    queue<K> keys;
+    queue<K> keys; // recently accessed data
     int maxNumOfKeys;
 
 public:
@@ -74,6 +78,7 @@ public:
             Node *left;
             Node *right;
             typename AVLTree::Node *corr;
+            friend class SplayTree;
 
             Node(Entry *entry = nullptr, Node *left = nullptr, Node *right = nullptr)
             {
@@ -111,8 +116,9 @@ public:
             Entry *entry;
             Node *left;
             Node *right;
-            int balance;
+            int balance; // height(left subtree) - height(right subtree)
             typename SplayTree::Node *corr;
+            friend class AVLTree;
 
             Node(Entry *entry = nullptr, Node *left = nullptr, Node *right = nullptr)
             {
@@ -153,6 +159,7 @@ public:
 template <class K, class V>
 void BKUTree<K, V>::add(K key, V value)
 {
+    Entry *newEntry = new Entry(key, value);
     // TODO
 }
 
@@ -194,9 +201,10 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
  * @param func
  ************/
 template <class K, class V>
-void BKUTree<K, V>::traverseNLROnAVL(void (*func)(K key, V value))
+void BKUTree<K, V>::traverseNLROnAVL(void (*func)(K, V))
 {
-    // TODO
+    avl->traverseNLR(func);
+    return;
 }
 
 /************
@@ -207,9 +215,10 @@ void BKUTree<K, V>::traverseNLROnAVL(void (*func)(K key, V value))
  * @param func
  ************/
 template <class K, class V>
-void BKUTree<K, V>::traverseNLROnSplay(void (*func)(K key, V value))
+void BKUTree<K, V>::traverseNLROnSplay(void (*func)(K, V))
 {
-    // TODO
+    splay->traverseNLR(func);
+    return;
 }
 
 /************
@@ -221,7 +230,9 @@ void BKUTree<K, V>::traverseNLROnSplay(void (*func)(K key, V value))
 template <class K, class V>
 void BKUTree<K, V>::clear()
 {
-    // TODO
+    avl->clear();
+    splay->clear();
+    return;
 }
 
 /************
@@ -236,7 +247,9 @@ void BKUTree<K, V>::clear()
 template <class K, class V>
 void BKUTree<K, V>::SplayTree::add(K key, V value)
 {
-    // TODO
+    Entry *newEntry = new Entry(key, value);
+    add(newEntry);
+    return;
 }
 
 /************
@@ -251,7 +264,24 @@ void BKUTree<K, V>::SplayTree::add(K key, V value)
 template <class K, class V>
 void BKUTree<K, V>::SplayTree::add(Entry *entry)
 {
-    // TODO
+    function<void(Entry *, Node *)> recursiveAdd = [&](Entry *entry, Node *pR) {
+        if (pR != nullptr)
+        {
+            if (entry->key == pR->entry->key)
+                throw "Duplicate key";
+            if (entry->key < pR->entry->key)
+                recursiveAdd(entry, pR->left);
+            if (entry->key > pR->entry->key)
+                recursiveAdd(entry, pR->right);
+        }
+        else
+        {
+            Node *newNode = new Node(entry);
+            // TODO
+        }
+    };
+
+    recursiveAdd(entry, root);
 }
 
 /************
@@ -291,9 +321,21 @@ V BKUTree<K, V>::SplayTree::search(K key)
  * @param func
  ************/
 template <class K, class V>
-void BKUTree<K, V>::SplayTree::traverseNLR(void (*func)(K key, V value))
+void BKUTree<K, V>::SplayTree::traverseNLR(void (*func)(K, V))
 {
-    // TODO
+    function<void(void (*)(K, V), Node *)> recursiveNLR = [&](void (*func)(K, V), Node *pR) {
+        if (pR == nullptr)
+            return;
+
+        (*func)(pR->entry->key, pR->entry->value);
+
+        if (pR->left != nullptr)
+            recursiveNLR(func, pR->left);
+        if (pR->right != nullptr)
+            recursiveNLR(func, pR->right);
+    };
+
+    recursiveNLR(func, root);
 }
 
 /************
@@ -305,7 +347,16 @@ void BKUTree<K, V>::SplayTree::traverseNLR(void (*func)(K key, V value))
 template <class K, class V>
 void BKUTree<K, V>::SplayTree::clear()
 {
-    // TODO
+    function<void(Node *)> recursiveClear = [&](Node *pR) {
+        if (pR != nullptr)
+        {
+            clear(pR->left);
+            clear(pR->right);
+            delete pR;
+        }
+    };
+
+    recursiveClear(root);
 }
 
 /************
@@ -320,7 +371,9 @@ void BKUTree<K, V>::SplayTree::clear()
 template <class K, class V>
 void BKUTree<K, V>::AVLTree::add(K key, V value)
 {
-    // TODO
+    Entry *newEntry = new Entry(key, value);
+    add(newEntry);
+    return;
 }
 
 /************
@@ -335,7 +388,24 @@ void BKUTree<K, V>::AVLTree::add(K key, V value)
 template <class K, class V>
 void BKUTree<K, V>::AVLTree::add(Entry *entry)
 {
-    // TODO
+    function<void(Entry *, Node *)> recursiveAdd = [&](Entry *entry, Node *pR) {
+        if (pR != nullptr)
+        {
+            if (entry->key == pR->entry->key)
+                throw "Duplicate key";
+            if (entry->key < pR->entry->key)
+                recursiveAdd(entry, pR->left);
+            if (entry->key > pR->entry->key)
+                recursiveAdd(entry, pR->right);
+        }
+        else
+        {
+            Node *newNode = new Node(entry);
+            // TODO
+        }
+    };
+
+    recursiveAdd(entry, root);
 }
 
 /************
@@ -375,9 +445,21 @@ V BKUTree<K, V>::AVLTree::search(K key)
  * @param func
  ************/
 template <class K, class V>
-void BKUTree<K, V>::AVLTree::traverseNLR(void (*func)(K key, V value))
+void BKUTree<K, V>::AVLTree::traverseNLR(void (*func)(K, V))
 {
-    // TODO
+    function<void(void (*)(K, V), Node *)> recursiveNLR = [&](void (*func)(K, V), Node *pR) {
+        if (pR == nullptr)
+            return;
+
+        (*func)(pR->entry->key, pR->entry->value);
+
+        if (pR->left != nullptr)
+            recursiveNLR(func, pR->left);
+        if (pR->right != nullptr)
+            recursiveNLR(func, pR->right);
+    };
+
+    recursiveNLR(func, root);
 }
 
 /************
@@ -389,5 +471,17 @@ void BKUTree<K, V>::AVLTree::traverseNLR(void (*func)(K key, V value))
 template <class K, class V>
 void BKUTree<K, V>::AVLTree::clear()
 {
-    // TODO
+    function<void(Node *)> recursiveClear = [&](Node *pR) {
+        if (pR != nullptr)
+        {
+            clear(pR->left);
+            clear(pR->right);
+            delete pR->entry;
+            delete pR;
+        }
+    };
+
+    recursiveClear(root);
 }
+
+#endif

@@ -211,7 +211,7 @@ void TrinhTest()
     return;
 }
 
-void PhatTest()
+void PhatTest1()
 {
     BusSystem *bs = new BusSystem();
     cout << bs->query("SQ 9") << endl;                             // 1
@@ -244,6 +244,83 @@ void PhatTest()
     cout << bs->query("INS 50 88H8-0000 1 2000 3000") << endl;     // 4
 
     delete bs;
+    return;
+}
+
+void PhatTest2()
+{
+    BusSystem *qs = new BusSystem();
+    cout << qs->query("SQ 10") << endl;
+    cout << qs->query("INS 03 B3.1111 23 199") << endl;
+    cout << qs->query("INS 03 B3.0000 1 34 59") << endl;
+    cout << qs->query("INS 03 B3.2222 55 199") << endl;
+    cout << qs->query("INS 03 B3.2222 99 299") << endl;
+    cout << qs->query("INS 03 B3.3333 1 899 1222") << endl;
+    cout << qs->query("INS 03 B3.4444 676 677") << endl;
+    cout << qs->query("INS 03 B3.5555 1 678 1111") << endl;
+    cout << qs->query("INS 03 B3.6666 894 1000") << endl;
+    cout << qs->query("INS 03 B3.7777 1212 1999") << endl;
+    cout << qs->query("INS 03 B3.7777 1999 2010") << endl;
+    cout << qs->query("INS 03 B3.8888 2000 2555") << endl;
+    cout << qs->query("INS 03 B3.9999 6578 6666") << endl;
+    cout << qs->query("INS 03 B1.4567 654 987") << endl;
+    cout << qs->query("DEL 03 222 350") << endl;
+    cout << qs->query("DEL 03") << endl;
+    cout << qs->query("INS 03 B3.2222 55 199") << endl;
+    cout << qs->query("INS 03 B3.2222 99 299") << endl;
+    cout << qs->query("INS 03 B3.3333 899 1222") << endl;
+    cout << qs->query("INS 03 B3.4444 1 676 677") << endl;
+    cout << qs->query("INS 03 B3.5555 678 1111") << endl;
+    cout << qs->query("INS 03 B3.6666 894 1000") << endl;
+    cout << qs->query("INS 03 B3.7777 1212 1999") << endl;
+    cout << qs->query("INS 03 B3.1235 1 200 208") << endl;
+    cout << qs->query("INS 03 B3.1235 1 232 269") << endl;
+    cout << qs->query("INS 03 B2.1236 1 434 444") << endl;
+    cout << qs->query("INS 03 B2.1236 1 434 444") << endl;
+    cout << qs->query("INS 03 B2.1237 0 567 897") << endl;
+    cout << qs->query("GS 03 100") << endl;
+    cout << qs->query("GS 03 100 1") << endl;
+    cout << qs->query("GS 03 200") << endl;
+    cout << qs->query("GS 03 400 1") << endl;
+    cout << qs->query("GS 03 700 0") << endl;
+
+    delete qs;
+    return;
+}
+
+void PhatTest3()
+{
+    BusSystem *qs = new BusSystem();
+    cout << qs->query("SQ 10") << endl;
+    cout << qs->query("INS 04 B4.4554 87 99") << endl;
+    cout << qs->query("INS 05 B5.1212 45 54") << endl;
+    cout << qs->query("INS 05 B5.1213 67 76") << endl;
+    cout << qs->query("INS 05 B5.1214 88 100") << endl;
+    cout << qs->query("INS 05 B5.1214 101 199") << endl;
+    cout << qs->query("INS 05 B5.1215 88 98") << endl;
+    cout << qs->query("INS 05 B5.1215 1 88 98") << endl;
+    cout << qs->query("INS 05 B5.1216 764 876") << endl;
+    cout << qs->query("INS 05 B5.1217 754 989") << endl;
+    cout << qs->query("INS 05 B5.1218 1 222 333") << endl;
+    cout << qs->query("INS 05 B5.1219 1 444 656") << endl;
+    cout << qs->query("INS 05 B5.1220 1 7878 9898") << endl;
+    cout << qs->query("DEL 05") << endl;
+    cout << qs->query("INS 05 B5.1212 45 54") << endl;
+    cout << qs->query("INS 05 B5.1213 67 76") << endl;
+    cout << qs->query("INS 05 B5.1214 88 100") << endl;
+    cout << qs->query("INS 05 B5.1214 101 199") << endl;
+    cout << qs->query("INS 05 B5.1215 88 98") << endl;
+    cout << qs->query("INS 05 B5.1215 1 88 98") << endl;
+    cout << qs->query("DEL 05 100 102") << endl;
+    cout << qs->query("INS 05 B5.9836 0 76 89") << endl;
+    cout << qs->query("INS 05 B5.4572 67 146") << endl;
+    cout << qs->query("GE 05 100") << endl;
+    cout << qs->query("GE 05 150") << endl;
+    cout << qs->query("GE 05 1000") << endl;
+    cout << qs->query("GE 05 10 0") << endl;
+    cout << qs->query("GE 05 110 0") << endl;
+
+    delete qs;
     return;
 }
 

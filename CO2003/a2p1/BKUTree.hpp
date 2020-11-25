@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.1.2
- * @date 2020-11-22
+ * @version 0.1.3
+ * @date 2020-11-25
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -54,7 +54,7 @@ private:
     int maxNumOfKeys;
 
 public:
-    BKUTree(int maxNumOfKeys = 5) {}
+    BKUTree(int maxNumOfKeys = 5) : maxNumOfKeys(maxNumOfKeys) {}
     ~BKUTree() { this->clear(); }
 
     void add(K, V);
@@ -74,18 +74,25 @@ public:
     public:
         class Node
         {
+        private:
             Entry *entry;
             Node *left;
             Node *right;
             typename AVLTree::Node *corr;
             friend class SplayTree;
 
+        public:
             Node(Entry *entry = nullptr, Node *left = nullptr, Node *right = nullptr)
             {
                 this->entry = entry;
                 this->left = left;
                 this->right = right;
                 this->corr = nullptr;
+            }
+            void setCorr(typename AVLTree::Node *iCorr)
+            {
+                corr = iCorr;
+                return;
             }
         };
 
@@ -96,7 +103,8 @@ public:
         ~SplayTree() { this->clear(); };
 
         void add(K, V);
-        void add(Entry *);
+        Node *add(Entry *);
+        void setCorr(Node *, typename AVLTree::Node *);
         void remove(K);
         V search(K);
 
@@ -113,6 +121,7 @@ public:
     public:
         class Node
         {
+        private:
             Entry *entry;
             Node *left;
             Node *right;
@@ -120,6 +129,7 @@ public:
             typename SplayTree::Node *corr;
             friend class AVLTree;
 
+        public:
             Node(Entry *entry = nullptr, Node *left = nullptr, Node *right = nullptr)
             {
                 this->entry = entry;
@@ -127,6 +137,11 @@ public:
                 this->right = right;
                 this->balance = 0;
                 this->corr = nullptr;
+            }
+            void setCorr(typename SplayTree::Node *iCorr)
+            {
+                corr = iCorr;
+                return;
             }
         };
 
@@ -137,7 +152,8 @@ public:
         ~AVLTree() { this->clear(); };
 
         void add(K, V);
-        void add(Entry *);
+        Node *add(Entry *);
+        void setCorr(Node *, typename SplayTree::Node *);
         void remove(K);
         V search(K);
 
@@ -159,8 +175,17 @@ public:
 template <class K, class V>
 void BKUTree<K, V>::add(K key, V value)
 {
+    if (keys.size() >= maxNumOfKeys)
+        keys.pop();
+
     Entry *newEntry = new Entry(key, value);
-    // TODO
+    keys.push(key);
+
+    typename AVLTree::Node *avlNode = avl->add(newEntry);
+    typename SplayTree::Node *splayNode = splay->add(newEntry);
+    avl->setCorr(avlNode, splayNode);
+    splay->setCorr(splayNode, avlNode);
+    return;
 }
 
 /************
@@ -262,26 +287,56 @@ void BKUTree<K, V>::SplayTree::add(K key, V value)
  * @param value
  ************/
 template <class K, class V>
-void BKUTree<K, V>::SplayTree::add(Entry *entry)
+typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::add(Entry *entry)
 {
-    function<void(Entry *, Node *)> recursiveAdd = [&](Entry *entry, Node *pR) {
-        if (pR != nullptr)
-        {
+    Node *newNode = new Node(entry);
+
+    if (root == nullptr)
+    {
+        root = newNode;
+    }
+    else
+    {
+        function<void(Entry *, Node *)> recursiveAdd = [&](Entry *entry, Node *pR) {
             if (entry->key == pR->entry->key)
                 throw "Duplicate key";
-            if (entry->key < pR->entry->key)
-                recursiveAdd(entry, pR->left);
-            if (entry->key > pR->entry->key)
-                recursiveAdd(entry, pR->right);
-        }
-        else
-        {
-            Node *newNode = new Node(entry);
-            // TODO
-        }
-    };
 
-    recursiveAdd(entry, root);
+            if (entry->key < pR->entry->key)
+            {
+                if (pR->left != nullptr)
+                    recursiveAdd(entry, pR->left);
+                else
+                    pR->left = newNode;
+            }
+
+            if (entry->key > pR->entry->key)
+            {
+                if (pR->right != nullptr)
+                    recursiveAdd(entry, pR->right);
+                else
+                    pR->right = newNode;
+            }
+        };
+
+        recursiveAdd(entry, root);
+    }
+
+    return newNode;
+}
+
+/************
+ * @brief Set corresponding AVL node
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @param iCorr
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree::Node *iCorr)
+{
+    pR->setCorr(iCorr);
+    return;
 }
 
 /************
@@ -310,7 +365,23 @@ void BKUTree<K, V>::SplayTree::remove(K key)
 template <class K, class V>
 V BKUTree<K, V>::SplayTree::search(K key)
 {
-    // TODO
+    function<V(K, Node *)> recursiveSearch = [&](K key, Node *pR) {
+        if (pR != nullptr)
+        {
+            if (key == pR->entry->key)
+                return pR->entry->value;
+            if (key < pR->entry->key)
+                recursiveSearch(key, pR->left);
+            if (key > pR->entry->value)
+                recursiveSearch(key, pR->right);
+        }
+        else
+        {
+            throw "Not found";
+        }
+    };
+
+    recursiveSearch(key, root);
 }
 
 /************
@@ -386,26 +457,56 @@ void BKUTree<K, V>::AVLTree::add(K key, V value)
  * @param value
  ************/
 template <class K, class V>
-void BKUTree<K, V>::AVLTree::add(Entry *entry)
+typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
 {
-    function<void(Entry *, Node *)> recursiveAdd = [&](Entry *entry, Node *pR) {
-        if (pR != nullptr)
-        {
+    Node *newNode = new Node(entry);
+
+    if (root == nullptr)
+    {
+        root = newNode;
+    }
+    else
+    {
+        function<void(Entry *, Node *)> recursiveAdd = [&](Entry *entry, Node *pR) {
             if (entry->key == pR->entry->key)
                 throw "Duplicate key";
-            if (entry->key < pR->entry->key)
-                recursiveAdd(entry, pR->left);
-            if (entry->key > pR->entry->key)
-                recursiveAdd(entry, pR->right);
-        }
-        else
-        {
-            Node *newNode = new Node(entry);
-            // TODO
-        }
-    };
 
-    recursiveAdd(entry, root);
+            if (entry->key < pR->entry->key)
+            {
+                if (pR->left != nullptr)
+                    recursiveAdd(entry, pR->left);
+            }
+            else
+                pR->left = newNode;
+
+            if (entry->key > pR->entry->key)
+            {
+                if (pR->right != nullptr)
+                    recursiveAdd(entry, pR->right);
+                else
+                    pR->right = newNode;
+            }
+        };
+
+        recursiveAdd(entry, root);
+    }
+
+    return newNode;
+}
+
+/************
+ * @brief Set corresponding Splay node
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @param iCorr
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::AVLTree::setCorr(Node *pR, typename BKUTree<K, V>::SplayTree::Node *iCorr)
+{
+    pR->setCorr(iCorr);
+    return;
 }
 
 /************
@@ -434,7 +535,23 @@ void BKUTree<K, V>::AVLTree::remove(K key)
 template <class K, class V>
 V BKUTree<K, V>::AVLTree::search(K key)
 {
-    // TODO
+    function<V(K, Node *)> recursiveSearch = [&](K key, Node *pR) {
+        if (pR != nullptr)
+        {
+            if (key == pR->entry->key)
+                return pR->entry->value;
+            if (key < pR->entry->key)
+                recursiveSearch(key, pR->left);
+            if (key > pR->entry->value)
+                recursiveSearch(key, pR->right);
+        }
+        else
+        {
+            throw "Not found";
+        }
+    };
+
+    recursiveSearch(key, root);
 }
 
 /************

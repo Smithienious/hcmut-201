@@ -14,7 +14,7 @@
 
 void printKey(int key, int value)
 {
-    cout << key << endl;
+    std::cout << key << endl;
 }
 
 void BKeL1() // 3 1 2 7 5 4 9
@@ -37,5 +37,6 @@ void BKeL2() // 4 2 1 3 9 5 7
 
 int main(int argc, char **argv)
 {
-    std::cout << "Hello, world!\n";
+    BKeL1();
+    BKeL2();
 }

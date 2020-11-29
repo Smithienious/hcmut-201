@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.1.3
- * @date 2020-11-25
+ * @version 0.1.4
+ * @date 2020-11-30
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -20,6 +20,8 @@
 #include <vector>
 
 #include <functional>
+
+#define MAX(A, B) (A > B ? A : B)
 
 using namespace std;
 
@@ -108,10 +110,16 @@ public:
         void remove(K);
         V search(K);
 
-        void setCorr(Node *, typename AVLTree::Node *);
         void traverseNLR(void (*)(K, V));
 
         void clear();
+
+        void setCorr(Node *, typename AVLTree::Node *);
+        void splay(Node *);
+        int getHeight(Node *);
+        int getBalance(Node *);
+        Node *rotateLeft(Node *);
+        Node *rotateRight(Node *);
     }; // class SplayTree
 
     /************
@@ -157,10 +165,15 @@ public:
         void remove(K);
         V search(K);
 
-        void setCorr(Node *, typename SplayTree::Node *);
         void traverseNLR(void (*)(K, V));
 
         void clear();
+
+        void setCorr(Node *, typename SplayTree::Node *);
+        int getHeight(Node *);
+        int getBalance(Node *);
+        Node *rotateLeft(Node *);
+        Node *rotateRight(Node *);
     }; // class AVLTree
 };     // class BKUTree
 
@@ -355,7 +368,7 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::add(Entry *en
     Node *newNode = new Node(entry);
 
     function<Node *(Node *, Node *)> recursiveAdd = [&](Node *pI, Node *pR) {
-        //
+        // * Return node for insertion
         if (pR == nullptr)
             return pI;
 
@@ -366,6 +379,39 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::add(Entry *en
             pR->left = recursiveAdd(pI, pR->left);
         if (pI->entry->key > pR->entry->key)
             pR->right = recursiveAdd(pI, pR->right);
+
+        // TODO
+
+        // * Get balance for rotation
+        int subBal = getBalance(pR);
+
+        // * Left rotate
+        if (subBal > 1 && pI->entry->key < pR->entry->key)
+        {
+            return rotateRight(pR);
+        }
+
+        // * Right rotate
+        if (subBal < -1 && pI->entry->key > pR->entry->key)
+        {
+            return rotateLeft(pR);
+        }
+
+        // * Left Right rotate
+        if (subBal > 1 && pI->entry->key > pR->entry->key)
+        {
+            pR->left = rotateLeft(pR->left);
+            return rotateRight(pR);
+        }
+
+        // * Right Left rotate
+        if (subBal < -1 && pI->entry->key < pR->entry->key)
+        {
+            pR->right = rotateRight(pR->right);
+            return rotateLeft(pR);
+        }
+
+        return pR;
     };
 
     root = recursiveAdd(newNode, root);
@@ -418,21 +464,6 @@ V BKUTree<K, V>::SplayTree::search(K key)
 }
 
 /************
- * @brief Set corresponding AVL node
- *
- * @tparam K
- * @tparam V
- * @param pR
- * @param iCorr
- ************/
-template <class K, class V>
-void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree::Node *iCorr)
-{
-    pR->setCorr(iCorr);
-    return;
-}
-
-/************
  * @brief Pre-order traversal
  *
  * @tparam K
@@ -458,7 +489,7 @@ void BKUTree<K, V>::SplayTree::traverseNLR(void (*func)(K, V))
 }
 
 /************
- * @brief Free everything
+ * @brief Free everything, not including entry
  *
  * @tparam K
  * @tparam V
@@ -476,6 +507,106 @@ void BKUTree<K, V>::SplayTree::clear()
     };
 
     recursiveClear(root);
+}
+
+/************
+ * @brief Set corresponding AVL node
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @param iCorr
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree::Node *iCorr)
+{
+    pR->setCorr(iCorr);
+    return;
+}
+
+/************
+ * @brief Splaying
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::SplayTree::splay(Node *pR)
+{
+    // TODO
+}
+
+/************
+ * @brief Get height of a node counting from leaf
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return int
+ ************/
+template <class K, class V>
+int BKUTree<K, V>::SplayTree::getHeight(Node *pR)
+{
+    if (pR == nullptr)
+        return 0;
+    return 1 + MAX(getHeight(pR->left), getHeight(pR->right));
+}
+
+/************
+ * @brief Get balance of a node (left height - right height)
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return int
+ ************/
+template <class K, class V>
+int BKUTree<K, V>::SplayTree::getBalance(Node *pR)
+{
+    if (pR == nullptr)
+        return 0;
+    return getHeight(pR->left) - getHeight(pR->right);
+}
+
+/************
+ * @brief Rotate left with pR as pivot
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return BKUTree<K, V>::SplayTree::Node*
+ ************/
+template <class K, class V>
+typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rotateLeft(Node *pR)
+{
+    Node *tmpRight = pR->right;
+    Node *tmpRLeft = tmpRight->left;
+
+    tmpRight->left = pR;
+    pR->right = tmpRLeft;
+
+    return tmpRight;
+}
+
+/************
+ * @brief Rotate right with pR as pivot
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return BKUTree<K, V>::SplayTree::Node*
+ ************/
+template <class K, class V>
+typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rotateRight(Node *pR)
+{
+    Node *tmpLeft = pR->left;
+    Node *tmpLRight = tmpLeft->right;
+
+    tmpLeft->right = pR;
+    pR->left = tmpLRight;
+
+    return tmpLeft;
 }
 
 /************
@@ -510,7 +641,7 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
     Node *newNode = new Node(entry);
 
     function<Node *(Node *, Node *)> recursiveAdd = [&](Node *pI, Node *pR) {
-        //
+        // * Return node for insertion
         if (pR == nullptr)
             return pI;
 
@@ -521,6 +652,37 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
             pR->left = recursiveAdd(pI, pR->left);
         if (pI->entry->key > pR->entry->key)
             pR->right = recursiveAdd(pI, pR->right);
+
+        // * Get balance for rotation
+        int subBal = getBalance(pR);
+
+        // * Left rotate
+        if (subBal > 1 && pI->entry->key < pR->entry->key)
+        {
+            return rotateRight(pR);
+        }
+
+        // * Right rotate
+        if (subBal < -1 && pI->entry->key > pR->entry->key)
+        {
+            return rotateLeft(pR);
+        }
+
+        // * Left Right rotate
+        if (subBal > 1 && pI->entry->key > pR->entry->key)
+        {
+            pR->left = rotateLeft(pR->left);
+            return rotateRight(pR);
+        }
+
+        // * Right Left rotate
+        if (subBal < -1 && pI->entry->key < pR->entry->key)
+        {
+            pR->right = rotateRight(pR->right);
+            return rotateLeft(pR);
+        }
+
+        return pR;
     };
 
     root = recursiveAdd(newNode, root);
@@ -573,21 +735,6 @@ V BKUTree<K, V>::AVLTree::search(K key)
 }
 
 /************
- * @brief Set corresponding Splay node
- *
- * @tparam K
- * @tparam V
- * @param pR
- * @param iCorr
- ************/
-template <class K, class V>
-void BKUTree<K, V>::AVLTree::setCorr(Node *pR, typename BKUTree<K, V>::SplayTree::Node *iCorr)
-{
-    pR->setCorr(iCorr);
-    return;
-}
-
-/************
  * @brief Pre-order traversal
  *
  * @tparam K
@@ -613,7 +760,7 @@ void BKUTree<K, V>::AVLTree::traverseNLR(void (*func)(K, V))
 }
 
 /************
- * @brief Free everything
+ * @brief Free everything, including entry
  *
  * @tparam K
  * @tparam V
@@ -632,6 +779,93 @@ void BKUTree<K, V>::AVLTree::clear()
     };
 
     recursiveClear(root);
+}
+
+/************
+ * @brief Set corresponding Splay node
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @param iCorr
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::AVLTree::setCorr(Node *pR, typename BKUTree<K, V>::SplayTree::Node *iCorr)
+{
+    pR->setCorr(iCorr);
+    return;
+}
+
+/************
+ * @brief Get height of a node counting from leaf
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return int
+ ************/
+template <class K, class V>
+int BKUTree<K, V>::AVLTree::getHeight(Node *pR)
+{
+    if (pR == nullptr)
+        return 0;
+    return 1 + MAX(getHeight(pR->left), getHeight(pR->right));
+}
+
+/************
+ * @brief Get balance of a node (left height - right height)
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return int
+ ************/
+template <class K, class V>
+int BKUTree<K, V>::AVLTree::getBalance(Node *pR)
+{
+    if (pR == nullptr)
+        return 0;
+    return getHeight(pR->left) - getHeight(pR->right);
+}
+
+/************
+ * @brief Rotate left with pR as pivot
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return BKUTree<K, V>::AVLTree::Node*
+ ************/
+template <class K, class V>
+typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rotateLeft(Node *pR)
+{
+    Node *tmpRight = pR->right;
+    Node *tmpRLeft = tmpRight->left;
+
+    tmpRight->left = pR;
+    pR->right = tmpRLeft;
+
+    return tmpRight;
+}
+
+/************
+ * @brief Rotate right with pR as pivot
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @return BKUTree<K, V>::AVLTree::Node*
+ ************/
+template <class K, class V>
+typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rotateRight(Node *pR)
+{
+    Node *tmpLeft = pR->left;
+    Node *tmpLRight = tmpLeft->right;
+
+    tmpLeft->right = pR;
+    pR->left = tmpLRight;
+
+    return tmpLeft;
 }
 
 #endif

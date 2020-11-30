@@ -115,9 +115,7 @@ public:
         void clear();
 
         void setCorr(Node *, typename AVLTree::Node *);
-        void splay(Node *);
-        int getHeight(Node *);
-        int getBalance(Node *);
+        Node *splay(Node *, Node *);
         Node *rotateLeft(Node *);
         Node *rotateRight(Node *);
     }; // class SplayTree
@@ -354,7 +352,7 @@ void BKUTree<K, V>::SplayTree::add(K key, V value)
 }
 
 /************
- * @brief Add an entry to BKUTree
+ * @brief Add an entry to root of Splay tree
  *        Throw "Duplicate key" if entry exists
  *
  * @tparam K
@@ -372,46 +370,26 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::add(Entry *en
         if (pR == nullptr)
             return pI;
 
+        // * Bring closest leaf to root
+        pR = splay(pI, pR);
+
         if (pI->entry->key == pR->entry->key)
             throw "Duplicate key";
 
         if (pI->entry->key < pR->entry->key)
-            pR->left = recursiveAdd(pI, pR->left);
+        {
+            pI->right = pR;
+            pI->left = pR->left;
+            pR->left = nullptr;
+        }
         if (pI->entry->key > pR->entry->key)
-            pR->right = recursiveAdd(pI, pR->right);
-
-        // TODO
-
-        // * Get balance for rotation
-        int subBal = getBalance(pR);
-
-        // * Left rotate
-        if (subBal > 1 && pI->entry->key < pR->entry->key)
         {
-            return rotateRight(pR);
+            pI->left = pR;
+            pI->right = pR->right;
+            pR->right = nullptr;
         }
 
-        // * Right rotate
-        if (subBal < -1 && pI->entry->key > pR->entry->key)
-        {
-            return rotateLeft(pR);
-        }
-
-        // * Left Right rotate
-        if (subBal > 1 && pI->entry->key > pR->entry->key)
-        {
-            pR->left = rotateLeft(pR->left);
-            return rotateRight(pR);
-        }
-
-        // * Right Left rotate
-        if (subBal < -1 && pI->entry->key < pR->entry->key)
-        {
-            pR->right = rotateRight(pR->right);
-            return rotateLeft(pR);
-        }
-
-        return pR;
+        return pI;
     };
 
     root = recursiveAdd(newNode, root);
@@ -529,44 +507,67 @@ void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree
  *
  * @tparam K
  * @tparam V
+ * @param pI
  * @param pR
  ************/
 template <class K, class V>
-void BKUTree<K, V>::SplayTree::splay(Node *pR)
+typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::splay(Node *pI, Node *pR)
 {
-    // TODO
-}
+    // * Base case
+    if (pR == nullptr || pI->entry->key == pR->entry->key)
+        return pR;
 
-/************
- * @brief Get height of a node counting from leaf
- *
- * @tparam K
- * @tparam V
- * @param pR
- * @return int
- ************/
-template <class K, class V>
-int BKUTree<K, V>::SplayTree::getHeight(Node *pR)
-{
-    if (pR == nullptr)
-        return 0;
-    return 1 + MAX(getHeight(pR->left), getHeight(pR->right));
-}
+    // * Left
+    if (pI->entry->key < pR->entry->key)
+    {
+        if (pR->left == nullptr)
+            return pR;
 
-/************
- * @brief Get balance of a node (left height - right height)
- *
- * @tparam K
- * @tparam V
- * @param pR
- * @return int
- ************/
-template <class K, class V>
-int BKUTree<K, V>::SplayTree::getBalance(Node *pR)
-{
-    if (pR == nullptr)
-        return 0;
-    return getHeight(pR->left) - getHeight(pR->right);
+        // * Left
+        if (pI->entry->key < pR->left->entry->key)
+        {
+            // * Make pI root of left-left
+            pR->left->left = splay(pI, pR->left->left);
+            pR = rotateRight(pR);
+        }
+        else
+            // * Right
+            if (pI->entry->key > pR->left->entry->key)
+        {
+            // * Make pI root of left-right
+            pR->left->right = splay(pI, pR->left->right);
+            if (pR->left->right != nullptr)
+                pR->left = rotateLeft(pR->left);
+        }
+
+        return (pR->left == nullptr) ? pR : rotateRight(pR);
+    }
+
+    // * Right
+    if (pI->entry->key > pR->entry->key)
+    {
+        if (pR->right == nullptr)
+            return pR;
+
+        // * Left
+        if (pI->entry->key < pR->right->entry->key)
+        {
+            // * Make pI root of right-left
+            pR->right->left = splay(pI, pR->right->left);
+            if (pR->right->left != nullptr)
+                pR->right = rotateRight(pR->right);
+        }
+        else
+            // * Right
+            if (pI->entry->key > pR->right->entry->key)
+        {
+            // * Make pI root of right-right
+            pR->right->right = splay(pI, pR->right->right);
+            pR = rotateLeft(pR);
+        }
+
+        return (pR->right == nullptr) ? pR : rotateLeft(pR);
+    }
 }
 
 /************
@@ -627,7 +628,7 @@ void BKUTree<K, V>::AVLTree::add(K key, V value)
 }
 
 /************
- * @brief Add an entry to BKUTree
+ * @brief Add an entry to leaf of AVL tree
  *        Throw "Duplicate key" if entry exists
  *
  * @tparam K

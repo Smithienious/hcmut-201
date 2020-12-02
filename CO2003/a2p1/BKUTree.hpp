@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.1.4
- * @date 2020-11-30
+ * @version 0.1.5
+ * @date 2020-12-02
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -69,6 +69,9 @@ public:
 
     void clear();
 
+    void printAVL();
+    void printSplay();
+
     /************
      * @brief Store recently accessed data with order
      ************/
@@ -115,6 +118,7 @@ public:
         void clear();
 
         void setCorr(Node *, typename AVLTree::Node *);
+        void tree(string, Node *, bool);
         Node *splay(Node *, Node *);
         Node *rotateLeft(Node *);
         Node *rotateRight(Node *);
@@ -168,6 +172,7 @@ public:
         void clear();
 
         void setCorr(Node *, typename SplayTree::Node *);
+        void tree(string, Node *, bool);
         int getHeight(Node *);
         int getBalance(Node *);
         Node *rotateLeft(Node *);
@@ -233,15 +238,11 @@ void BKUTree<K, V>::remove(K key)
 template <class K, class V>
 V BKUTree<K, V>::search(K key, vector<K> &traversedList)
 {
-    // *
-    typename AVLTree::Node *splay2avl = splay->corr;
-    typename SplayTree::Node *avl2splay = avl->corr;
-
-    // * If key is at root -> return root, else continue
+    // * 1. If key is at root -> return root, else continue
     if (splay->entry->key == key)
         return splay->entry->value;
 
-    // * If key is in queue -> find in Splay, else continue
+    // * 2. If key is in queue -> find in Splay, else continue
     queue<K> tmpKeys = keys;
     while (tmpKeys.size > 0)
     {
@@ -251,9 +252,14 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
             return splay->search(key);
     }
 
-    // * Try searching on AVL from Splay root in AVL. If found -> return key, else continue
+    // * 3a. Get Splay root in AVL
+    typename AVLTree::Node *splay2avl = splay->corr;
+    typename SplayTree::Node *avl2splay = avl->corr;
+
+    // * 3b. Try searching on AVL from Splay root in AVL. If found -> return key, else continue
     try
     {
+        // * 3c.
         return splay2avl->search(key);
     }
     catch (...)
@@ -261,7 +267,7 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
         // * Do nothing
     }
 
-    // * Try searching on AVL from root. If node equals corresponding AVL node or not found -> throw not found, else continue
+    // * 3d. Try searching on AVL from root. If node equals corresponding AVL node or not found -> throw not found, else continue
     try
     {
         function<typename SplayTree::Node *(K, typename AVLTree::Node *, typename AVLTree::Node *)> recursiveSearch = [&](K key, typename AVLTree::Node *pR, typename AVLTree::Node *exitNode) {
@@ -287,6 +293,7 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
         // * Do nothing
     }
 
+    // * 3e.
     // TODO
 
     return avl2splay->entry->value;
@@ -331,6 +338,32 @@ void BKUTree<K, V>::clear()
 {
     avl->clear();
     splay->clear();
+    return;
+}
+
+/************
+ * @brief Visualize AVL tree
+ *
+ * @tparam K
+ * @tparam V
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::printAVL()
+{
+    avl->tree("", avl->root, false);
+    return;
+}
+
+/************
+ * @brief Visualize Splay tree
+ *
+ * @tparam K
+ * @tparam V
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::printSplay()
+{
+    splay->tree("", splay->root, false);
     return;
 }
 
@@ -503,6 +536,46 @@ void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree
 }
 
 /************
+ * @brief Print AVL tree
+ *
+ * @tparam K
+ * @tparam V
+ * @param prefix
+ * @param pR
+ * @param hasRight
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::SplayTree::tree(string prefix, Node *pR, bool hasRight)
+{
+    cout << prefix;
+
+    // ┘ ┐ ┌ └ ┼ ─ ├ ┤ ┴ ┬ │
+    cout << (hasRight ? "├──" : "└──");
+
+    // * Print the value of the node
+    if (pR)
+    {
+        cout << pR->entry->key;
+        //cout << " [" << pR->entry->value << "]";
+        cout << endl;
+    }
+    else
+    {
+        cout << "Ø" << endl;
+        return;
+    }
+
+    // * Enter the next tree level - left and right branch
+    if (pR->left != nullptr || pR->right != nullptr)
+    {
+        tree(prefix + (hasRight ? "│   " : "    "), pR->right, true);
+        tree(prefix + (hasRight ? "│   " : "    "), pR->left, false);
+    }
+
+    return;
+}
+
+/************
  * @brief Splaying
  *
  * @tparam K
@@ -513,6 +586,7 @@ void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree
 template <class K, class V>
 typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::splay(Node *pI, Node *pR)
 {
+    // TODO
     // * Base case
     if (pR == nullptr || pI->entry->key == pR->entry->key)
         return pR;
@@ -581,13 +655,10 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::splay(Node *p
 template <class K, class V>
 typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rotateLeft(Node *pR)
 {
-    Node *tmpRight = pR->right;
-    Node *tmpRLeft = tmpRight->left;
-
-    tmpRight->left = pR;
-    pR->right = tmpRLeft;
-
-    return tmpRight;
+    Node *tmp = pR->right;
+    pR->right = tmp->left;
+    tmp->left = pR;
+    return tmp;
 }
 
 /************
@@ -601,13 +672,10 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rotateLeft(No
 template <class K, class V>
 typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rotateRight(Node *pR)
 {
-    Node *tmpLeft = pR->left;
-    Node *tmpLRight = tmpLeft->right;
-
-    tmpLeft->right = pR;
-    pR->left = tmpLRight;
-
-    return tmpLeft;
+    Node *tmp = pR->left;
+    pR->left = tmp->right;
+    tmp->right = pR;
+    return tmp;
 }
 
 /************
@@ -701,7 +769,82 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
 template <class K, class V>
 void BKUTree<K, V>::AVLTree::remove(K key)
 {
-    // TODO
+    function<Node *(K, Node *)> recursiveDelete = [&](K key, Node *pR) {
+        if (pR == nullptr)
+            throw "Not found";
+
+        if (key < pR->entry->key)
+            pR->left = recursiveDelete(key, pR->left);
+        if (key > pR->entry->key)
+            pR->right = recursiveDelete(key, pR->right);
+
+        // * Node with no or one child
+        if (pR->left == nullptr || pR->right == nullptr)
+        {
+            Node *tmp = pR->left ? pR->left : pR->right;
+
+            if (tmp == nullptr) // * No child
+            {
+                tmp = pR;
+                pR = nullptr;
+            }
+            else // * One child
+                *pR = *tmp;
+
+            delete tmp;
+        }
+        else // * Two children
+        {
+            // * Get smallest node in right subtree
+            Node *tmp = [&]() {
+                Node *curr = pR->right;
+                while (curr->left != nullptr)
+                    curr = curr->left;
+                return curr;
+            };
+
+            *pR = *tmp;
+
+            pR->right = recursiveDelete(key, pR->right);
+        }
+
+        if (pR == nullptr)
+            return pR;
+
+        // * Get balance for rotation
+        int subBal = getBalance(pR);
+
+        // * Left rotate
+        if (subBal > 1 && key < pR->entry->key)
+        {
+            return rotateRight(pR);
+        }
+
+        // * Right rotate
+        if (subBal < -1 && key > pR->entry->key)
+        {
+            return rotateLeft(pR);
+        }
+
+        // * Left Right rotate
+        if (subBal > 1 && key > pR->entry->key)
+        {
+            pR->left = rotateLeft(pR->left);
+            return rotateRight(pR);
+        }
+
+        // * Right Left rotate
+        if (subBal < -1 && key < pR->entry->key)
+        {
+            pR->right = rotateRight(pR->right);
+            return rotateLeft(pR);
+        }
+
+        return pR;
+    };
+
+    root = recursiveDelete(key, root);
+    return;
 }
 
 /************
@@ -758,6 +901,7 @@ void BKUTree<K, V>::AVLTree::traverseNLR(void (*func)(K, V))
     };
 
     recursiveNLR(func, root);
+    return;
 }
 
 /************
@@ -780,6 +924,7 @@ void BKUTree<K, V>::AVLTree::clear()
     };
 
     recursiveClear(root);
+    return;
 }
 
 /************
@@ -794,6 +939,49 @@ template <class K, class V>
 void BKUTree<K, V>::AVLTree::setCorr(Node *pR, typename BKUTree<K, V>::SplayTree::Node *iCorr)
 {
     pR->setCorr(iCorr);
+    return;
+}
+
+/************
+ * @brief Print AVL tree
+ *
+ * @tparam K
+ * @tparam V
+ * @param prefix
+ * @param pR
+ * @param hasRight
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::AVLTree::tree(string prefix, Node *pR, bool hasRight)
+{
+    cout << prefix;
+
+    // ┘ ┐ ┌ └ ┼ ─ ├ ┤ ┴ ┬ │
+    cout << (hasRight ? "├──" : "└──");
+
+    // * Print the value of the node
+    if (pR)
+    {
+        cout << pR->entry->key;
+        //cout << " [" << pR->entry->value << "]";
+
+        // * Display balance
+        //cout << " {" << getBalance(pR) << "}";
+        cout << endl;
+    }
+    else
+    {
+        cout << "Ø" << endl;
+        return;
+    }
+
+    // * Enter the next tree level - left and right branch
+    if (pR->left != nullptr || pR->right != nullptr)
+    {
+        tree(prefix + (hasRight ? "│   " : "    "), pR->right, true);
+        tree(prefix + (hasRight ? "│   " : "    "), pR->left, false);
+    }
+
     return;
 }
 

@@ -1,0 +1,393 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vntex, inputenc}
+\usepackage{amsmath, amssymb, anyfontsize, array, color,  enumerate, enumitem, fancyhdr, float, graphicx, hyperref, lastpage, listings, mathtools, mips, natbib, pifont, tikz}
+\usepackage[open,openlevel=0]{bookmark}
+\usepackage[framemethod=tikz]{mdframed}
+
+\usetikzlibrary{calc}
+\newcommand\HRule{\rule{12cm}{1pt}}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+	\color{blue}
+	\begin{tabular}{rl}
+		\begin{picture}(25,15)(0,0)
+		\put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+		\end{picture}
+		\begin{tabular}{l}
+			\textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+			\textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+		\end{tabular}
+	\end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{l}
+		\tiny \bf \\
+		\tiny \bf
+	\end{tabular}
+}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 3}
+\fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=[MIPS]Assembler,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3,
+	numbers=left,
+	stepnumber=1,
+	numbersep=1pt,
+	firstnumber=1,
+	numberfirstline=true
+}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width = 2pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+  \end{tikzpicture}
+
+  \begin{center}
+
+    % Upper part of the page
+    \textbf{\fontsize{12pt}{1pt}\selectfont HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\[0.5cm]
+    {\fontsize{13pt}{1pt}\selectfont Faculty of Computer Science \& Engineering}\\[0.5cm]
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1.7in,height=1.7in]{BK.png}
+    \end{figure}
+
+    % Title
+    \HRule\\[0.5cm]
+    { \textbf{\fontsize{25pt}{1pt}\selectfont Computer Architecture Week 3}}\\[0.4cm]
+
+    \HRule\\[0.8cm]
+    \begin{minipage}{0.545\textwidth}
+      \begin{flushleft}
+        \textbf{Authors:}\\
+        \begin{tabular}{l l}
+          Lưu Nguyễn Hoàng Minh & 1952845 \\
+          Vũ Anh Nhi            & 1952380 \\
+          Nguyễn Chính Khôi     & 1952793 \\
+          Nguyễn Hoàng          & 1952255 \\
+        \end{tabular}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \textbf{Class:}\\
+        CO2008\_CC02\\
+        \textbf{Lecturer:}\\
+        Kiều Đỗ Nguyên Bình\\
+
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    \vspace{2cm}
+    {\large} %{\large \today}
+  \end{center}
+\end{titlepage}
+
+
+\pdfbookmark[0]{Question 1}{ques1}
+\section*{Question 1:}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+      .data:
+      X:      .word 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+      msg1:   .asciiz "The sum of all elements is "
+
+      # Start program code
+      .text:
+
+      .globl main
+  main:
+      la      $s7, X              # Address of X
+      add     $s0, $zero, $zero   # Counter
+      add     $s1, $zero, $zero   # Sum of even
+      add     $s2, $zero, $zero   # Sum of odd
+      addi    $t7, $zero, 40      # Limiter
+  Sum:
+      add     $t0, $s0, $s7       # Address of element
+      lw      $t1, 0($t0)
+      add     $s1, $s1, $t1       # Summer
+      addi    $s0, $s0, 4         # i = i + 1
+      beq     $s0, $t7, SExit
+      j       Sum
+
+  SExit:
+      # Print string msg1
+      li      $v0, 4
+      la      $a0, msg1
+      syscall
+
+      # Print sum
+      li      $v0, 1
+      move    $a0, $s1
+      syscall
+
+      # Exit
+      li      $v0, 10
+      syscall
+
+          \end{lstlisting}
+\end{mdframed}
+
+\pdfbookmark[0]{Question 2}{ques2}
+\section*{Question 2:}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+      .data:
+      X:      .word 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+      msg1:   .asciiz "The sum of all elements of even indexes is "
+      msg2:   .asciiz "The sum of all elements of odd indexes is "
+      lf:     .asciiz "\n"
+
+      # Start program code
+      .text:
+
+      .globl main
+  main:
+      la      $s7, X              # Address of X
+      add     $s0, $zero, $zero   # Counter
+      add     $s1, $zero, $zero   # Sum of even
+      add     $s2, $zero, $zero   # Sum of odd
+      addi    $t7, $zero, 40      # Limiter
+
+  Sum:
+      add     $t0, $s0, $s7       # Address of element
+      lw      $t1, 0($t0)
+      add     $s1, $s1, $t1       # Odd summer
+      addi    $s0, $s0, 4         # i = i + 1
+      beq     $s0, $t7, SExit
+
+      add     $t0, $s0, $s7       # Address of element
+      lw      $t1, 0($t0)
+      add     $s2, $s2, $t1       # Even summer
+      addi    $s0, $s0, 4         # i = i + 1
+      beq     $s0, $t7, SExit
+
+      j       Sum
+
+  SExit:
+      # Print string msg1
+      li      $v0, 4
+      la      $a0, msg1
+      syscall
+
+      # Print sum of odd
+      li      $v0, 1
+      move    $a0, $s1
+      syscall
+
+      # Print string new line
+      li      $v0, 4
+      la      $a0, lf
+      syscall
+
+      # Print string msg2
+      li      $v0, 4
+      la      $a0, msg2
+      syscall
+
+      # Print sum of even
+      li      $v0, 1
+      move    $a0, $s2
+      syscall
+
+      # Exit
+      li      $v0, 10
+      syscall
+
+    \end{lstlisting}
+\end{mdframed}
+
+\pdfbookmark[0]{Question 3}{ques3}
+\section*{Question 3:}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+      .data:
+      X: .space 40 # Reserve 40 bytes
+      msg1: .asciiz "Enter an integer: "
+      msg2: .asciiz "The sum of all elements is "
+
+      # Start program code
+      .text:
+
+      .globl main
+  main:
+      la      $s7, X              # Address of X
+      add     $s0, $zero, $zero   # Counter
+      add     $s1, $zero, $zero   # Sum
+      addi    $t7, $zero, 40      # Limiter
+  Input:
+      add     $t0, $s0, $s7       # Address of element
+
+      # Print string msg1
+      li      $v0, 4
+      la      $a0, msg1
+      syscall
+
+      # Get input and save
+      li      $v0, 5
+      syscall
+      move    $t1, $v0
+
+      sw      $t1, 0($t0)
+      addi    $s0, $s0, 4         # i = i + 1
+      beq     $s0, $t7, IExit
+      j       Input
+
+  IExit:
+      add     $s0, $zero, $zero   # Counter
+      add     $s1, $zero, $zero   # Sum
+  Sum:
+      add     $t0, $s0, $s7       # Address of element
+      lw      $t1, 0($t0)
+      add     $s1, $s1, $t1       # Summer
+      addi    $s0, $s0, 4         # i = i + 1
+      beq     $s0, $t7, SExit
+      j       Sum
+
+  SExit:
+      # Print string msg2
+      li      $v0, 4
+      la      $a0, msg2
+      syscall
+
+      # Print sum
+      li      $v0, 1
+      move    $a0, $s1
+      syscall
+
+      # Exit
+      li      $v0, 10
+      syscall
+
+    \end{lstlisting}
+\end{mdframed}
+
+
+\pdfbookmark[0]{Question 4}{ques4}
+\section*{Question 4:}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+
+    \end{lstlisting}
+\end{mdframed}
+
+
+\pdfbookmark[0]{Question 5}{ques5}
+\section*{Question 5:}
+
+Write a MIPS program that reverses an 10 elements integer array. For example, the array
+initially stores 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, the program will change the array to be 19, 17, 15, 13, 11, 9,
+7, 5, 3, 1.
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data
+    arr: .word 34, 23, 15, 82, 38, 56, 48, 93, 49, 11
+    newarr: .word 0:10
+    space: .asciiz " "
+    endl: .asciiz "\n"
+
+    .text
+    .globl main
+
+  main:
+    la $s0, arr
+    add $s1, $zero, $zero
+
+  L1: #print the original array
+    lw $t1, 0($s0)
+    li	$v0,1
+    move	$a0, $t1
+    syscall
+
+    addi $s0, $s0, 4
+    addi $s1, $s1, 1
+
+    li	$v0, 4
+    la	$a0, space
+    syscall
+
+    beq $s1, 10, r1
+    j L1
+
+  r1:
+    li	$v0, 4
+    la	$a0, endl
+    la $s3, newarr
+    syscall
+    addi $s0, $s0, -4
+
+  rev: # reverse the array
+    lw $t2, 0($s0)
+    sw $t2, 0($s3)
+    addi $s0, $s0, -4
+    addi $s3, $s3, 4
+    addi $s1, $s1, -1
+
+    beq $s1, 0, print
+    j rev
+
+  print:
+    la $s3, newarr
+    addi $s1, $zero, 0
+    j print2
+
+  print2: # print the reverse array
+    lw $t1, 0($s3)
+    li	$v0,1
+    move	$a0, $t1
+    syscall
+
+    addi $s3, $s3, 4
+    addi $s1, $s1, 1
+
+    li	$v0, 4
+    la	$a0, space
+    syscall
+
+    beq $s1, 10, Exit
+    j print2
+
+  Exit:
+    li $v0, 10
+    syscall
+
+    \end{lstlisting}
+\end{mdframed}
+
+\end{document}

@@ -1,0 +1,4 @@
+1. Kiểm tra ngoặc
+{[()]}
+
+2. Lấy tiền tố, chuyển thành pre-fix, post-fix

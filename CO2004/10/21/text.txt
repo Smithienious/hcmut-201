@@ -1,0 +1,8 @@
+1. Tính khoảng cách giữa 2 mốc thời gian
+VD:
+Input1: 08/03/2016
+Input2: 27/01/2022
+Có bao nhiêu ngày?
+
+2. Bubble sort trên linked list
+Swap bằng 2 biến

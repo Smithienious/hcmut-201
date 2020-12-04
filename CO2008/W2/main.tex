@@ -1,6 +1,5 @@
 \documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{vntex}
-\usepackage[utf8]{inputenc}
+\usepackage[utf8]{vntex, inputenc}
 \usepackage{amsmath, amssymb, anyfontsize, array, color,  enumerate, enumitem, fancyhdr, float, graphicx, hyperref, lastpage, listings, mathtools, mips, natbib, pifont, tikz}
 \usepackage[open,openlevel=0]{bookmark}
 \usepackage[framemethod=tikz]{mdframed}
@@ -113,61 +112,533 @@
 
 \pdfbookmark[0]{Question 1}{ques1}
 \section*{Question 1:}
-\begin{enumerate}[label=\alph*.]
-  \item\mbox{}\\
-        \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
-          \begin{lstlisting}
-  # A demonstration of some simple MIPS instructions
-  # used to test QtSPIM
 
+Write a simple MIPS program that can execute these steps: \\
+1. Print a sentence to terminal to request an integer number from user; \\
+2. Collect the number and increase it by 1;\\
+3. Print the result to terminal.
+
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
     # Declare main as a global function
-    .globl main
+  .text
 
-    # All program code is placed after the
-    # .text assembler directive
-    .text
+  .globl main
 
-  # The label 'main' represents the starting point
   main:
-    li $t2, 25		# Load immediate value (25)
-    lw $t3, value		# Load the word stored in value (see bottom)
-    add $t4, $t2, $t3	# Add
-    sub $t5, $t2, $t3	# Subtract
-    sw $t5, Z		#Store the answer in Z (declared at the bottom)
+    # Print string msg1
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, msg1	# load the address of msg1
+    syscall
 
-    # Exit the program by means of a syscall.
-    # There are many syscalls - pick the desired one
-    # by placing its code in $v0. The code for exit is "10"
-    li $v0, 10 # Sets $v0 to "10" to select exit syscall
-    syscall # Exit
+    # Get input A from user and save
+    li	$v0,5		# read_int syscall code = 5
+    syscall
+    move	$t0,$v0		# syscall results returned in $v0
 
-    # All memory structures are placed after the
-    # .data assembler directive
+    # Main
+    addi	$t0, $t0, 1	# A = A + 1
+
+    # Print string msg3
+    li	$v0, 4
+    la	$a0, msg2
+    syscall
+
+    # Print sum
+    li	$v0,1		# print_int syscall code = 1
+    move	$a0, $t0	# int to print must be loaded into $a0
+    syscall
+
+    li	$v0,10		# exit
+    syscall
+
+    # Start .data segment (data!)
     .data
+  msg1:	.asciiz	"Enter an integer: "
+  msg2:	.asciiz	"New result is: "
+  newline:   .asciiz	"\n"
 
-    # The .word assembler directive reserves space
-    # in memory for a single 4-byte word (or multiple 4-byte words)
-    # and assigns that memory location an initial value
-    # (or a comma separated list of initial values)
-  value:	.word 12
-  Z:	.word 0
           \end{lstlisting}
-        \end{mdframed}
-\end{enumerate}
+\end{mdframed}
 
 \pdfbookmark[0]{Question 2}{ques2}
-\section*{Question 2:}
+\section*{Question 2:}Write a small program that is able collect two integer numbers from users and print out the
+sum of the two numbers
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+    # Start .text segment (program code)
+    .text
+
+    .globl	main
+  main:
+    # Print string msg1
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, msg1	# load the address of msg
+    syscall
+
+    # Get input A from user and save
+    li	$v0,5		# read_int syscall code = 5
+    syscall
+    move	$t0,$v0		# syscall results returned in $v0
+
+    # Print string msg2
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, msg2	# load the address of msg2
+    syscall
+
+    # Get input B from user and save
+    li	$v0,5		# read_int syscall code = 5
+    syscall
+    move	$t1,$v0		# syscall results returned in $v0
+
+    # Math!
+    add	$t0, $t0, $t1	# A = A + B
+
+    # Print string msg3
+    li	$v0, 4
+    la	$a0, msg3
+    syscall
+
+    # Print sum
+    li	$v0,1		# print_int syscall code = 1
+    move	$a0, $t0	# int to print must be loaded into $a0
+    syscall
+
+    # Print \n
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, newline
+    syscall
+
+    li	$v0,10		# exit
+    syscall
+
+    # Start .data segment (data!)
+    .data
+  msg1:	.asciiz	"Enter A:   "
+  msg2:	.asciiz	"Enter B:   "
+  msg3:	.asciiz	"A + B = "
+  newline:   .asciiz	"\n"
+
+          \end{lstlisting}
+\end{mdframed}
 
 \pdfbookmark[0]{Question 3}{ques3}
-\section*{Question 3:}
+\section*{Question 3:} Write a small program that allows users to input values for variables a, b, c, and d. The
+program then calculates the following expressions and prints the results to terminal
+\begin{equation}
+  f = ( a + b ) - ( c - d - 2 )
+\end{equation}
+\begin{equation}
+  g = ( a + b )*3 - ( c + d )*2
+\end{equation}
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+    .text
+
+    .globl	main
+  main:
+    # Print string msg1
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, msg1	# load the address of msg
+    syscall
+    # Get input A from user and save
+    li	$v0,5		# read_int syscall code = 5
+    syscall
+    move	$t0,$v0		# syscall results returned in $v0
+
+    # Print string msg2
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, msg2	# load the address of msg2
+    syscall
+    # Get input B from user and save
+    li	$v0,5		# read_int syscall code = 5
+    syscall
+    move	$t1,$v0		# syscall results returned in $v0
+
+    # Print string msg3
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, msg3	# load the address of msg
+    syscall
+    # Get input C from user and save
+    li	$v0,5		# read_int syscall code = 5
+    syscall
+    move	$t2,$v0		# syscall results returned in $v0
+
+    # Print string msg4
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, msg4	# load the address of msg
+    syscall
+    # Get input D from user and save
+    li	$v0,5		# read_int syscall code = 5
+    syscall
+    move	$t3,$v0		# syscall results returned in $v0
+
+
+
+
+    # Calculate f = (a + b) - (c - d - 2)
+    add	$t4, $t0, $t1	# t4 = a + b
+    sub	$t5, $t2, $t3	# t5 = c - d
+    addi	$t5, $t5, -2	# t5 = c - d - 2
+    sub	$s0, $t4, $t5
+    # Done
+
+    # Calculate g = (a + b) * 3 - (c + d) * 2
+    add $t6, $t4, $t4	# t6 = (a+b)*2
+    add $t6, $t6, $t4	# t6 = (a+6)*3
+    add $t7, $t2, $t3	# t7 = c+d
+    add $t7, $t7, $t7	# t7 = (c+d)*2
+    sub $s1, $t6, $t7
+
+
+
+    # Print string msg5
+    li	$v0, 4
+    la	$a0, msg5
+    syscall
+
+    # Print sum
+    li	$v0,1		# print_int syscall code = 1
+    move	$a0, $s0	# int to print must be loaded into $a0
+    syscall
+
+    # Print \n
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, newline
+    syscall
+
+
+    # Print string msg6
+    li	$v0, 4
+    la	$a0, msg6
+    syscall
+
+    # Print sum
+    li	$v0,1		# print_int syscall code = 1
+    move	$a0, $s1	# int to print must be loaded into $a0
+    syscall
+
+    # Print \n
+    li	$v0,4		# print_string syscall code = 4
+    la	$a0, newline
+    syscall
+
+    li	$v0,10		# exit
+    syscall
+
+    # Start .data segment (data!)
+    .data
+  msg1:	.asciiz	"Enter A:   "
+  msg2:	.asciiz	"Enter B:   "
+  msg3:	.asciiz	"Enter C:   "
+  msg4:	.asciiz	"Enter D:   "
+
+  msg5:	.asciiz	"f = (a + b) - (c - d - 2) = "
+  msg6:	.asciiz	"g = (a + b) * 3 - (c + d) * 2 = "
+
+  newline:   .asciiz	"\n"
+
+        \end{lstlisting}
+\end{mdframed}
+
 
 \pdfbookmark[0]{Question 4}{ques4}
 \section*{Question 4:}
 
+Write a small program that allows users to input 5 different integer numbers. The program then prints those numbers in reverse. For example, users input 1, 2, 3, 4, 5; the program should print 5, 4, 3, 2, 1.
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .text
+
+    .globl	main
+  main:
+    # Print string msg1
+    li	$v0,4
+    la	$a0, msg1
+    syscall
+    # Get input A from user and save
+    li	$v0,5
+    syscall
+    move	$t0,$v0
+
+    # Print string msg2
+    li	$v0,4
+    la	$a0, msg2
+    syscall
+    # Get input B from user and save
+    li	$v0,5
+    syscall
+    move	$t1,$v0
+
+    # Print string msg3
+    li	$v0,4
+    syscall
+    # Get input C from user and save
+    li	$v0,5
+    syscall
+    move	$t2,$v0
+
+
+    # Print string msg4
+    li	$v0,4
+    la	$a0, msg4
+    syscall
+    # Get input D from user and save
+    li	$v0,5
+    syscall
+    move	$t3,$v0
+
+
+    # Print string msg5
+    li	$v0,4
+    la	$a0, msg5
+    syscall
+
+    # Get input E from user and save
+    li	$v0,5
+    syscall
+    move	$t4,$v0
+
+    # Print string msg6
+    li	$v0, 4
+    la	$a0, msg6
+    syscall
+
+    # Print sum
+    li	$v0,1
+    move	$a0, $t4
+    syscall
+    # Print ' '
+    li	$v0,4
+    la	$a0, space
+    syscall
+    # Print sum
+    li	$v0,1
+    move	$a0, $t3
+    syscall
+    # Print ' '
+    li	$v0,4
+    la	$a0, space
+    syscall
+    # Print sum
+    li	$v0,1
+    move	$a0, $t2
+    syscall
+    # Print ' '
+    li	$v0,4
+    la	$a0, space
+    syscall
+    # Print sum
+    li	$v0,1
+    move	$a0, $t1
+    syscall
+    # Print ' '
+    li	$v0,4
+    la	$a0, space
+    syscall
+    # Print sum
+    li	$v0,1
+    move	$a0, $t0
+    syscall
+    # Print ' '
+    li	$v0,4
+    la	$a0, space
+    syscall
+    # Print \n
+    li	$v0,4
+    la	$a0, newline
+    syscall
+
+    li	$v0,10		# exit
+    syscall
+
+    # Start .data segment (data!)
+    .data
+  msg1:	.asciiz	"Enter A:   "
+  msg2:	.asciiz	"Enter B:   "
+  msg3:	.asciiz	"Enter C:   "
+  msg4:	.asciiz	"Enter D:   "
+  msg5:	.asciiz	"Enter E:   "
+  msg6:	.asciiz	"Print in reverse order:      "
+  newline:   .asciiz	"\n"
+  space:  .asciiz     "  "
+
+
+          \end{lstlisting}
+\end{mdframed}
+
 \pdfbookmark[0]{Question 5}{ques5}
 \section*{Question 5:}
+
+Write a MIPS program that calculates and prints the result of the following equation to the terminal with the number of instructions as small as possible.
+
+\(66000+30+30+30+30+30+30+30+30+30+30 - 6000+25\)
+
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    # Declare main as a global function
+    .globl main
+    .text
+
+  # The label 'main' represents the starting point
+  main:
+    li $t0, 30
+    add $t0, $t0, $t0
+    add $t1, $t0, $t0
+    add $t1, $t1, $t1
+    add $t1, $t1, $t0
+
+    addi $t1, $t1, 66000
+    addi $t1, $t1, -6000
+    addi $a0, $t1, 25
+
+    li $v0, 1 # Sets $v0 to "10" to select exit syscall
+    syscall # Exit
+
+          \end{lstlisting}
+\end{mdframed}
 
 \pdfbookmark[0]{Question 6}{ques6}
 \section*{Question 6:}
 
+Write a MIPS program that receives values for a, b, c, d, and x variables from users and prints
+result of following equation:
+
+\(f = a \times x^3 + b \times x^2 + c \times x + d\)
+
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+  .text
+
+  .globl main
+    j main
+
+  MULTS:
+    #a * b = res. a = t0, b = t1, res = s0
+
+    #int res = 0;
+    addi $sp, $sp, -4
+    sw $s0, 0($sp)
+    addi $s0, $zero, 0
+
+    #int i = 0; while (i != b) {res += a; i++;}
+    addi $sp, $sp, -4	#int i = 0
+    sw $s1, 0($sp)
+    addi $s1, $zero, 0	#int i = 0 - END
+
+  WHILE:	beq $s1, $t1, EXIT
+    add $s0, $s0, $t0
+    addi $s1, $s1, 1
+    j WHILE
+
+  EXIT:	move $v0, $s0 		#return
+    lw $s1, 0($sp)		#restore s1
+    addi $sp, $sp, 4
+    lw $s0, 0($sp)		#restore s0
+    addi $sp, $sp, 4
+
+    jr $ra
+
+  main:
+    # x = s0, a = s1, b = s2, c = s3, d = s4, result = s5
+
+    # Get x
+    li	$v0,4
+    la	$a0, msg1
+    syscall
+    li	$v0,5
+    syscall
+    move	$s0,$v0
+
+    # Get a
+    li	$v0,4
+    la	$a0, msg2
+    syscall
+    li	$v0,5
+    syscall
+    move	$s1,$v0
+
+    # Get b
+    li	$v0,4
+    la	$a0, msg3
+    syscall
+    li	$v0,5
+    syscall
+    move	$s2,$v0
+
+    # Get c
+    li	$v0,4
+    la	$a0, msg4
+    syscall
+    li	$v0,5
+    syscall
+    move	$s3,$v0
+
+    # Get d
+    li	$v0,4
+    la	$a0, msg5
+    syscall
+    li	$v0,5
+    syscall
+    move	$s4,$v0
+
+    # Main Program
+    addi $s5, $zero, 0 	#res = 0;
+    addi $t2, $s0, 0	#temp = x;
+
+    add $s5, $s5, $s4	#res += d;
+
+    addi $t0, $s0, 0	#res += x * c;
+    addi $t1, $s3, 0
+    jal MULTS
+    add $s5, $s5, $v0
+
+    addi $t0, $s0, 0	#x = x * temp;
+    addi $t1, $t2, 0
+    jal MULTS
+    addi $s0, $v0, 0
+
+    addi $t0, $s0, 0	#res += x * b;
+    addi $t1, $s2, 0
+    jal MULTS
+    add $s5, $s5, $v0
+
+    addi $t0, $s0, 0	#x = x * temp;
+    addi $t1, $t2, 0
+    jal MULTS
+    addi $s0, $v0, 0
+
+    addi $t0, $s0, 0	#res += x * a;
+    addi $t1, $s1, 0
+    jal MULTS
+    add $s5, $s5, $v0
+
+    # Print
+    li	$v0,4
+    la	$a0, msg6
+    syscall
+    li	$v0,1
+    move	$a0, $s5
+    syscall
+    li	$v0,10
+    syscall
+
+    .data
+  msg1:	.asciiz	"Enter x: "
+  msg2:	.asciiz	"Enter a: "
+  msg3:	.asciiz	"Enter b: "
+  msg4:	.asciiz	"Enter c: "
+  msg5:	.asciiz	"Enter d: "
+  msg6:	.asciiz	"Result is: "
+  newline:   .asciiz	"\n"
+
+          \end{lstlisting}
+\end{mdframed}
 \end{document}

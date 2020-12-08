@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.1.5
- * @date 2020-12-02
+ * @version 0.2.0
+ * @date 2020-12-08
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -21,7 +21,7 @@
 
 #include <functional>
 
-#define MAX(A, B) (A > B ? A : B)
+#define MAX(A, B) ((A > B) ? A : B)
 
 using namespace std;
 
@@ -82,13 +82,14 @@ public:
         {
         private:
             Entry *entry;
+            Node *north;
             Node *left;
             Node *right;
             typename AVLTree::Node *corr;
             friend class SplayTree;
 
         public:
-            Node(Entry *entry = nullptr, Node *left = nullptr, Node *right = nullptr)
+            Node(Entry *entry = nullptr, Node *north = nullptr, Node *left = nullptr, Node *right = nullptr) : north(north)
             {
                 this->entry = entry;
                 this->left = left;
@@ -134,14 +135,15 @@ public:
         {
         private:
             Entry *entry;
+            int height;
             Node *left;
             Node *right;
-            int balance; // height(left subtree) - height(right subtree)
+            int balance;
             typename SplayTree::Node *corr;
             friend class AVLTree;
 
         public:
-            Node(Entry *entry = nullptr, Node *left = nullptr, Node *right = nullptr)
+            Node(Entry *entry = nullptr, Node *left = nullptr, Node *right = nullptr) : height(1)
             {
                 this->entry = entry;
                 this->left = left;
@@ -173,8 +175,8 @@ public:
 
         void setCorr(Node *, typename SplayTree::Node *);
         void tree(string, Node *, bool);
-        int getHeight(Node *);
-        int getBalance(Node *);
+        int findHeight(Node *);
+        int findBalance(Node *);
         Node *rotateLeft(Node *);
         Node *rotateRight(Node *);
     }; // class AVLTree
@@ -194,9 +196,9 @@ void BKUTree<K, V>::add(K key, V value)
 {
     if (keys.size() >= maxNumOfKeys)
         keys.pop();
+    keys.push(key);
 
     Entry *newEntry = new Entry(key, value);
-    keys.push(key);
 
     if (avl == nullptr)
         avl = new AVLTree();
@@ -222,7 +224,9 @@ void BKUTree<K, V>::add(K key, V value)
 template <class K, class V>
 void BKUTree<K, V>::remove(K key)
 {
-    // TODO
+    avl->remove(key);
+    splay->remove(key);
+    return;
 }
 
 /************
@@ -338,6 +342,8 @@ void BKUTree<K, V>::clear()
 {
     avl->clear();
     splay->clear();
+    while (!keys.empty())
+        keys.pop();
     return;
 }
 
@@ -453,17 +459,17 @@ void BKUTree<K, V>::SplayTree::remove(K key)
  * @return V
  ************/
 template <class K, class V>
-V BKUTree<K, V>::SplayTree::search(K key)
+V BKUTree<K, V>::SplayTree::search(K key) // TODO
 {
-    function<V(K, Node *)> recursiveSearch = [&](K key, Node *pR) {
+    function<Node *(K, Node *)> recursiveSearch = [&](K key, Node *pR) {
         if (pR != nullptr)
         {
             if (key == pR->entry->key)
-                return pR->entry->value;
+                return pR;
             if (key < pR->entry->key)
-                recursiveSearch(key, pR->left);
+                return recursiveSearch(key, pR->left);
             if (key > pR->entry->value)
-                recursiveSearch(key, pR->right);
+                return recursiveSearch(key, pR->right);
         }
         else
         {
@@ -471,7 +477,9 @@ V BKUTree<K, V>::SplayTree::search(K key)
         }
     };
 
-    return recursiveSearch(key, root);
+    Node *pI = recursiveSearch(key, root);
+    root = splay(pI, root);
+    return pI;
 }
 
 /************
@@ -521,21 +529,6 @@ void BKUTree<K, V>::SplayTree::clear()
 }
 
 /************
- * @brief Set corresponding AVL node
- *
- * @tparam K
- * @tparam V
- * @param pR
- * @param iCorr
- ************/
-template <class K, class V>
-void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree::Node *iCorr)
-{
-    pR->setCorr(iCorr);
-    return;
-}
-
-/************
  * @brief Print AVL tree
  *
  * @tparam K
@@ -550,13 +543,13 @@ void BKUTree<K, V>::SplayTree::tree(string prefix, Node *pR, bool hasRight)
     cout << prefix;
 
     // ┘ ┐ ┌ └ ┼ ─ ├ ┤ ┴ ┬ │
-    cout << (hasRight ? "├──" : "└──");
+    cout << ((hasRight) ? "├──" : "└──");
 
     // * Print the value of the node
     if (pR)
     {
         cout << pR->entry->key;
-        //cout << " [" << pR->entry->value << "]";
+        // cout << " [" << pR->entry->value << "]";
         cout << endl;
     }
     else
@@ -568,8 +561,8 @@ void BKUTree<K, V>::SplayTree::tree(string prefix, Node *pR, bool hasRight)
     // * Enter the next tree level - left and right branch
     if (pR->left != nullptr || pR->right != nullptr)
     {
-        tree(prefix + (hasRight ? "│   " : "    "), pR->right, true);
-        tree(prefix + (hasRight ? "│   " : "    "), pR->left, false);
+        tree(prefix + ((hasRight) ? "│   " : "    "), pR->right, true);
+        tree(prefix + ((hasRight) ? "│   " : "    "), pR->left, false);
     }
 
     return;
@@ -584,31 +577,30 @@ void BKUTree<K, V>::SplayTree::tree(string prefix, Node *pR, bool hasRight)
  * @param pR
  ************/
 template <class K, class V>
-typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::splay(Node *pI, Node *pR)
+typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::splay(Node *pI, Node *pR) // TODO
 {
-    // TODO
     // * Base case
     if (pR == nullptr || pI->entry->key == pR->entry->key)
         return pR;
 
-    // * Left
+    // *
     if (pI->entry->key < pR->entry->key)
     {
-        if (pR->left == nullptr)
+        if (pR->left == nullptr || pI->entry->key == pR->left->entry->key)
             return pR;
 
-        // * Left
+        // *
         if (pI->entry->key < pR->left->entry->key)
         {
-            // * Make pI root of left-left
             pR->left->left = splay(pI, pR->left->left);
+            if (pI->entry->key == pR->left->left->entry->key)
+                pR->left = rotateRight(pR->left);
             pR = rotateRight(pR);
         }
-        else
-            // * Right
-            if (pI->entry->key > pR->left->entry->key)
+        // *
+        else if (pI->entry->key > pR->left->entry->key)
         {
-            // * Make pI root of left-right
+            // *
             pR->left->right = splay(pI, pR->left->right);
             if (pR->left->right != nullptr)
                 pR->left = rotateLeft(pR->left);
@@ -616,14 +608,14 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::splay(Node *p
 
         return (pR->left == nullptr) ? pR : rotateRight(pR);
     }
-
-    // * Right
-    if (pI->entry->key > pR->entry->key)
+    else
+        // *
+        if (pI->entry->key > pR->entry->key)
     {
         if (pR->right == nullptr)
             return pR;
 
-        // * Left
+        // *
         if (pI->entry->key < pR->right->entry->key)
         {
             // * Make pI root of right-left
@@ -632,16 +624,18 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::splay(Node *p
                 pR->right = rotateRight(pR->right);
         }
         else
-            // * Right
+            // *
             if (pI->entry->key > pR->right->entry->key)
         {
-            // * Make pI root of right-right
+            // *
             pR->right->right = splay(pI, pR->right->right);
             pR = rotateLeft(pR);
         }
 
         return (pR->right == nullptr) ? pR : rotateLeft(pR);
     }
+
+    return pR;
 }
 
 /************
@@ -710,10 +704,11 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
     Node *newNode = new Node(entry);
 
     function<Node *(Node *, Node *)> recursiveAdd = [&](Node *pI, Node *pR) {
-        // * Return node for insertion
+        // *
         if (pR == nullptr)
             return pI;
 
+        // *
         if (pI->entry->key == pR->entry->key)
             throw "Duplicate key";
 
@@ -722,30 +717,29 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
         if (pI->entry->key > pR->entry->key)
             pR->right = recursiveAdd(pI, pR->right);
 
-        // * Get balance for rotation
-        int subBal = getBalance(pR);
+        // *
+        pR->height = MAX(findHeight(pR->left), findHeight(pR->right)) + 1;
 
-        // * Left rotate
-        if (subBal > 1 && pI->entry->key < pR->entry->key)
+        // *
+        pR->balance = findBalance(pR);
+
+        if (pR->balance > 1 && pI->entry->key < pR->entry->key)
         {
             return rotateRight(pR);
         }
 
-        // * Right rotate
-        if (subBal < -1 && pI->entry->key > pR->entry->key)
+        if (pR->balance < -1 && pI->entry->key > pR->entry->key)
         {
             return rotateLeft(pR);
         }
 
-        // * Left Right rotate
-        if (subBal > 1 && pI->entry->key > pR->entry->key)
+        if (pR->balance > 1 && pI->entry->key > pR->entry->key)
         {
             pR->left = rotateLeft(pR->left);
             return rotateRight(pR);
         }
 
-        // * Right Left rotate
-        if (subBal < -1 && pI->entry->key < pR->entry->key)
+        if (pR->balance < -1 && pI->entry->key < pR->entry->key)
         {
             pR->right = rotateRight(pR->right);
             return rotateLeft(pR);
@@ -767,74 +761,72 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
  * @param key
  ************/
 template <class K, class V>
-void BKUTree<K, V>::AVLTree::remove(K key)
+void BKUTree<K, V>::AVLTree::remove(K key) // TODO
 {
+    function<Node *(Node *)> minOfRight = [](Node *pR) {
+        Node *curr = pR->right;
+        while (curr->left != nullptr)
+            curr = curr->left;
+        return curr;
+    };
+
     function<Node *(K, Node *)> recursiveDelete = [&](K key, Node *pR) {
         if (pR == nullptr)
             throw "Not found";
 
         if (key < pR->entry->key)
             pR->left = recursiveDelete(key, pR->left);
-        if (key > pR->entry->key)
+        else if (key > pR->entry->key)
             pR->right = recursiveDelete(key, pR->right);
-
-        // * Node with no or one child
-        if (pR->left == nullptr || pR->right == nullptr)
+        else
         {
-            Node *tmp = pR->left ? pR->left : pR->right;
-
-            if (tmp == nullptr) // * No child
+            // * Node with no or one child
+            if (pR->left == nullptr || pR->right == nullptr)
             {
-                tmp = pR;
-                pR = nullptr;
+                Node *tmp = (pR->left) ? pR->left : pR->right;
+
+                if (tmp == nullptr) // * No child
+                {
+                    tmp = pR;
+                    pR = nullptr;
+                }
+                else // * One child
+                    *pR = *tmp;
+
+                delete tmp->entry;
+                delete tmp;
             }
-            else // * One child
-                *pR = *tmp;
-
-            delete tmp;
-        }
-        else // * Two children
-        {
-            // * Get smallest node in right subtree
-            Node *tmp = [&]() {
-                Node *curr = pR->right;
-                while (curr->left != nullptr)
-                    curr = curr->left;
-                return curr;
-            };
-
-            *pR = *tmp;
-
-            pR->right = recursiveDelete(key, pR->right);
+            else // * Two children
+            {
+                Node *tmp = minOfRight(pR);
+                pR->entry = tmp->entry;
+                pR->right = recursiveDelete(tmp->entry->key, pR->right);
+            }
         }
 
         if (pR == nullptr)
             return pR;
 
-        // * Get balance for rotation
-        int subBal = getBalance(pR);
+        // *
+        pR->balance = findBalance(pR);
 
-        // * Left rotate
-        if (subBal > 1 && key < pR->entry->key)
+        if (pR->balance > 1 && key < pR->entry->key)
         {
             return rotateRight(pR);
         }
 
-        // * Right rotate
-        if (subBal < -1 && key > pR->entry->key)
+        if (pR->balance < -1 && key > pR->entry->key)
         {
             return rotateLeft(pR);
         }
 
-        // * Left Right rotate
-        if (subBal > 1 && key > pR->entry->key)
+        if (pR->balance > 1 && key > pR->entry->key)
         {
             pR->left = rotateLeft(pR->left);
             return rotateRight(pR);
         }
 
-        // * Right Left rotate
-        if (subBal < -1 && key < pR->entry->key)
+        if (pR->balance < -1 && key < pR->entry->key)
         {
             pR->right = rotateRight(pR->right);
             return rotateLeft(pR);
@@ -928,21 +920,6 @@ void BKUTree<K, V>::AVLTree::clear()
 }
 
 /************
- * @brief Set corresponding Splay node
- *
- * @tparam K
- * @tparam V
- * @param pR
- * @param iCorr
- ************/
-template <class K, class V>
-void BKUTree<K, V>::AVLTree::setCorr(Node *pR, typename BKUTree<K, V>::SplayTree::Node *iCorr)
-{
-    pR->setCorr(iCorr);
-    return;
-}
-
-/************
  * @brief Print AVL tree
  *
  * @tparam K
@@ -957,16 +934,14 @@ void BKUTree<K, V>::AVLTree::tree(string prefix, Node *pR, bool hasRight)
     cout << prefix;
 
     // ┘ ┐ ┌ └ ┼ ─ ├ ┤ ┴ ┬ │
-    cout << (hasRight ? "├──" : "└──");
+    cout << ((hasRight) ? "├──" : "└──");
 
     // * Print the value of the node
     if (pR)
     {
         cout << pR->entry->key;
-        //cout << " [" << pR->entry->value << "]";
-
-        // * Display balance
-        //cout << " {" << getBalance(pR) << "}";
+        // cout << " [" << pR->height << "]";
+        // cout << " {" << pR->balance << "}";
         cout << endl;
     }
     else
@@ -978,15 +953,15 @@ void BKUTree<K, V>::AVLTree::tree(string prefix, Node *pR, bool hasRight)
     // * Enter the next tree level - left and right branch
     if (pR->left != nullptr || pR->right != nullptr)
     {
-        tree(prefix + (hasRight ? "│   " : "    "), pR->right, true);
-        tree(prefix + (hasRight ? "│   " : "    "), pR->left, false);
+        tree(prefix + ((hasRight) ? "│   " : "    "), pR->right, true);
+        tree(prefix + ((hasRight) ? "│   " : "    "), pR->left, false);
     }
 
     return;
 }
 
 /************
- * @brief Get height of a node counting from leaf
+ * @brief Get height of a node
  *
  * @tparam K
  * @tparam V
@@ -994,15 +969,15 @@ void BKUTree<K, V>::AVLTree::tree(string prefix, Node *pR, bool hasRight)
  * @return int
  ************/
 template <class K, class V>
-int BKUTree<K, V>::AVLTree::getHeight(Node *pR)
+int BKUTree<K, V>::AVLTree::findHeight(Node *pR)
 {
     if (pR == nullptr)
         return 0;
-    return 1 + MAX(getHeight(pR->left), getHeight(pR->right));
+    return pR->height;
 }
 
 /************
- * @brief Get balance of a node (left height - right height)
+ * @brief Calculate balace of a node
  *
  * @tparam K
  * @tparam V
@@ -1010,11 +985,11 @@ int BKUTree<K, V>::AVLTree::getHeight(Node *pR)
  * @return int
  ************/
 template <class K, class V>
-int BKUTree<K, V>::AVLTree::getBalance(Node *pR)
+int BKUTree<K, V>::AVLTree::findBalance(Node *pR)
 {
     if (pR == nullptr)
         return 0;
-    return getHeight(pR->left) - getHeight(pR->right);
+    return findHeight(pR->left) - findHeight(pR->right);
 }
 
 /************
@@ -1028,13 +1003,18 @@ int BKUTree<K, V>::AVLTree::getBalance(Node *pR)
 template <class K, class V>
 typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rotateLeft(Node *pR)
 {
-    Node *tmpRight = pR->right;
-    Node *tmpRLeft = tmpRight->left;
+    Node *tmp = pR->right;
 
-    tmpRight->left = pR;
-    pR->right = tmpRLeft;
+    pR->right = tmp->left;
+    tmp->left = pR;
 
-    return tmpRight;
+    pR->height = MAX(findHeight(pR->left), findHeight(pR->right)) + 1;
+    tmp->height = MAX(findHeight(tmp->left), findHeight(tmp->right)) + 1;
+
+    pR->balance = findBalance(pR);
+    tmp->balance = findBalance(tmp);
+
+    return tmp;
 }
 
 /************
@@ -1048,13 +1028,18 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rotateLeft(Node *
 template <class K, class V>
 typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rotateRight(Node *pR)
 {
-    Node *tmpLeft = pR->left;
-    Node *tmpLRight = tmpLeft->right;
+    Node *tmp = pR->left;
 
-    tmpLeft->right = pR;
-    pR->left = tmpLRight;
+    pR->left = tmp->right;
+    tmp->right = pR;
 
-    return tmpLeft;
+    pR->height = MAX(findHeight(pR->left), findHeight(pR->right)) + 1;
+    tmp->height = MAX(findHeight(tmp->left), findHeight(tmp->right)) + 1;
+
+    pR->balance = findBalance(pR);
+    tmp->balance = findBalance(tmp);
+
+    return tmp;
 }
 
 #endif

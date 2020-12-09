@@ -112,6 +112,12 @@
 
 \pdfbookmark[0]{Question 1}{ques1}
 \section*{Question 1:}
+Write a MIPS program with the following requirements:
+\begin{enumerate}[label=\alph*.]
+  \item Declare an integer array with 10 synthetic data elements.
+  \item Calculate the sum of all elements.
+  \item Print the result to the terminal.
+\end{enumerate}
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
   \begin{lstlisting}
@@ -127,8 +133,7 @@
   main:
       la      $s7, X              # Address of X
       add     $s0, $zero, $zero   # Counter
-      add     $s1, $zero, $zero   # Sum of even
-      add     $s2, $zero, $zero   # Sum of odd
+      add     $s1, $zero, $zero   # Sum
       addi    $t7, $zero, 40      # Limiter
   Sum:
       add     $t0, $s0, $s7       # Address of element
@@ -153,11 +158,18 @@
       li      $v0, 10
       syscall
 
-          \end{lstlisting}
+  \end{lstlisting}
 \end{mdframed}
 
 \pdfbookmark[0]{Question 2}{ques2}
 \section*{Question 2:}
+Write a MIPS program with the following requirements:
+\begin{enumerate}[label=\alph*.]
+  \item Declare an integer array with 10 synthetic data elements.
+  \item Calculate the sum of all odd elements (a[1], a[3],\dots).
+  \item Calculate the sum of all even elements (a[0], a[2],\dots).
+  \item Print the results to the terminal.
+\end{enumerate}
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
   \begin{lstlisting}
@@ -182,13 +194,13 @@
   Sum:
       add     $t0, $s0, $s7       # Address of element
       lw      $t1, 0($t0)
-      add     $s1, $s1, $t1       # Odd summer
+      add     $s1, $s1, $t1       # Even summer
       addi    $s0, $s0, 4         # i = i + 1
       beq     $s0, $t7, SExit
 
       add     $t0, $s0, $s7       # Address of element
       lw      $t1, 0($t0)
-      add     $s2, $s2, $t1       # Even summer
+      add     $s2, $s2, $t1       # Odd summer
       addi    $s0, $s0, 4         # i = i + 1
       beq     $s0, $t7, SExit
 
@@ -224,11 +236,12 @@
       li      $v0, 10
       syscall
 
-    \end{lstlisting}
+  \end{lstlisting}
 \end{mdframed}
 
 \pdfbookmark[0]{Question 3}{ques3}
 \section*{Question 3:}
+Write a MIPS proram that receives 10 integer numbers from users through the terminal and store these numbers into an array. Print the sum of all array elements to the terminal.
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
   \begin{lstlisting}
@@ -297,12 +310,66 @@
 
 \pdfbookmark[0]{Question 4}{ques4}
 \section*{Question 4:}
+Write a MIPS program with the following requirements:
+\begin{enumerate}[label=\alph*.]
+  \item Declare an integer array with 10 synthetic data elements.
+  \item Print a sentence to terminal to request an integer number that is greater than 0 and less than 10 (assume that user strictly follow this rule).
+  \item Print value of the element at index collected from the previous step.
+\end{enumerate}
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
   \begin{lstlisting}
 
+      .data:
+      X: .word 0, 11, 22, 33, 44, 55, 66, 77, 88, 99
+      msg1: .asciiz "Enter an integer between 0 and 10: "
+      msg2: .asciiz "Data at index is "
 
-    \end{lstlisting}
+      # Start program code
+      .text:
+
+      .globl main
+  main:
+      la      $s7, X              # Address of X
+      add     $s0, $zero, $zero   # Counter
+      addi    $t6, $zero, 4       # Sum limiter
+      addi    $t7, $zero, 40      # Limiter
+
+      # Print string msg1
+      li      $v0, 4
+      la      $a0, msg1
+      syscall
+
+      # Get input and save
+      li      $v0, 5
+      syscall
+      move    $t1, $v0
+      mul     $t6, $t1, $t6
+
+  Search:
+      add     $t0, $s0, $s7       # Address of element
+      lw      $t1, 0($t0)
+      beq     $s0, $t6, SExit
+      beq     $s0, $t7, SExit
+      addi    $s0, $s0, 4         # i = i + 1
+      j       Search
+
+  SExit:
+      # Print string msg2
+      li      $v0, 4
+      la      $a0, msg2
+      syscall
+
+      # Print sum
+      li      $v0, 1
+      move    $a0, $t1
+      syscall
+
+      # Exit
+      li      $v0, 10
+      syscall
+
+  \end{lstlisting}
 \end{mdframed}
 
 

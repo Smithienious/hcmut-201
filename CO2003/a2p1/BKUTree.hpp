@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.2.0
- * @date 2020-12-08
+ * @version 0.2.1
+ * @date 2020-12-14
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -529,6 +529,21 @@ void BKUTree<K, V>::SplayTree::clear()
 }
 
 /************
+ * @brief Set corresponding AVL node
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @param iCorr
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::SplayTree::setCorr(Node *pR, typename BKUTree<K, V>::AVLTree::Node *iCorr)
+{
+    pR->setCorr(iCorr);
+    return;
+}
+
+/************
  * @brief Print AVL tree
  *
  * @tparam K
@@ -761,51 +776,87 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
  * @param key
  ************/
 template <class K, class V>
-void BKUTree<K, V>::AVLTree::remove(K key) // TODO
+void BKUTree<K, V>::AVLTree::remove(K key) // ! 9 3
 {
-    function<Node *(Node *)> minOfRight = [](Node *pR) {
-        Node *curr = pR->right;
-        while (curr->left != nullptr)
-            curr = curr->left;
-        return curr;
-    };
-
-    function<Node *(K, Node *)> recursiveDelete = [&](K key, Node *pR) {
+    function<Node *(K, Node *, Node *)> recursiveDelete = [&](K key, Node *pR, Node *pN) {
         if (pR == nullptr)
             throw "Not found";
 
+        Node *tmp = nullptr;
+
         if (key < pR->entry->key)
-            pR->left = recursiveDelete(key, pR->left);
+            pR->left = recursiveDelete(key, pR->left, pR);
         else if (key > pR->entry->key)
-            pR->right = recursiveDelete(key, pR->right);
+            pR->right = recursiveDelete(key, pR->right, pR);
         else
         {
-            // * Node with no or one child
+            // * No or one child
             if (pR->left == nullptr || pR->right == nullptr)
             {
-                Node *tmp = (pR->left) ? pR->left : pR->right;
+                tmp = (pR->left) ? pR->left : pR->right;
 
-                if (tmp == nullptr) // * No child
+                if (pN != nullptr)
                 {
-                    tmp = pR;
-                    pR = nullptr;
+                    if (pN->left == pR)
+                        pN->left = tmp;
+                    else
+                        pN->right = tmp;
                 }
-                else // * One child
-                    *pR = *tmp;
 
-                delete tmp->entry;
-                delete tmp;
+                delete pR->entry;
+                delete pR;
+                pR = nullptr;
+                if (tmp != nullptr)
+                    tmp->left = tmp->right = nullptr;
+
+                if (pN == nullptr)
+                    return pN;
             }
             else // * Two children
             {
-                Node *tmp = minOfRight(pR);
-                pR->entry = tmp->entry;
-                pR->right = recursiveDelete(tmp->entry->key, pR->right);
+                // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p427519
+                Node *curr = pR->left, *par = pR->left;
+                while (curr->right != nullptr)
+                {
+                    par = curr;
+                    curr = curr->right;
+                }
+
+                if (pN != nullptr)
+                {
+                    if (pN->left == pR)
+                        pN->left = curr;
+                    else
+                        pN->right = curr;
+                }
+                else
+                    root = curr;
+
+                if (curr == par)
+                {
+                    pR->left = curr->left;
+                    curr->left = pR;
+                    curr->right = pR->right;
+                    pR->right = nullptr;
+                }
+                else
+                {
+                    curr->left = pR->left;
+                    curr->right = pR->right;
+                    par->right = pR;
+                    pR->left = pR->right = nullptr;
+                }
+
+                tmp = curr;
+                tmp->left = recursiveDelete(pR->entry->key, tmp->left, tmp);
             }
         }
 
-        if (pR == nullptr)
-            return pR;
+        if (pR == nullptr || pR->entry == nullptr)
+            return tmp;
+
+        // *
+        pR->height = MAX(findHeight(pR->left), findHeight(pR->right)) + 1;
 
         // *
         pR->balance = findBalance(pR);
@@ -835,7 +886,7 @@ void BKUTree<K, V>::AVLTree::remove(K key) // TODO
         return pR;
     };
 
-    root = recursiveDelete(key, root);
+    root = recursiveDelete(key, root, nullptr);
     return;
 }
 
@@ -916,6 +967,21 @@ void BKUTree<K, V>::AVLTree::clear()
     };
 
     recursiveClear(root);
+    return;
+}
+
+/************
+ * @brief Set corresponding Splay node
+ *
+ * @tparam K
+ * @tparam V
+ * @param pR
+ * @param iCorr
+ ************/
+template <class K, class V>
+void BKUTree<K, V>::AVLTree::setCorr(Node *pR, typename BKUTree<K, V>::SplayTree::Node *iCorr)
+{
+    pR->setCorr(iCorr);
     return;
 }
 

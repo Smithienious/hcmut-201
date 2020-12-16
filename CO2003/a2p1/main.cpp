@@ -25,9 +25,9 @@ void printValue(int key, int value)
 
 void BKeL1()
 {
-  /**
-     *  3 1 2 7 5 4 9
-     **/
+  /*
+   *  3 1 2 7 5 4 9
+   */
 
   BKUTree<int, int> *tree = new BKUTree<int, int>();
   int keys[] = {1, 3, 5, 7, 9, 2, 4};
@@ -43,9 +43,9 @@ void BKeL1()
 
 void BKeL2()
 {
-  /************
+  /*
    * 4 2 1 3 9 5 7
-   ************/
+   */
 
   BKUTree<int, int> *tree = new BKUTree<int, int>();
   int keys[] = {1, 3, 5, 7, 9, 2, 4};

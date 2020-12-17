@@ -1,0 +1,560 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vntex, inputenc}
+\usepackage{amsmath, amssymb, anyfontsize, array, color,  enumerate, enumitem, fancyhdr, float, graphicx, hyperref, lastpage, listings, mathtools, mips, natbib, pifont, tikz}
+\usepackage[open,openlevel=0]{bookmark}
+\usepackage[framemethod=tikz]{mdframed}
+
+\usetikzlibrary{calc}
+\newcommand\HRule{\rule{12cm}{1pt}}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+	\color{blue}
+	\begin{tabular}{rl}
+		\begin{picture}(25,15)(0,0)
+		\put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+		\end{picture}
+		\begin{tabular}{l}
+			\textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+			\textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+		\end{tabular}
+	\end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{l}
+		\tiny \bf \\
+		\tiny \bf
+	\end{tabular}
+}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 4}
+\fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=[MIPS]Assembler,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3,
+	numbers=left,
+	stepnumber=1,
+	numbersep=1pt,
+	firstnumber=1,
+	numberfirstline=true
+}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width = 2pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+  \end{tikzpicture}
+
+  \begin{center}
+
+    % Upper part of the page
+    \textbf{\fontsize{12pt}{1pt}\selectfont HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\[0.5cm]
+    {\fontsize{13pt}{1pt}\selectfont Faculty of Computer Science \& Engineering}\\[0.5cm]
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1.7in,height=1.7in]{BK.png}
+    \end{figure}
+
+    % Title
+    \HRule\\[0.5cm]
+    { \textbf{\fontsize{25pt}{1pt}\selectfont Computer Architecture Week 4}}\\[0.4cm]
+
+    \HRule\\[0.8cm]
+    \begin{minipage}{0.545\textwidth}
+      \begin{flushleft}
+        \textbf{Authors:}\\
+        \begin{tabular}{l l}
+          Lưu Nguyễn Hoàng Minh & 1952845 \\
+          Vũ Anh Nhi            & 1952380 \\
+          Nguyễn Chính Khôi     & 1952793 \\
+          Nguyễn Hoàng          & 1952255 \\
+        \end{tabular}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \textbf{Class:}\\
+        CO2008\_CC02\\
+        \textbf{Lecturer:}\\
+        Kiều Đỗ Nguyên Bình\\
+
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    \vspace{2cm}
+    {\large} %{\large \today}
+  \end{center}
+\end{titlepage}
+
+
+\pdfbookmark[0]{Question 1}{ques1}
+\section*{Question 1:}
+Write a MIPS program with the following requirements:
+\begin{enumerate}
+  \item Request an integer number from users.
+  \item If the number is positive, repeat step 1. Otherwise, print sum of all integer numbers that the program has read from users.
+\end{enumerate}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data:
+    msg: .asciiz "Enter an integer: "
+    msg1: .ascii "The entered number is not positive, the sum is: "
+
+    # Start program code
+    .text:
+
+    .globl main
+
+  main:
+    # i : s0, sum : s1
+    addi	$s0, $zero, 1 	# int i = 1
+    addi	$s1, $zero, -1 	# int sum = -1
+
+  WHILE:
+    slt		$t0, $zero, $s0	# while (i > 0)
+    bne		$t0, 1, WEXIT
+
+    add		$s1, $s1, $s0 	# sum += i
+    li		$v0, 4					# cout << "Enter an integer: "
+    la		$a0, msg				#
+    syscall								#
+    li		$v0, 5				# cin >> i
+    syscall								#
+    move	$s0, $v0			#
+
+    j WHILE
+
+  WEXIT:
+    # Print string msg1
+    li		$v0, 4
+    la		$a0, msg1
+    syscall
+
+    # Print sum
+    li		$v0, 1
+    move	$a0, $s1
+    syscall
+
+    # Exit
+    li		$v0, 10
+    syscall
+
+  \end{lstlisting}
+\end{mdframed}
+
+\pdfbookmark[0]{Question 2}{ques2}
+\section*{Question 2:}
+Implement the following C code by using MIPS code. Assume that b and c are 10 and 5, respectively while input variable is read from keyboard. Print value of a to the terminal.
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+  switch(input){
+    case 0: a = b + c; break;
+    case 1: a = b - c; break;
+    case 2: a = c - b; break;
+    deafult: printf("please input an another integer numbers\n"); break;
+  }
+
+  \end{lstlisting}
+\end{mdframed}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data:
+    msg: .asciiz "Enter an integer: "
+    print: .asciiz "a = "
+    break: .asciiz "Please input other integer numbers"
+
+    # Start program code
+    .text:
+
+    .globl main
+  main:
+    addi    $s1, $zero, 10         # b = 10
+    addi    $s2, $zero, 5          # c = 5
+
+    # Print string msg
+    li      $v0, 4
+    la      $a0, msg
+    syscall
+
+    # Get input and save
+    li      $v0, 5
+    syscall
+    move    $s0, $v0
+
+    add     $t0, $s1, $s2           # b + c
+    sub     $t1, $s1, $s2           # b - c
+    sub     $t2, $s2, $s1           # c - b
+
+    beq     $s0, $t0, case0
+    beq     $s0, $t1, case1
+    beq     $s0, $t2, case2
+    j default
+
+  case0:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $s0
+    syscall
+
+    j Exit
+
+  case1:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $s0
+    syscall
+
+    j Exit
+
+  case2:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $s0
+    syscall
+
+    j Exit
+
+  default:
+    # Print string break
+    li      $v0, 4
+    la      $a0, break
+    syscall
+
+  Exit:
+    # Exit
+    li      $v0, 10
+    syscall
+
+
+  \end{lstlisting}
+\end{mdframed}
+
+\pdfbookmark[0]{Question 3}{ques3}
+\section*{Question 3:}
+Write a MIPS program with the following requirements.
+\begin{enumerate}
+  \item Declare an integer array with 10 synthetic data elements.
+  \item Read an integer number from users.
+  \item Find in the array if the integer read from user exists in the array or not. Print the position of the integer number in the array if found; otherwise tell users that the number does not exist in the array.
+\end{enumerate}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data:
+    a: .word 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+    msg: .asciiz "Enter an integer: "
+    msg1: .asciiz "Position of the integer: "
+    msg2: .asciiz "The integer does not exist in the array"
+
+    # Start program code
+    .text:
+
+    .globl main
+
+  main:
+    li $s7, 40 	# array size
+    li $s1, 0		# int i = 0
+    li $s2, 0		# int pos = 0
+    la $s3, a
+    li $a0, 0
+
+    # Print string msg
+    li $v0, 4
+    la $a0, msg
+    syscall
+
+    # Get input and save
+    li $v0, 5
+    syscall
+    move $s0, $v0
+
+  WHILE:
+    slt $t0, $s1, $s7	# while (i < n)
+    bne $t0, 1, WEXIT
+
+    add $t1, $s1, $s3		# index [i]
+    lw $t1, 0($t1)		# get a[i]
+    beq $t1, $s0, TRUE
+    addi $s1, $s1, 4
+    addi $s2, $s2, 1
+    j WHILE
+  WEXIT:
+    # Print string msg2
+    li      $v0, 4
+    la      $a0, msg2
+    syscall
+  j EXIT
+  TRUE:
+    # Print string msg1
+    li      $v0, 4
+    la      $a0, msg1
+    syscall
+
+    # Print pos
+    li      $v0, 1
+    move    $a0, $s2
+    syscall
+  EXIT:
+    # Exit
+    li      $v0, 10
+    syscall
+
+    \end{lstlisting}
+\end{mdframed}
+
+
+\pdfbookmark[0]{Question 4}{ques4}
+\section*{Question 4:}
+Given the following leaf procedure in ANSI C
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+  void swap(int v[], int k)
+  {
+    int temp;
+    temp = v[k];
+    v[k] = v[k+1];
+    v[k+1] = temp;
+  }
+
+  \end{lstlisting}
+\end{mdframed}
+Assume that the \(\$a0\) register will store the base address of the v array while the \(\$a1\) register keeps value k.
+The array v consists of 10 elements in integer and is pre-defined in the data section.
+\begin{enumerate}
+  \item Write a main program the receive value k from user, check the value k and call the procedure swap if possible.
+  \item Watch the \(\$ra\) register before and after the \(jal\) and \(jr\) instructions are executed.
+\end{enumerate}
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data:
+    a: .word 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+    msg: .asciiz "Enter an integer: "
+    msg1: .asciiz "New array is: "
+    msg2: .asciiz " "
+    msg3: .asciiz "Not possible"
+
+    # Start program code
+    .text:
+
+    .globl main
+
+  main:
+    li $s7, 40 	# array size
+    li $s1, 0	#int i = 0
+    la $s2, a
+    li $a0, 0
+
+    # Print string msg
+    li      $v0, 4
+    la      $a0, msg
+    syscall
+
+    # Get input and save
+    li      $v0, 5
+    syscall
+    move    $s0, $v0
+
+    li $t1, 9
+    slt $t0, $s0, $t1
+    beq $t0, 0, NOTPOSSIBLE
+
+    move $a0, $s2
+    move $a1, $s0
+    jal SWAP
+
+    # Print string msg1
+    li      $v0, 4
+    la      $a0, msg1
+    syscall
+  WHILE:
+    slt $t0, $s1, $s7	# while (i < n)
+    bne $t0, 1, WEXIT
+
+    add $t1, $s1, $s2	# index [i]
+    lw $t1, 0($t1)		# get a[i]
+
+    # Print a[i]
+    li      $v0, 1
+    move    $a0, $t1
+    syscall
+    # Print string msg2
+    li      $v0, 4
+    la      $a0, msg2
+    syscall
+
+    addi $s1, $s1, 4
+    j WHILE
+  WEXIT:
+    j EXIT
+
+  NOTPOSSIBLE:
+    # Print string msg3
+    li      $v0, 4
+    la      $a0, msg3
+    syscall
+    EXIT:
+    # Exit
+    li      $v0, 10
+    syscall
+
+  SWAP:
+    addi $sp, $sp, -4
+    sw $s0, 0($sp)
+
+    add $a1, $a1, $a1
+    add $a1, $a1, $a1
+    add $t0, $a0, $a1
+    lw $s0, 0($t0)
+    lw $t1, 4($t0)
+    sw $t1, 0($t0)
+    sw $s0, 4($t0)
+    jr $ra
+
+    lw $s0, 0($sp)
+    addi $sp, $sp, 4
+
+  \end{lstlisting}
+\end{mdframed}
+
+
+\pdfbookmark[0]{Question 5}{ques5}
+\section*{Question 5:}
+Given the following factorial MIPS program in a recursive form (as in the slide)
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+  fact:
+    addi    $sp, $sp, -8    # adjust stack for 2 items
+    sw      $ra, 4($sp)     # save return address
+    sw      $a0, 0($sp)     # save argument
+    slti    $t0, $a0, 1     # test for n < 1
+    beq     $t0, $zero, L1
+    addi    $v0, $zero, 1   # if so, result is 1
+    addi    $sp, $sp, 8     # pop 2 items from stack
+    jr      $ra             # and return
+
+  L1:
+    addi    $a0, $a0, -1    # else decrement n
+    jal     fact            # recursive call
+    lw      $a0, 0($sp)     # restore original n
+    lw      $ra, 4($sp)     # and return address
+    addi    $sp, $sp, 8     # pop 2 items from stack
+    mul     $v0, $a0, $v0   # multiply to get result
+    jr      $ra             # and return
+
+    \end{lstlisting}
+\end{mdframed}
+\begin{enumerate}
+  \item Type the above procedure and write a main program that call the above procedure with different n, where n is in the \(\$a0\) register. Watch the results.
+  \item When n is 2, run the program step by step and watch the execution of instructions as well as the \(\$ra\) register and values store/load to/from the stack.
+\end{enumerate}
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data:
+    msg: .asciiz "Enter an integer: "
+    print: .asciiz "Output is "
+
+    # Start program code
+    .text:
+
+    .globl main
+  main:
+    # Print string msg
+    li      $v0, 4
+    la      $a0, msg
+    syscall
+
+    # Get input and save
+    li      $v0, 5
+    syscall
+    move    $s0, $v0
+
+    # Caller
+    move    $a0, $s0
+    jal     fact
+    move    $s0, $v0
+
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $s0
+    syscall
+
+    # Exit
+    li      $v0, 10
+    syscall
+
+  fact:
+    addi    $sp, $sp, -8    # adjust stack for 2 items
+    sw      $ra, 4($sp)     # save return address
+    sw      $a0, 0($sp)     # save argument
+    slti    $t0, $a0, 1     # test for n < 1
+    beq     $t0, $zero, L1
+    addi    $v0, $zero, 1   # if so, result is 1
+    addi    $sp, $sp, 8     # pop 2 items from stack
+    jr      $ra             # and return
+
+  L1:
+    addi    $a0, $a0, -1    # else decrement n
+    jal     fact            # recursive call
+    lw      $a0, 0($sp)     # restore original n
+    lw      $ra, 4($sp)     # and return address
+    addi    $sp, $sp, 8     # pop 2 items from stack
+    mul     $v0, $a0, $v0   # multiply to get result
+    jr      $ra             # and return
+
+    \end{lstlisting}
+\end{mdframed}
+
+\end{document}

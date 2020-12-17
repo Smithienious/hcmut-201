@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.3.0
- * @date 2020-12-16
+ * @version 0.3.1
+ * @date 2020-12-17
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -98,7 +98,7 @@ public:
 
     void add(K, V);
     Node *add(Entry *);
-    void remove(K);
+    void remove(K, bool fromMaster = false);
     V search(K);
 
     void traverseNLR(void (*)(K, V));
@@ -149,7 +149,7 @@ public:
 
     void add(K, V);
     Node *add(Entry *);
-    void remove(K);
+    void remove(K, bool fromMaster = false);
     V search(K);
 
     void traverseNLR(void (*)(K, V));
@@ -190,7 +190,7 @@ void BKUTree<K, V>::add(K key, V value)
 template <class K, class V>
 void BKUTree<K, V>::remove(K key)
 {
-  avl->remove(key);
+  avl->remove(key, true);
   splay->remove(key);
   return;
 }
@@ -383,7 +383,7 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::add(Entry *en
 }
 
 template <class K, class V>
-void BKUTree<K, V>::SplayTree::remove(K key)
+void BKUTree<K, V>::SplayTree::remove(K key, bool fromMaster)
 {
   // TODO
 }
@@ -564,141 +564,117 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
 }
 
 template <class K, class V>
-void BKUTree<K, V>::AVLTree::remove(K key) // ! 3
+void BKUTree<K, V>::AVLTree::remove(K key, bool fromMaster)
 {
-  function<Node *(K, Node *, Node *)>
-      recursiveDelete = [&](K key, Node *pR, Node *pN) {
-        if (pR == nullptr)
-          throw "Not found";
+  function<Node *(K, Node *, Node *, bool)> recursiveDelete = [&](K key, Node *pR, Node *pN, bool fromMaster) {
+    if (pR == nullptr)
+      throw "Not found";
 
-        Node *tmp = nullptr;
-        bool isRight = false;
+    if (key < pR->entry->key)
+      pR->left = recursiveDelete(key, pR->left, pR, fromMaster);
+    else if (key > pR->entry->key)
+      pR->right = recursiveDelete(key, pR->right, pR, fromMaster);
+    else
+    {
+      // * No or one child
+      if (pR->left == nullptr || pR->right == nullptr)
+      {
+        Node *tmp = (pR->left) ? pR->left : pR->right;
 
-        if (key < pR->entry->key)
-          pR->left = recursiveDelete(key, pR->left, pR);
-        else if (key > pR->entry->key)
-          pR->right = recursiveDelete(key, pR->right, pR);
+        if (pN->left == pR)
+          pN->left = tmp;
+        else
+          pN->right = tmp;
+
+        // * No child
+        if (tmp == nullptr)
+        {
+          tmp = pR;
+          pR = nullptr;
+        }
+        else // * One child
+        {
+          Node *tmp1 = tmp;
+          tmp = pR;
+          pR = tmp1;
+        }
+
+        if (fromMaster)
+          delete tmp->entry;
+        delete tmp;
+
+        if (pN == nullptr)
+          return pN;
+      }
+      else // * Two children
+      {
+        // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p427519
+        Node *cur = pR->left, *par = cur;
+        while (cur->right != nullptr)
+        {
+          par = cur;
+          cur = cur->right;
+        }
+
+        Node tmp = *pR;
+        pR->left = cur->left;
+        pR->right = cur->right;
+        cur->right = tmp.right;
+
+        if (par == cur)
+        {
+          cur->left = pR;
+        }
         else
         {
-          // * No or one child
-          if (pR->left == nullptr || pR->right == nullptr)
-          {
-            tmp = (pR->left) ? pR->left : pR->right;
-
-            if (pN != nullptr)
-            {
-              if (pN->left == pR)
-              {
-                pN->left = tmp;
-                isRight = false;
-              }
-              else
-              {
-                pN->right = tmp;
-                isRight = true;
-              }
-            }
-
-            delete pR->entry;
-            delete pR;
-            pR = nullptr;
-            if (tmp != nullptr)
-              tmp->left = tmp->right = nullptr;
-
-            if (pN == nullptr)
-              return pN;
-          }
-          else // * Two children
-          {
-            // http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p427519
-            Node *curr = pR->left, *par = pR->left;
-            while (curr->right != nullptr)
-            {
-              par = curr;
-              curr = curr->right;
-            }
-
-            if (pN != nullptr)
-            {
-              if (pN->left == pR)
-              {
-                pN->left = tmp;
-                isRight = false;
-              }
-              else
-              {
-                pN->right = tmp;
-                isRight = true;
-              }
-            }
-            else
-              root = curr;
-
-            if (curr == par)
-            {
-              pR->left = curr->left;
-              curr->left = pR;
-              curr->right = pR->right;
-              pR->right = nullptr;
-            }
-            else
-            {
-              curr->left = pR->left;
-              curr->right = pR->right;
-              par->right = pR;
-              pR->left = pR->right = nullptr;
-            }
-
-            tmp = curr;
-            tmp->left = recursiveDelete(pR->entry->key, tmp->left, tmp);
-          }
+          cur->left = par;
+          par->right = pR;
         }
 
-        if (pN != nullptr)
-        {
-          if (isRight)
-            pR = pN->right;
-          else
-            pR = pN->left;
-        }
+        if (pN->left == pR)
+          pN->left = cur;
+        else
+          pN->right = cur;
 
-        if (pR == nullptr || pR->entry == nullptr)
-          return tmp;
+        cur->left = recursiveDelete(pR->entry->key, cur->left, cur, fromMaster);
+      }
+    }
 
-        // *
-        pR->height = MAX(findHeight(pR->left), findHeight(pR->right)) + 1;
+    if (pR == nullptr || pR->entry == nullptr)
+      return pR;
 
-        // *
-        pR->balance = findBalance(pR);
+    // *
+    pR->height = MAX(findHeight(pR->left), findHeight(pR->right)) + 1;
 
-        if ((pR->balance > 1) &&
-            (key < pR->entry->key || pR->right == nullptr))
-        {
-          return rotateRight(pR);
-        }
+    // *
+    pR->balance = findBalance(pR);
 
-        if ((pR->balance < -1) &&
-            (key > pR->entry->key || pR->left == nullptr))
-        {
-          return rotateLeft(pR);
-        }
+    if (pR->balance > 1 && pR->left->balance >= 0)
+    {
+      return rotateRight(pR);
+    }
 
-        if (pR->balance > 1 && key > pR->entry->key)
-        {
-          pR->left = rotateLeft(pR->left);
-          return rotateRight(pR);
-        }
+    if (pR->balance < -1 && pR->right->balance <= 0)
+    {
+      return rotateLeft(pR);
+    }
 
-        if (pR->balance < -1 && key < pR->entry->key)
-        {
-          pR->right = rotateRight(pR->right);
-          return rotateLeft(pR);
-        }
+    if (pR->balance > 1 && pR->left->balance < 0)
+    {
+      pR->left = rotateLeft(pR->left);
+      return rotateRight(pR);
+    }
 
-        return pR;
-      };
+    if (pR->balance < -1 && pR->right->balance > 0)
+    {
+      pR->right = rotateRight(pR->right);
+      return rotateLeft(pR);
+    }
 
-  root = recursiveDelete(key, root, nullptr);
+    return pR;
+  };
+
+  root = recursiveDelete(key, root, nullptr, fromMaster);
   return;
 }
 

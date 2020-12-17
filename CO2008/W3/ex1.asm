@@ -9,8 +9,7 @@
 main:
     la      $s7, X              # Address of X
     add     $s0, $zero, $zero   # Counter
-    add     $s1, $zero, $zero   # Sum of even
-    add     $s2, $zero, $zero   # Sum of odd
+    add     $s1, $zero, $zero   # Sum
     addi    $t7, $zero, 40      # Limiter
 Sum:
     add     $t0, $s0, $s7       # Address of element

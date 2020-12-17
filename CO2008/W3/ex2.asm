@@ -18,13 +18,13 @@ main:
 Sum:
     add     $t0, $s0, $s7       # Address of element
     lw      $t1, 0($t0)
-    add     $s1, $s1, $t1       # Odd summer
+    add     $s1, $s1, $t1       # Even summer
     addi    $s0, $s0, 4         # i = i + 1
     beq     $s0, $t7, SExit
 
     add     $t0, $s0, $s7       # Address of element
     lw      $t1, 0($t0)
-    add     $s2, $s2, $t1       # Even summer
+    add     $s2, $s2, $t1       # Odd summer
     addi    $s0, $s0, 4         # i = i + 1
     beq     $s0, $t7, SExit
 

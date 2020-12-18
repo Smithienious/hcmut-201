@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.3.2
- * @date 2020-12-18
+ * @version 0.4.0
+ * @date 2020-12-19
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -44,7 +44,7 @@ public:
 private:
   AVLTree *avl;
   SplayTree *splay;
-  queue<K> keys; // recently accessed data
+  queue<K> keys;
   int maxNumOfKeys;
 
 public:
@@ -103,6 +103,7 @@ public:
 
     void tree(string, Node *, bool);
     Node *recursiveSearch(K, Node *, int &);
+    Node *retardedSearch(K, Node *, int &, Node *, vector<K> &, bool &, V &);
     Node *rotateLeft(Node *);
     Node *rotateRight(Node *);
   }; // class SplayTree
@@ -181,21 +182,28 @@ void BKUTree<K, V>::add(K key, V value)
 template <class K, class V>
 void BKUTree<K, V>::remove(K key)
 {
+  queue<K> tmpKeys;
+  while (!keys.empty())
+  {
+    if (key != tmpKeys.front())
+      tmpKeys.push(keys.front());
+    keys.pop();
+  }
+  keys = tmpKeys;
+
   avl->remove(key, false);
   splay->remove(key);
+
+  if (int(keys.size()) >= maxNumOfKeys)
+    keys.pop();
+  keys.push(splay->root->entry->key);
+
   return;
 }
 
 template <class K, class V>
 V BKUTree<K, V>::search(K key, vector<K> &traversedList)
 {
-  // ! http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p427749
-  // ! http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p428111
-  // ! http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p428522
-  // ! http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p428790
-  // ! http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p429038
-  // * http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p429039
-
   // * 1. If key is at root -> return root, else continue
   if (key == splay->root->entry->key)
     return splay->root->entry->value;
@@ -211,37 +219,36 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
       if (tmpKeys.size() >= maxNumOfKeys)
         tmpKeys.pop();
       tmpKeys.push(key);
-      return splay->search(key);
+      int i = 0;
+      bool splayed = false;
+      V rValue;
+      splay->root = splay->retardedSearch(key, splay->root, i, splay->root, traversedList, splayed, rValue);
+      return rValue;
     }
   }
 
   // * 3a. Get Splay root in AVL
   typename AVLTree::Node *splay2avl = splay->root->corr;
+  typename AVLTree::Node *avlNode = splay->root->corr;
 
   // * 3b. Try searching on AVL from Splay root in AVL. If found -> return key, else continue
   try
   {
     // * 3c.
-    return (avl->recursiveSearch(key, splay2avl))->entry->value;
+    avlNode = avl->recursiveSearch(key, splay2avl);
   }
   catch (...)
   {
-    // * Do nothing
-  }
-
-  // * 3d. Try searching on AVL from root. If node equals corresponding AVL node or not found -> throw not found, else continue
-  try
-  {
-    typename AVLTree::Node *avlNode = avl->recursiveSearch(key, avl->root, splay2avl);
-    return avlNode->entry->value;
-  }
-  catch (...)
-  {
-    // * Do nothing
+    // * 3d. Try searching on AVL from root. If node equals corresponding AVL node or not found -> throw not found, else continue
+    avlNode = avl->recursiveSearch(key, avl->root, splay2avl);
   }
 
   // * 3e. With node found in AVL, splay Splay tree at AVL->corr
-  splay->search(key);
+  typename SplayTree::Node *avl2splay = avlNode->corr;
+  int i = 0;
+  bool splayed = false;
+  V rValue;
+  splay->root = splay->retardedSearch(key, avl2splay, i, splay->root, traversedList, splayed, rValue);
 
   if (int(keys.size()) >= maxNumOfKeys)
     keys.pop();
@@ -439,10 +446,13 @@ void BKUTree<K, V>::SplayTree::clear(bool deleteEntry)
   function<void(Node *, bool &)> recursiveClear = [&](Node *pR, bool &deleteEntry) {
     if (pR != nullptr)
     {
-      clear(pR->left);
-      clear(pR->right);
+      recursiveClear(pR->left, deleteEntry);
+      recursiveClear(pR->right, deleteEntry);
       if (deleteEntry == true)
         delete pR->entry;
+      pR->left = pR->right = nullptr;
+      if (pR == root)
+        root = nullptr;
       delete pR;
     }
   };
@@ -545,6 +555,82 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::recursiveSear
   {
     relativeHeight += 1;
     return pR;
+  }
+
+  return pR;
+}
+
+template <class K, class V>
+typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::retardedSearch(K key, Node *pR, int &relativeHeight, Node *relativeRoot, vector<K> &traversedList, bool &splayed, V &rValue)
+{
+  if (pR == nullptr)
+    throw "Not found";
+  if (key == pR->entry->key)
+  {
+    rValue = pR->entry->value;
+    relativeHeight = 1;
+    return pR;
+  }
+
+  traversedList.push_back(pR->entry->key);
+  if (key < pR->entry->key)
+    pR->left = retardedSearch(key, pR->left, relativeHeight, relativeRoot, traversedList, splayed, rValue);
+  if (key > pR->entry->value)
+    pR->right = retardedSearch(key, pR->right, relativeHeight, relativeRoot, traversedList, splayed, rValue);
+
+  if (splayed == false)
+  {
+    splayed = true;
+
+    if (pR == relativeRoot && relativeHeight == 1)
+    {
+      // * Zig
+      if (key < pR->entry->key)
+        return rotateRight(pR);
+      // * Zag
+      if (key > pR->entry->key)
+        return rotateLeft(pR);
+    }
+    else if (relativeHeight == 2)
+    {
+      relativeHeight = 1;
+
+      if (key < pR->entry->key)
+      {
+        // * Zig Zig
+        if (key < pR->left->entry->key)
+        {
+          Node *tmp = rotateRight(pR);
+          return rotateRight(tmp);
+        }
+        // * Zig Zag
+        if (key > pR->left->entry->key)
+        {
+          pR->left = rotateLeft(pR->left);
+          return rotateRight(pR);
+        }
+      }
+      if (key > pR->entry->key)
+      {
+        // * Zag Zag
+        if (key > pR->right->entry->key)
+        {
+          Node *tmp = rotateLeft(pR);
+          return rotateLeft(tmp);
+        }
+        // * Zag Zig
+        if (key < pR->right->entry->key)
+        {
+          pR->right = rotateRight(pR->right);
+          return rotateLeft(pR);
+        }
+      }
+    }
+    else if (relativeHeight == 1)
+    {
+      relativeHeight += 1;
+      return pR;
+    }
   }
 
   return pR;
@@ -776,10 +862,13 @@ void BKUTree<K, V>::AVLTree::clear(bool deleteEntry)
   function<void(Node *, bool &)> recursiveClear = [&](Node *pR, bool &deleteEntry) {
     if (pR != nullptr)
     {
-      clear(pR->left);
-      clear(pR->right);
+      recursiveClear(pR->left, deleteEntry);
+      recursiveClear(pR->right, deleteEntry);
       if (deleteEntry == true)
         delete pR->entry;
+      pR->left = pR->right = nullptr;
+      if (pR == root)
+        root = nullptr;
       delete pR;
     }
   };

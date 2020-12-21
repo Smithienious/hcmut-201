@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.4.1
- * @date 2020-12-20
+ * @version 0.4.2
+ * @date 2020-12-21
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -285,14 +285,23 @@ void BKUTree<K, V>::traverseNLROnSplay(void (*func)(K, V))
 template <class K, class V>
 void BKUTree<K, V>::clear()
 {
-  avl->clear();
-  splay->clear(false);
+  if (avl != nullptr)
+  {
+    avl->clear(false);
+    delete avl;
+    avl = nullptr;
+  }
+
+  if (splay != nullptr)
+  {
+    splay->clear();
+    delete splay;
+    splay = nullptr;
+  }
+
   while (!keys.empty())
     keys.pop();
-  delete avl;
-  avl = nullptr;
-  delete splay;
-  splay = nullptr;
+
   return;
 }
 
@@ -383,6 +392,9 @@ void BKUTree<K, V>::SplayTree::traverseNLR(void (*func)(K, V))
 template <class K, class V>
 void BKUTree<K, V>::SplayTree::clear(bool deleteEntry)
 {
+  if (root == nullptr)
+    return;
+
   rClear(root, deleteEntry);
   root = nullptr;
   return;
@@ -720,6 +732,9 @@ void BKUTree<K, V>::AVLTree::traverseNLR(void (*func)(K, V))
 template <class K, class V>
 void BKUTree<K, V>::AVLTree::clear(bool deleteEntry)
 {
+  if (root == nullptr)
+    return;
+
   rClear(root, deleteEntry);
   root = nullptr;
   return;

@@ -555,7 +555,7 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rartedSearch(
   traversedList.push_back(pR->entry->key);
   if (key < pR->entry->key)
     pR->left = rartedSearch(key, pR->left, relativeHeight, splayed, rValue, traversedList);
-  if (key > pR->entry->value)
+  if (key > pR->entry->key)
     pR->right = rartedSearch(key, pR->right, relativeHeight, splayed, rValue, traversedList);
 
   if (splayed == true)
@@ -893,7 +893,7 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rSearch(K key, No
     return pR;
   if (key < pR->entry->key)
     rSearch(key, pR->left);
-  if (key > pR->entry->value)
+  if (key > pR->entry->key)
     rSearch(key, pR->right);
   return pR;
 }
@@ -912,7 +912,7 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rartedSearch(K ke
   traversedList.push_back(pR->entry->key);
   if (key < pR->entry->key)
     rartedSearch(key, pR->left, exitNode, rValue, traversedList);
-  if (key > pR->entry->value)
+  if (key > pR->entry->key)
     rartedSearch(key, pR->right, exitNode, rValue, traversedList);
   return pR;
 }

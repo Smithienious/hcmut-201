@@ -6,7 +6,7 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @date 2020-12-21
  *
  * @copyright Copyright (c) 2020
@@ -368,6 +368,9 @@ void BKUTree<K, V>::SplayTree::remove(K key, bool deleteEntry)
 
     if (deleteEntry == true)
       delete exRoot->entry;
+    else
+      exRoot->entry = nullptr;
+
     delete exRoot;
   }
 
@@ -480,7 +483,7 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rSearch(K key
   }
   if (key < pR->entry->key)
     pR->left = rSearch(key, pR->left, relativeHeight);
-  if (key > pR->entry->value)
+  if (key > pR->entry->key)
     pR->right = rSearch(key, pR->right, relativeHeight);
 
   // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p427653
@@ -822,6 +825,9 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rRemove(K key, No
 
       if (deleteEntry == true)
         delete tmp->entry;
+      else
+        tmp->entry = nullptr;
+
       delete tmp;
 
       if (pN == nullptr)

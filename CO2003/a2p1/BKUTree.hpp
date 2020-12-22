@@ -6,7 +6,7 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.4.4
+ * @version 0.4.5
  * @date 2020-12-22
  *
  * @copyright Copyright (c) 2020
@@ -191,6 +191,9 @@ void BKUTree<K, V>::add(K key, V value)
 template <class K, class V>
 void BKUTree<K, V>::remove(K key)
 {
+  if (avl == nullptr || splay == nullptr)
+    throw "Not found";
+
   avl->remove(key, false);
   splay->remove(key);
 
@@ -347,6 +350,9 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::add(Entry *en
 template <class K, class V>
 void BKUTree<K, V>::SplayTree::remove(K key, bool deleteEntry)
 {
+  if (root == nullptr)
+    throw "Not found";
+
   int i = 0;
   root = rSearch(key, root, i);
 
@@ -726,6 +732,9 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::add(Entry *entry)
 template <class K, class V>
 void BKUTree<K, V>::AVLTree::remove(K key, bool deleteEntry)
 {
+  if (root == nullptr)
+    throw "Not found";
+
   root = rRemove(key, root, nullptr, deleteEntry);
   return;
 }
@@ -811,55 +820,132 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rRemove(K key, No
     pR->right = rRemove(key, pR->right, pR, deleteEntry);
   else
   {
-    // * No or one child
-    if (pR->left == nullptr || pR->right == nullptr)
+    // * No child
+    if (pR->left == nullptr && pR->right == nullptr)
     {
-      Node *tmp = (pR->left) ? pR->left : pR->right;
-
-      if (pN->left == pR)
-        pN->left = tmp;
-      else
-        pN->right = tmp;
-
-      // * No child
-      if (tmp == nullptr)
+      if (pN != nullptr)
       {
-        tmp = pR;
-        pR = nullptr;
-      }
-      else // * One child
-      {
-        Node *tmp1 = tmp;
-        tmp = pR;
-        pR = tmp1;
+        if (pN->left == pR)
+          pN->left = nullptr;
+        else
+          pN->right = nullptr;
       }
 
       if (deleteEntry == true)
-        delete tmp->entry;
+        delete pR->entry;
       else
-        tmp->entry = nullptr;
+        pR->entry = nullptr;
 
-      delete tmp;
+      delete pR;
+      pR = nullptr;
 
       if (pN == nullptr)
       {
         root = pN;
         return pN;
       }
+
+      return nullptr;
+    }
+    // * Left child
+    else if (pR->right == nullptr)
+    {
+      Node *tmp = pR->left;
+
+      if (pN != nullptr)
+      {
+        if (pN->left == pR)
+          pN->left = tmp;
+        else
+          pN->right = tmp;
+      }
+
+      if (deleteEntry == true)
+        delete pR->entry;
+      else
+        pR->entry = nullptr;
+
+      delete pR;
+      pR = nullptr;
+
+      if (pN == nullptr)
+      {
+        root = pN;
+        return pN;
+      }
+
+      return tmp;
+    }
+    // * Right child
+    else if (pR->left == nullptr)
+    {
+      Node *tmp = pR->right;
+
+      if (pN != nullptr)
+      {
+        if (pN->left == pR)
+          pN->left = tmp;
+        else
+          pN->right = tmp;
+      }
+
+      if (deleteEntry == true)
+        delete pR->entry;
+      else
+        pR->entry = nullptr;
+
+      delete pR;
+      pR = nullptr;
+
+      if (pN == nullptr)
+      {
+        root = pN;
+        return pN;
+      }
+
+      return tmp;
     }
     else // * Two children
     {
       // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=130606#p427519
-      Node *cur = pR->left;
+      Node *cur = pR->left, *par = cur;
       while (cur->right != nullptr)
+      {
+        par = cur;
         cur = cur->right;
+      }
 
-      *pR->entry = *cur->entry;
-      pR->corr = cur->corr;
-      if (pR->corr != nullptr)
-        pR->corr->corr = pR;
+      if (pN != nullptr)
+      {
+        if (pN->left == pR)
+          pN->left = cur;
+        else
+          pN->right = cur;
+      }
 
-      pR->left = rRemove(cur->entry->key, pR->left, pR, deleteEntry);
+      Node *tmp = cur->left;
+
+      if (par == cur)
+      {
+        cur->left = pR;
+        cur->right = pR->right;
+        pR->left = tmp;
+        pR->right = nullptr;
+      }
+      else
+      {
+        cur->left = pR->left;
+        cur->right = pR->right;
+        pR->left = tmp;
+        pR->right = nullptr;
+        par->right = pR;
+      }
+
+      tmp = cur;
+      cur = pR;
+      pR = tmp;
+
+      pR->left = rRemove(key, pR->left, pR, deleteEntry);
     }
   }
 

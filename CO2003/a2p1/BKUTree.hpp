@@ -899,9 +899,9 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rSearch(K key, No
     return pR;
 
   if (key < pR->entry->key)
-    rSearch(key, pR->left);
+    pR->left = rSearch(key, pR->left);
   if (key > pR->entry->key)
-    rSearch(key, pR->right);
+    pR->right = rSearch(key, pR->right);
 
   return pR;
 }

@@ -216,7 +216,13 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
 {
   // * 1. If key is at root -> return root, else continue
   if (key == splay->root->entry->key)
+  {
+    if (keys.size() >= maxNumOfKeys)
+      keys.pop();
+    keys.push(key);
+
     return splay->root->entry->value;
+  }
 
   // * 2. If key is in queue -> find in Splay, else continue
   queue<K> tmpKeys = keys;
@@ -257,7 +263,6 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
   }
 
   // * 3e. With node found in AVL, splay Splay tree at AVL->corr
-  typename SplayTree::Node *avl2splay = avlNode->corr;
   int i = 0;
   bool splayed = false;
   vector<K> tmpList;
@@ -267,6 +272,7 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
   if (int(keys.size()) >= maxNumOfKeys)
     keys.pop();
   keys.push(key);
+
   return rValue;
 }
 

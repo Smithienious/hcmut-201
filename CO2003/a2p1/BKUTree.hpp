@@ -6,8 +6,8 @@
  * Learners are expected to be able to use BST, specifically AVL and Splay Tree
  * AVL tree stores the BST structure, Splay tree stores recently accessed elements
  *
- * @version 0.4.3
- * @date 2020-12-21
+ * @version 0.4.4
+ * @date 2020-12-22
  *
  * @copyright Copyright (c) 2020
  ************/
@@ -191,6 +191,9 @@ void BKUTree<K, V>::add(K key, V value)
 template <class K, class V>
 void BKUTree<K, V>::remove(K key)
 {
+  avl->remove(key, false);
+  splay->remove(key);
+
   queue<K> tmpKeys;
   while (!keys.empty())
   {
@@ -199,9 +202,6 @@ void BKUTree<K, V>::remove(K key)
     keys.pop();
   }
   keys = tmpKeys;
-
-  avl->remove(key, false);
-  splay->remove(key);
 
   if (int(keys.size()) >= maxNumOfKeys)
     keys.pop();
@@ -226,13 +226,15 @@ V BKUTree<K, V>::search(K key, vector<K> &traversedList)
       tmpKeys.pop();
     else
     {
-      if (tmpKeys.size() >= maxNumOfKeys)
-        tmpKeys.pop();
-      tmpKeys.push(key);
       int i = 0;
       bool splayed = false;
       V rValue;
       splay->root = splay->rartedSearch(key, splay->root, i, splayed, rValue, traversedList);
+
+      if (keys.size() >= maxNumOfKeys)
+        keys.pop();
+      keys.push(key);
+
       return rValue;
     }
   }
@@ -476,11 +478,13 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rSearch(K key
 {
   if (pR == nullptr)
     throw "Not found";
+
   if (key == pR->entry->key)
   {
     relativeHeight = 1;
     return pR;
   }
+
   if (key < pR->entry->key)
     pR->left = rSearch(key, pR->left, relativeHeight);
   if (key > pR->entry->key)
@@ -545,6 +549,7 @@ typename BKUTree<K, V>::SplayTree::Node *BKUTree<K, V>::SplayTree::rartedSearch(
 {
   if (pR == nullptr)
     throw "Not found";
+
   if (key == pR->entry->key)
   {
     rValue = pR->entry->value;
@@ -889,12 +894,15 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rSearch(K key, No
 {
   if (pR == nullptr)
     throw "Not found";
+
   if (key == pR->entry->key)
     return pR;
+
   if (key < pR->entry->key)
     rSearch(key, pR->left);
   if (key > pR->entry->key)
     rSearch(key, pR->right);
+
   return pR;
 }
 
@@ -903,6 +911,7 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rartedSearch(K ke
 {
   if (pR == nullptr || pR == exitNode)
     throw "Not found";
+
   if (key == pR->entry->key)
   {
     rValue = pR->entry->value;
@@ -911,9 +920,10 @@ typename BKUTree<K, V>::AVLTree::Node *BKUTree<K, V>::AVLTree::rartedSearch(K ke
 
   traversedList.push_back(pR->entry->key);
   if (key < pR->entry->key)
-    rartedSearch(key, pR->left, exitNode, rValue, traversedList);
+    pR->left = rartedSearch(key, pR->left, exitNode, rValue, traversedList);
   if (key > pR->entry->key)
-    rartedSearch(key, pR->right, exitNode, rValue, traversedList);
+    pR->right = rartedSearch(key, pR->right, exitNode, rValue, traversedList);
+
   return pR;
 }
 
@@ -929,6 +939,7 @@ void BKUTree<K, V>::AVLTree::rNLR(void (*func)(K, V), Node *pR)
     rNLR(func, pR->left);
   if (pR->right != nullptr)
     rNLR(func, pR->right);
+
   return;
 }
 

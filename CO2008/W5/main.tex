@@ -1,0 +1,460 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vntex, inputenc}
+\usepackage{amsmath, amssymb, anyfontsize, array, color,  enumerate, enumitem, fancyhdr, float, graphicx, hyperref, lastpage, listings, mathtools, mips, natbib, pifont, tikz}
+\usepackage[open,openlevel=0]{bookmark}
+\usepackage[framemethod=tikz]{mdframed}
+
+\usetikzlibrary{calc}
+\newcommand\HRule{\rule{12cm}{1pt}}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+  \color{blue}
+  \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+    \end{picture}
+    \begin{tabular}{l}
+      \textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+      \textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+    \end{tabular}
+  \end{tabular}
+}
+\fancyhead[R]{
+  \begin{tabular}{l}
+    \tiny \bf \\
+    \tiny \bf
+  \end{tabular}
+}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 5}
+\fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=[MIPS]Assembler,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  numbers=left,
+  stepnumber=1,
+  numbersep=1pt,
+  firstnumber=1,
+  numberfirstline=true
+}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width = 2pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+  \end{tikzpicture}
+
+  \begin{center}
+
+    % Upper part of the page
+    \textbf{\fontsize{12pt}{1pt}\selectfont HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\[0.5cm]
+    {\fontsize{13pt}{1pt}\selectfont Faculty of Computer Science \& Engineering}\\[0.5cm]
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1.7in,height=1.7in]{BK.png}
+    \end{figure}
+
+    % Title
+    \HRule\\[0.5cm]
+    { \textbf{\fontsize{25pt}{1pt}\selectfont Computer Architecture Week 5}}\\[0.4cm]
+
+    \HRule\\[0.8cm]
+    \begin{minipage}{0.545\textwidth}
+      \begin{flushleft}
+        \textbf{Authors:}\\
+        \begin{tabular}{l l}
+          Lưu Nguyễn Hoàng Minh & 1952845 \\
+          Vũ Anh Nhi            & 1952380 \\
+          Nguyễn Chính Khôi     & 1952793 \\
+          Nguyễn Hoàng          & 1952255 \\
+        \end{tabular}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \textbf{Class:}\\
+        CO2008\_CC02\\
+        \textbf{Lecturer:}\\
+        Kiều Đỗ Nguyên Bình\\
+
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    \vspace{2cm}
+    {\large} %{\large \today}
+  \end{center}
+\end{titlepage}
+
+
+\pdfbookmark[0]{Question 1}{ques1}
+\section*{Question 1:}
+Students run the program and answer the following question
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data:
+    endl: .asciiz "\n"
+
+    # Start program code
+    .text:
+
+    .globl main
+  main:
+
+    ## MULTIPLICATION
+    lui $t0, 0x5000
+    li $t1, 4
+    mult $t0, $t1
+    mflo $s0
+    mfhi $s1
+
+    # Print $t0
+    li      $v0, 1
+    move    $a0, $t0
+    syscall
+
+    # Print new line
+    li      $v0, 4
+    la      $a0, endl
+    syscall
+
+    # Print $t0
+    li      $v0, 1
+    move    $a0, $t1
+    syscall
+
+    # Print new line
+    li      $v0, 4
+    la      $a0, endl
+    syscall
+
+    # Print $s0
+    li      $v0, 1
+    move    $a0, $s0
+    syscall
+
+    # Print new line
+    li      $v0, 4
+    la      $a0, endl
+    syscall
+
+    # Print $s1
+    li      $v0, 1
+    move    $a0, $s1
+    syscall
+
+    # Print new line
+    li      $v0, 4
+    la      $a0, endl
+    syscall
+
+
+    ## DIVISION
+    li $t0, 10
+    li $t1, 7
+    div $t0, $t1
+    mflo $s0
+    mfhi $s1
+
+    # Print $s0
+    li      $v0, 1
+    move    $a0, $s0
+    syscall
+
+    # Print new line
+    li      $v0, 4
+    la      $a0, endl
+    syscall
+
+    # Print Ss1
+    li      $v0, 1
+    move    $a0, $s1
+    syscall
+
+
+    ## EXIT
+    li $v0, 10
+    syscall
+
+  \end{lstlisting}
+\end{mdframed}
+
+\begin{enumerate}
+  \item What is the function of mflo and mfhi instruction?
+
+        For multiplication:\\
+        - mflo stores the least-significant 32 bits of the product of the multiplication into the lo register. \\
+        - mfhi stores the most-significant 32 bits of the product of the multiplication into the hi register. \\
+
+        For division:\\
+        - mflo stores the quotient of the division operation into the lo register. \\
+        - mfhi stores the remainder of the division operation into the hi register.\\
+
+  \item What is the value of $\$s0$ and $\$s1$ after the multiplication.
+
+        - Value of $\$s0$ : 0x40000000 \\
+        - Value of $\$s1$ : 0x00000001 \\
+
+  \item What is the value of $\$s0$ and $\$s1$ after the division?
+
+        - Value of $\$s0$ : 1 \\
+        - Value of $\$s1$ : 3 \\
+
+  \item What is the role of lo and hi register in multiplication?
+
+        - lo: least-significant 32 bits of the 64-bit product.\\
+        - hi: most-significant 32 bits of the 64-bit product. \\
+
+  \item What is the role of lo and hi register in division?
+
+        - lo: 32-bit quotient\\
+        - hi: 32-bit remainder \\
+
+  \item Do hi and lo is a part of 32 general purpose register of MIPS processors?
+
+        - No they are not a part of the 32 general purpose registers.
+
+\end{enumerate}
+
+\section*{Question 2:} Given the following log 2 procedure in C:
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=1.4]{log2.PNG}
+\end{figure}
+
+Assume that all input is the exponent of 2. Implement a MIPS program that:
+\begin{enumerate}
+  \item Receive input value from user.
+  \item Call the log 2 procedure.
+  \item Get the return value of log 2 procedure and print to screen
+\end{enumerate}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+
+    .data
+    msg: .asciiz "Enter an integer: "
+    result: .asciiz "Result: "
+
+    .text:
+
+    .globl main
+
+  main:
+    li $v0, 4
+    la $a0, msg
+    syscall
+
+    li $v0, 5
+    syscall
+    move $a0, $v0
+
+    jal log_2
+    move $s0, $v0
+
+    li $v0, 4
+    la $a0, result
+    syscall
+
+    li $v0, 1
+    move $a0, $s0
+    syscall
+
+    li $v0, 10
+    syscall
+
+  log_2:
+    addi $t0, $t0, 0
+
+
+  for:
+    div $a0, $a0, 2
+    beq $a0, 0, exit
+    addi $t0, $t0, 1
+    j for
+  exit:
+    move $v0, $t0
+    jr $ra
+
+  \end{lstlisting}
+\end{mdframed}
+
+
+\section*{Question 3:}Implement the following C code by using MIPS code. Assume that b and c are 10 and 7, respectively while input variable is read from keyboard. Print value of a to the terminal.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=1.4]{switch.PNG}
+\end{figure}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+    .data:
+    msg: .asciiz "Enter an integer: "
+    print: .asciiz "a = "
+    printlo: .asciiz "\nlo = "
+    printhi: .asciiz "\nhi = "
+    break: .asciiz "Please input other integer numbers"
+
+    # Start program code
+    .text:
+
+    .globl main
+  main:
+    addi $s1, $zero, 10         # b = 10
+    addi $s2, $zero, 7          # c = 7
+
+    # Print string msg
+    li      $v0, 4
+    la      $a0, msg
+    syscall
+
+    # Get input and save
+    li      $v0, 5
+    syscall
+    move    $s0, $v0
+
+    add $t0, $s1, $s2           # b + c
+    sub $t1, $s1, $s2           # b - c
+    mult $s1, $s2               # b * c
+    mflo $t2
+    mfhi $t3
+    div $s1, $s2                # b / c
+    mflo $t4
+    mfhi $t5            # b % c
+
+    beq $s0, 0, case0
+    beq $s0, 1, case1
+    beq $s0, 2, case2
+    beq $s0, 3, case3
+    beq $s0, 4, case4
+    j default
+
+  case0:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $t0
+    syscall
+
+    j Exit
+
+  case1:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $t1
+    syscall
+
+    j Exit
+
+  case2:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $t3
+    syscall
+    # Print a
+    li      $v0, 1
+    move    $a0, $t2
+    syscall
+
+    # Print string print
+    li      $v0, 4
+    la      $a0, printlo
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $t2
+    syscall
+
+    # Print string print
+    li      $v0, 4
+    la      $a0, printhi
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $t3
+    syscall
+
+    j Exit
+
+  case3:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $t4
+    syscall
+
+    j Exit
+
+  case4:
+    # Print string print
+    li      $v0, 4
+    la      $a0, print
+    syscall
+
+    # Print a
+    li      $v0, 1
+    move    $a0, $t5
+    syscall
+
+    j Exit
+
+  default:
+    # Print string break
+    li      $v0, 4
+    la      $a0, break
+    syscall
+
+  Exit:
+    # Exit
+    li      $v0, 10
+    syscall
+
+  \end{lstlisting}
+\end{mdframed}
+\end{document}

@@ -1,0 +1,180 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vntex, inputenc}
+\usepackage{amsmath, amssymb, anyfontsize, array, color,  enumerate, enumitem, fancyhdr, float, graphicx, hyperref, lastpage, listings, mathtools, mips, natbib, pifont, tikz}
+\usepackage[open,openlevel=0]{bookmark}
+\usepackage[framemethod=tikz]{mdframed}
+
+\usetikzlibrary{calc}
+\newcommand\HRule{\rule{12cm}{1pt}}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+	\color{blue}
+	\begin{tabular}{rl}
+		\begin{picture}(25,15)(0,0)
+		\put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+		\end{picture}
+		\begin{tabular}{l}
+			\textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+			\textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+		\end{tabular}
+	\end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{l}
+		\tiny \bf \\
+		\tiny \bf
+	\end{tabular}
+}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 6}
+\fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+	language=[MIPS]Assembler,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3,
+	numbers=left,
+	stepnumber=1,
+	numbersep=1pt,
+	firstnumber=1,
+	numberfirstline=true
+}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width = 2pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+  \end{tikzpicture}
+
+  \begin{center}
+
+    % Upper part of the page
+    \textbf{\fontsize{12pt}{1pt}\selectfont HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\[0.5cm]
+    {\fontsize{13pt}{1pt}\selectfont Faculty of Computer Science \& Engineering}\\[0.5cm]
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1.7in,height=1.7in]{BK.png}
+    \end{figure}
+
+    % Title
+    \HRule\\[0.5cm]
+    { \textbf{\fontsize{25pt}{1pt}\selectfont Computer Architecture Week 6}}\\[0.4cm]
+
+    \HRule\\[0.8cm]
+    \begin{minipage}{0.545\textwidth}
+      \begin{flushleft}
+        \textbf{Authors:}\\
+        \begin{tabular}{l l}
+          Lưu Nguyễn Hoàng Minh & 1952845 \\
+          Vũ Anh Nhi            & 1952380 \\
+          Nguyễn Chính Khôi     & 1952793 \\
+          Nguyễn Hoàng          & 1952255 \\
+        \end{tabular}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \textbf{Class:}\\
+        CO2008\_CC02\\
+        \textbf{Lecturer:}\\
+        Kiều Đỗ Nguyên Bình\\
+
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    \vspace{2cm}
+    {\large} %{\large \today}
+  \end{center}
+\end{titlepage}
+
+
+\pdfbookmark[0]{Question 1}{ques1}
+\section*{Question 1:}
+Given the following program with MIPS assembly.
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+    .data
+      s_a: .float 1.1
+      s_b: .float 2.2
+
+    .text
+      la      $t0, s_a
+      lwc1    $f0, 0($t0)
+      la      $t0, s_b
+      lwc1    $f1, 0($t0)
+      add.s   $f2, $f1, $f0
+
+      li      $v0, 10
+      syscall
+  \end{lstlisting}
+\end{mdframed}
+Students run the program and answer the following question
+\begin{enumerate}
+  \item Explain the function of lwc1, add.s instructions.
+  \item Can we use lw to load value for \$f0 register? Explain.
+  \item Is the result that is stored in \$f2 3.3? If it is not, explain.
+  \item Analyze the values that are stored in \$f0, \$f1, \$f2 based on IEEE 754 standard.
+\end{enumerate}
+
+\pdfbookmark[0]{Question 2}{ques2}
+\section*{Question 2:}
+Given the following program with MIPS assembly.
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+    .data
+      d_a: .double 1.1
+      d_b: .double 2.2
+
+    .text
+      la      $t0, d_a
+      ldc1    $f0, 0($t0)
+      la      $t0, d_b
+      ldc1    $f1, 0($t0)
+      add.d   $f2, $f1, $f0
+
+      li      $v0, 10
+      syscall
+  \end{lstlisting}
+\end{mdframed}
+Students run the program and answer the following question
+\begin{enumerate}
+  \item List the differences between this program and the program in Question 1.
+  \item Is the result that is stored in \$f2 3.3? If it is not, explain.
+  \item Analyze the values that are stored in \$f0, \$f1, \$f2 based on IEEE 754 standard.
+  \item Correct the program to add 2 double number 1.5 and 2.25.
+\end{enumerate}
+
+\pdfbookmark[0]{Question 3}{ques3}
+\section*{Question 3:}
+Implement a procedure that convert input degree in Fahrenheit to Celsius.
+If the degree in Celsius higher than 99.5, print ``Warning'' to terminal, otherwise print ``Safe'' to terminal.
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+    # TODO
+  \end{lstlisting}
+\end{mdframed}
+
+\end{document}

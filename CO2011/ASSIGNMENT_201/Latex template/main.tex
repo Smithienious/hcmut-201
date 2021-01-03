@@ -137,7 +137,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Member list \& Workload}
+\section*{Member list \& Workload}
 
 \begin{center}
   \begin{tabular}{|c|c|c|l|c|}
@@ -155,17 +155,17 @@
                        &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
     \hline
     %%%%%Student 3%%%%%%%%%%%
-    \multirow{3}{*}{2} & \multirow{3}{*}{Nguyễn Phú Nghĩa}      & \multirow{3}{*}{1952355} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
+    \multirow{3}{*}{3} & \multirow{3}{*}{Nguyễn Phú Nghĩa}      & \multirow{3}{*}{1952355} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
                        &                                        &                          & Bonus: 4, 5, 6.                               &                             \\
                        &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
     \hline
     %%%%%Student 4%%%%%%%%%%%
-    \multirow{3}{*}{2} & \multirow{3}{*}{Nguyễn Chính Khôi}     & \multirow{3}{*}{1952793} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
+    \multirow{3}{*}{4} & \multirow{3}{*}{Nguyễn Chính Khôi}     & \multirow{3}{*}{1952793} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
                        &                                        &                          & Bonus: 4, 5, 6.                               &                             \\
                        &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
     \hline
     %%%%%Student 5%%%%%%%%%%%
-    \multirow{3}{*}{2} & \multirow{3}{*}{Nguyễn Hoàng}          & \multirow{3}{*}{1952255} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
+    \multirow{3}{*}{5} & \multirow{3}{*}{Nguyễn Hoàng}          & \multirow{3}{*}{1952255} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
                        &                                        &                          & Bonus: 4, 5, 6.                               &                             \\
                        &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
     \hline
@@ -173,9 +173,13 @@
 \end{center}
 
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 1}
 \subsection{(a)}
+\textit{Present the definition and classification according to different criteria, the general form of dynamical systems, and especially first-order differential equations systems with initial condition at time \(t_0\), which are continuous dynamical systems used in this assignment.}
+
+
 A dynamical system is any system that evolves or changes with respect to time according to some rules.
 A state space, also called the phase space, is a model used within dynamical systems to capture these changes.
 For investigating dynamical systems, it is necessary to specify some characteristics that provide a subdivision into special classes of dynamical systems.
@@ -209,57 +213,352 @@ or
 with \(f\) is an arbitrary function or functions, \(C\) and \(X\) are arbitrary constants.
 
 In this assignment, we are required to design first-order differential systems to predict the climate inside an arbitrary greenhouse.
+The main climatic components of a greenhouse include temperature, vapor pressure of water and the \(CO_2\) concentration.
+These components are are normally affected by one or many elements present inside the greenhouse, thus we will express these components in terms of differential equations.
+\begin{itemize}
+  \item Temperature
+        \begin{multline}
+          cap_{Can}\dot{T_{Can}} = {}R_{PAR\_SunCan} + R_{NIR\_SunCan} + R_{PipeCan} \\
+          - H_{CanAir} - L_{CanAir} - R_{CanCov,in} \\
+          - R_{CanFlr} - R_{CanSky} - R_{CanThScr} ~~~~ [W\;m^{-2}]
+        \end{multline}
+        \begin{multline}
+          cap_{Air}\dot{T_{Air}} = H_{CanAir} + H_{PadAir} + H_{MechAir} + H_{PipeAir} \\
+          + H_{PadAir} + H_{BlowAir} + R_{Glob\_SunAir} \\
+          - H_{AirFlr} - H_{AirThScr} - H_{AirOut} \\
+          - H_{AirTop} - H_{AirOut\_Pad} - L_{AirFog} ~~~~ [W\;m^{-2}]
+        \end{multline}
+        \begin{multline}
+          cap_{Flr}\dot{T_{Flr}} = H_{AirFlr} + R_{PAR\_SunFlr} + R_{NIR\_SunFlr} + R_{CanFlr} + R_{PipeFlr} \\
+          - H_{FlrSo1} - R_{FlrCov,in} - R_{FlrSky} - R_{FlrThScr} ~~~~ [W\;m^{-2}]
+        \end{multline}
+        \begin{equation}
+          cap_{So(j)}T_{So(j)} = H_{So(j-1)So_{(j)}} - H_{So(j)So(j+1)} ~~~~~~~~~~~~~~~~ j=1,2\dots5 ~~~~ [W\;m^{-2}]
+        \end{equation}
+        \begin{multline}
+          cap_{ThScr}\dot{T_{ThScr}} = H_{AirThScr} + L_{AirThScr} \\
+          + R_{CanThScr} + R_{FlrThScr} + R_{PipeThScr} \\
+          - H_{ThScrTop} - R_{ThScrCov,in} - R_{ThScrSky} ~~~~ [W\;m^{-2}]
+        \end{multline}
+        \begin{equation}
+          cap_{Top}\dot{T_{Top}} = H_{ThScrTop} + H_{AirTop} - H_{TopCov,in} - H_{TopOut} ~~~~~~~~~~~~~~~~~~~~~~~~ [W\;m^{-2}]
+        \end{equation}
+        \begin{multline}
+          cap_{Cov,in}\dot{T_{Cov,in}} = H_{TopCov,in} + L_{TopCov,in} + R_{CanCov,in} + R_{FlrCov,in} \\
+          + R_{PipeCov,in} + R_{ThScrCov,in} - H_{Cov,inCov,e} ~~~~ [W\;m^{-2}]
+        \end{multline}
+        \begin{equation}
+          cap_{Cov,e}\dot{T_{Cov,e}} = R_{Glob\_SunCov} + H_{Cov,inCov,e} - H_{Cov,eOut} - R_{Cov,eSky} ~~~~ [W\;m^{-2}]
+        \end{equation}
+        \begin{multline}
+          cap_{Pipe}\dot{T_{Pipe}} = H_{BoilPipe} + H_{IndPipe} + H_{GeoPipe} \\
+          - R_{PipeSky} - R_{PipeCov,in} - R_{PipeCan} \\
+          - R_{PipeFlr} - R_{PipeThScr} - H_{PipeAir} ~~~~ [W\;m^{-2}]
+        \end{multline}
+  \item Vapor pressure
+        \begin{multline}
+          cap_{VP_{Air}}\dot{VP_{Air}} = MV_{CapAir} + MV_{PadAir} + MV_{FogAir} + MV_{BlowAir} \\
+          - MV_{AirThScr} - MV_{AirTop} - MV_{AirOut} \\
+          - MV_{AirOut\_Pad} - MV_{AirMech} ~~~~~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
+        \end{multline}
+        \begin{equation}
+          cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
+        \end{equation}
+  \item \(CO_2\) concentration
+        \begin{multline}
+          cap_{CO_{2Air}}\dot{CO_{2Air}} = MC_{BlowAir} + MC_{ExtAir} + MC_{PadAir} \\
+          - MC_{AirCan} - MC_{AirTop} - MC_{AirOut} ~~~~ [mg\;m^{-2}\;s^{-1}]
+        \end{multline}
+        \begin{equation}
+          cap_{CO_{2Top}}\dot{CO_{2Top}} = MC_{AirTop} - MC_{TopOut} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [mg\;m^{-2}\;s^{-1}]
+        \end{equation}
+\end{itemize}
+
+\subsection{(b)}
+\textit{Introduce a necessary and sufficient condition for the above system of differential equations to exist and have unique solutions.}
+
+
+All of the differential equations in the dynamical system above are/can be transformed into in the form of:
+\begin{equation*}
+  \begin{cases}
+    \frac{dy}{dx} & = f(x,y) \\
+    y(x_0)        & = y_0
+  \end{cases}
+\end{equation*}
+
+The Existence and Uniqueness Theorem states that:
+
+- Let \(f(x,y)\) be a function which is continuous on the rectangle  \(R = \{(x, y); |x - x_0| \leq a, |y - y_0| \leq b\) \}.
+Assume \(f\) has a partial derivative with respect to \(y\) and that \(\frac{\partial f}{\partial y}\) is also continuous on the rectangle \(R\).
+Then there exists an interval \(I=[x_0-h, x_0+h]\) (with \(h \leq a\)) such that the initial value problem
+\begin{equation*}
+  \begin{cases}
+    \frac{dy}{dx} & = f(x,y) \\
+    y(x_0)        & = y_0
+  \end{cases}
+\end{equation*}
+has a unique solution \(y(x)\) defined on the interval \(I\).
+
+\subsection{(c)}
+\textit{Give some exmaples of solvable first-order differential equations and their exact solutions.}
+
+
+%howellkb.uah.edu
+% math.hawaii.edu
+Examples of solvable first-order differential equations with exact solutions. \\
+
+- First equation:
+
+\begin{equation*}
+  \begin{cases}
+    \frac{dy}{dx} & = - \frac{x}{y-3} \\
+    y(0)          & = 1
+  \end{cases}
+\end{equation*}
+
+Here, \(\frac{dy}{dx} = f(x)g(y)\) with \(f(x) = -x\) and \(g(y) = \frac{1}{y-3}\) \\
+
+\begin{align*}
+  (y - 3) \frac{dy}{dx} & = -x                  \\
+  (y - 3) dy            & = -x dx               \\
+  \int (y - 3) dy       & = -\int xdx           \\
+  \frac {1}{2} y^2 - 3y & = \frac{1}{2} x^2 + C
+\end{align*}
+
+\[y = \frac{-(-6) \pm \sqrt{(-6)^2 - 4(x^2 - 2C)}}{2} = 3 \pm \sqrt{9 - x^2 + 2C}\]
+
+With \(a = 9 + 2c\)
+\[y = 3 \pm \sqrt{a - x^2}\]
+Combining the general solution with the given initial value, we obtain
+\[1 = y(0) = 3 \pm \sqrt{a - 0^2} = 3 \pm \sqrt{a}\]
+\[a = 4\]
+Thus, the particular solution is
+\[y = 3 - \sqrt{4-x^2}\].
+
+
+- Second equation:
+\begin{equation*}
+  \begin{cases}
+    3xy' - y & = lnx + 1, (x > 0) \\
+    y(1)     & = -2
+  \end{cases}
+\end{equation*}
+
+With \(x > 0\), we write the equation in standard form:
+\[y' - \frac{1}{3x}y = \frac{lnx + 1}{3x}\]
+Then the integrating factor is given by
+\[v = e^{\int-dx/3x} = e^{(-1/3)lnx} , x > 0\]
+Thus,
+\[vy = x^{-1/3} y = \frac{1}{3} \int(lnx + 1) x^{-4/3} dx\]
+Integration by parts of the right-hand side gives
+\[x^{-1/3}y = -x^{-1/3}(lnx+1) + \int x^{-4/3}dx + C\]
+Therefore
+\[x^{-1/3}y = -x^{-1/3}(lnx+1) - 3x^{-1/3} + C\]
+or, solving for \(y\),
+\[y = -(lnx + 4) + Cx^{1/3}\]
+When \(x = 1\) and \(y = -2\) this last equation becomes
+\[-2 = -(0+4) + C\]
+\[C = 2\]
+Substitution into the equation for \(y\) gives the particular solution
+\[y = 2x^{1/3} - lnx - 4\]
+
+
+
+\subsection{(d)}
+\textit{Introduce and present the approximation steps of the Explicit Euler and Explicit Runge-Kutta of order 4 algorithms to solve general first-order differential equations.}
+
+
 % TODO
+
+\subsection{(e)}
+\textit{Using Explicit Euler and Explicit Runge-Kutta, give approximate values of the exact solutions of the above examples and time \(t_0\), \(t_0 + h\), \(t_0 + 2h\),\dots, \(t_0 + 5h\) with optional \(h\).}
+
+
+% TODO
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exercise 2}
+\subsection{(a)}
+\subsubsubsection{Chapter 2}
+\textit{Restate the model for the \(CO_2\) concentration in greenhouses in detail.}
+
+
+To describe the concentration of \(CO_2\) in the greenhouse air, we consider a green house with thermal screens, which allow us to control light, temperature and humidity more precisely, which means a better climate control in the greenhouse.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=11cm]{thrscr.png}
+  \caption{Greenhouse thermal screen}\label{fig:thrscr}
+\end{figure}
+
+In figure{}\ref{fig:thrscr}, we see that a thermal screen divides the green house into two compartments, above and below the screen.
+This results in different concentrations of \(CO_2\) in two of the compartments.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=9cm]{CO2}
+  \caption{The CO2 flow inside and outside a greenhouse}\label{fig:CO2}
+\end{figure}
+
+The exchange in concentrations of \(CO_2\) can be separated into three \(CO_2\) region: \(CO_{2Top}\) which is from above the screen, \(CO_{2Air}\) which is from below the screen and \(CO_{2Out}\) which is from outside the greenhouse.
+Each relates to each other in the diagram shown in Figure 2.
+
+%%%%%%%%%% 
+\subsubsubsection{Chapter 3}
+From Figure{}\ref{fig:CO2}, the fluctuation of \(CO_2\) concentration in the lower and upper compartments of the greenhouse is represented by two differential equations.
+
+\begin{equation}
+  \begin{cases}
+    cap_{CO_2 Air}\dot{CO_{2 Air}} = MC_{BlowAir} + MC_{ExtAir} + MC_{PadAir} \\ \qquad \qquad \qquad \qquad \qquad
+    - MC_{AirCan} - MC_{AirTop} - MC_{AirOut}                                   \\
+    cap_{CO_2 Top}\dot{CO_{2 Top}} = MC_{AirTop} - MC_{TopOut}
+  \end{cases}
+\end{equation}
+
+
+The notations \(cap_A, CO_{2 A}, \dot{CO_2}_A\) and \(MC_{AB}\) are respectively the capacity to store \(CO_2\) in \(A\) \((m)\), the \(CO_2\) concentration in \(A\) \((mg\;m^{-3})\), the rate of change of \(CO_2\) concentration in \(A\) \((mg\;m^{-3}\;s^{-1})\), and the net \(CO_2\) flux from \(A\) to \(B\) \((mg\;m^{-2}\;s^{-1})\), where \(Air\) and \(Top\) represent the lower and upper compartments, \(Blow\) represents the direct air heater, \(Ext\) represents the source from the third party, \(Pad\) represents the pad system, \(Can\) represents the total foliage of the plants inside the greenhouse, and \(Out\) represents the space outside the greenhouse.
+
+In order to solve the equations, we must consider the formulas that calculate each \(MC_{AB}\) that was presented.
+
+The amount of \(CO_2\) going from the direct air heater into the greenhouse air is given by taking the product of the capacity \(P_{Blow}\) \((W)\) of the heater, the amount of \(CO_2\) generated for each Joule of sensible heat released by the heater \(\eta_{HeatCO_2}\) \((mg_{CO_2}\;J^{-1})\), and the dimensionless parameter \(U_{Blow}\), then dividing it by the area of the greenhouse \(A_{Flr}\) \((m^2)\).
+
+\[MC_{BlowAir} = \frac{\eta_{HeatCO_2}U_{Blow}}{A_{Flr}}\]
+
+Similarly, the amount of $CO_2$ that is pumped into the greenhouse by the third party equals the third party's ability to pump $CO_2$ $\phi_{ExtCO_2}$ (mg s$^{-1}$) times the dimensionless parameter $U_{ExtCO_2}$, then divided by the area of the greenhouse.
+
+$$MC_{ExtAir} = \frac{U_{ExtCO_2}\phi_{ExtCO_2}}{A_{Flr}}$$
+
+The amount of $CO_2$ that enters the greenhouse through the pad system is calculated differently. It depends on the difference between the concentration of $CO_2$ inside and outside the greenhouse, and the ability of the pad system for the air to go through. As the pad can be adjusted to let more air in, the flux of the pad $f_{Pad}$ (m$^{-1}$) can be given as the product of the permeability of the pad $U_{Pad}$ and the ability for the airflow to pass through $\phi_{Pad}$ (m$^3$ s$^{-1}$) divided by the area of the greenhouse floor.
+
+$$MC_{PadAir} = f_{Pad} (CO_{2 Out} - CO_{2 Air}) = \frac{U_{Pad} \phi_{Pad}}{A_{Flr}} (CO_{2 Out} - CO_{2 Air})$$
+
+The net flux of $CO_2$ from the lower compartment to the upper compartment of the greenhouse is more complicated. It depends on the difference in temperature and air density between the two compartments and the airflow rate through the thermal screen $f_{ThScr}$ (m s$^{-1}$).
+
+$$MC_{AirTop} = f_{ThScr} (CO_{2 Air} - CO_{2 Top})$$
+
+\\
+Furthermore, $f_{ThScr}$ is given by 
+
+$$f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}| ^{\frac{2}{3}} + (1 - U_{ThScr}) [\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|]^{\frac{1}{2}}$$
+
+To calculate the the airflow rate, we consider the screen and the open regions separately, with $U_{ThScr} \in [0,1]$ representing the percentage of places that are covered by the thermal screen. The flux through the screen depends on the difference between the temperature above and below the screen and the permeability of the screen $K_{ThScr}$ (m K$^{-\frac{2}{3}}$ s$^{-1}$). 
+
+At places that are not covered by the thermal screen, the flux is given by a Navier–Stokes equation depending on the difference of the air density below the screen $\rho_{Air}$ and the air density above the screen $\rho_{Top}$ (kg m$^{−3}$). $W$ (m) is width of the thermal screen.
+
+The net CO2 flux from the inside to the outside of the greenhouse is given by the following formula
+
+$$MC_{AirOut} = (f_{VentSide} + f_{VentForced})(CO_{2 Air} - CO_{2 Out})$$
+
+%%%%%% not done yet ---- Stack Chimney effect part
+
+Similarly to $MC_{AirOut}$, the net $CO_2$ flux from the greenhouse to outside the greenhouse through the roof openings is calculated by using the formula
+
+$$MC_{TopOut} = f_{VentRoof}(CO_{2 Top} - CO_{2 Out})$$
+
+%% not done yet --------------------
+
+Finally, we need to consider the amount of $CO_2$ absorbed into the leaves due to photosynthesis.
+
+$$MC_{AirCan} = M_{CH_2O} h_{C_{Buf}} (P - R)$$
+
+Here, $M_{CH_2O}$ is the molar mass of $CH_2O$ (mg $\mu$ mol$^{-1}$), $P$ is the photosynthetic rate ($\mu$ mol$_{CO_2}$ m$^{-2}$s${-1}$), $R$ is the respiration rate ($\mu$ mol$_{CO_2}$ m$^{-2}$s${-1}$), and $h_{C_{Buf}}$ shows the cessation of photosynthesis when $CH_2O$ is $C_{Buf}$ (mg m$^{-2}$) has reached $C_{Max}$ (mg m$^{-2}$), which is the limit of the carbohydrates storage of the plants. The respiration rate during this process is usually as about $1\%$ of the photosynthesis rate, and thus can be omitted during further calculation. The photosynthesis rate is described in more detail in Chapter 4.
+
+%%%%%%%%%%%
+
+
+\subsubsubsection{Chapter 4}
+% TODO
+\setcounter{equation}{19}
+Photosynthesis, the process by which green plants and certain other organisms transform light energy into chemical energy. During photosynthesis in green plants, light energy is captured and used to convert water, carbon dioxide, and minerals into oxygen and energy-rich organic compounds.
+
+Photosynthesis has two phases consisting of the light-dependence phase and the light-indepe-ndence (or dark) phase.
+
+The photosynthetic rate $P$ is defined as the diffusion of $CO_2$ from air into the leaf cells through stomata. From Fick's law for gas diffusion, we construct:
+\begin{equation}
+  P = \frac{CO_{2Air} - CO_{2Stom}}{Res}
+\end{equation}
+The notation $CO_{2 Stom}$ is the concentration of CO2 in the stomata ($\mu mol.m^{-3}$) and Res is the resistance-to-absorption coefficient ($s.m^{-1}$).
+
+In the dark phase, through Michaelis-Menten relationship describing enzyme-substrate reaction, the photosynthetic rate is given by:
+\begin{equation}
+  P = \frac{P_{Max} \cdot CO_{2Stom}}{CO_{2 0.5} + CO_{2Stom}}
+\end{equation}
+where $CO_{2 0.5}$ is the concentration of CO2 in the substrate when $P = P_{Max}/2$ $(\mu mol.m^{-3})$.
+
+From $(20)$ and $(21)$, we form a quadratic equation for the rate of photosynthetic $P$. The photosynthetic rate $P$ then no longer depends on the concentration of $CO_2$ in the stomata but only on the concentration of $CO_2$ in the air, the resistance coefficient Res, and the maximum photosynthetic rate.
+\begin{equation}
+  ResP^2 - (CO_{2Air} + CO_{2 0.5} + ResP_{Max})P + CO_{2Air}P_{Max} = 0
+\end{equation}
+
+Solving equation $(22)$ requires $P_{Max}$ to be obtained. For the model for the photosynthesis of one leaf unit, the maximum photosynthetic rate is usually be found through the Arrhenius model.
+\begin{equation}
+  k(T) = k(T_0)e^{-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})}
+\end{equation}
+where $k(T)$ is the reaction rate at $T (K)$, $T_0$ is the optimum temperature for which the reaction
+rate is known ($K$), $H_a$ is the activation energy for the reaction ($J.mol^{_1}$), and $R$ is the ideal gas constant.
+
+Yet a problem is raised when the temperature increases to a certain threshold, the enzyme activity will be inhibited and the photosynthesis is slowed down and cease to advance. A model represents the activity of the Rubisco enzyme during photosynthesis with temperature as its parameter.
+\begin{equation}
+  f(T) = \frac{1 + e^{-\frac{H_d}{R}( \frac{1}{T_0} - \frac{1}{\frac{H_d}{S}} )}}{1 + e^{-\frac{H_d}{R}(\frac{1}{T} - \frac{1}{\frac{H_d}{S}})}}
+\end{equation}
+In the model (24), $f(T)$ represents the enzyme activity at $T (K)$, $H_d$ is the deactivation energy ($J.mol^{-1}$), and $S$ is the corresponding entropy quantity ($J.mol^{-1}.K^{-1}$)
+
+Combining $(23)$ and $(24)$, we obtain the formula for maximum rate of photosynthetic rate.
+\begin{equation}
+  P_{Max}(T) = k(T)f(T)
+\end{equation}
+
+For a photosynthesis for the whole canopy, considering $LAI$ (leaf area index), due to Beer's law, the intensity of the transmitted beam $I$ with the initial state is $I_0$ $(\mu mol\{photons\}.m^{-2}.s^{-1})$ is equal to
+\begin{equation}
+  I = \frac{I_0.K.e^{-K.LAI}}{1 - m}
+\end{equation}
+If the leaves are horizontally stratified such as in the case of tomato, the dimensionless extinction coefficient K will be between 0.7 and 1.0. Meanwhile, if the leaves are sloping as in the case of wet rice, K will be between 0.3 and 0.5. m is the transmittance coefficient of the leaves which is set as 0.1.
+
+The amount of light absorbed by the canopy can be measured as the difference in the intensity of the light ray before entering the foliage and after passing through the foliage
+\begin{equation}
+  L =L_0(1 - \frac{K.e^{-K.LAI}}{1 - m})
+\end{equation}
+In this formula, L is luminous flux received by the leaves per unit area of the greenhouse floor ($\mu mol \{photons\}. m^{-2}. s^{-1}$) and $L_0$ is the initial value of L.
+
+For calculating the maximum photosynthetic rate of all leaves in the greenhouse, we apply the modified Arrhenius model.
+\begin{equation}
+  k(T) = LAI \cdot k(T_0) \cdot e^{-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})}
+\end{equation}
+Here, $k(T)$ is the reaction rate for the whole canopy at $T (K)$ and $k(T_0)$ is the reaction rate under the optimal condition $T_0$ ($K$) of one leaf unit,
+
+Unlike the photosynthesis model for one leaf unit, the amount of light energy absorbed into the foliage in response to $LAI$ needs to be added since it affects the maximum photosynthetic rate $P_{Max}$. Therefore, we consider the following formula of $P_{Max}$, which is a dependent function on $L$ and $T$.
+\begin{equation}
+  P_{Max} (L,T) = \frac{P_{MLT} \cdot P_{Max}(T) \cdot L}{L + L_{0.5}}
+\end{equation}
+In which, $L_{0.5}$ is light intensity when $P_{Max} (L,T) = PMax(T)/2$ ($\mu mol \{photons\} m^{-2}.s^{-1}$)
+$P_{Max}(T)$ is calculated by using the formula (25) with $k(T)$ as in (28), and $P_{MLT}$ are the maximum
+photosynthetic rate at the point of light saturation and the optimal temperature $T$.
+
 
 \subsection{(b)}
 % TODO
 
-\subsection{(c)}
-% TODO
 
-\subsection{(d)}
-% TODO
-
-\subsection{(e)}
-% TODO
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Exercise 2}
-\subsection{a)}
-\subsubsubsection{Chapter 2}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{thrscr.png}
-  \caption{The CO2 flow inside and outside a greenhouse.}\label{fig:thrscr}
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{CO2}
-  \caption{The CO2 flow inside and outside a greenhouse.}\label{fig:CO2}
-\end{figure}
-
-% TODO
-
-
-\subsection{b)}
-% TODO
-
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 3}
 % TODO
 
 
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 4}
-\subsection{a)}
+\subsection{(a)}
 % TODO
 
-\subsection{b)}
+\subsection{(b)}
 % TODO
 
 
+
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 5}
 % TODO
@@ -275,13 +574,11 @@ The model was based on the following assumption:
 2) to describe the effect of the thermal screen on the indoor climate, the greenhouse air was divided into two compartments: one below and one above the thermal screen.
 
 From figure~\ref{fig:overview}, the vapor pressure of the greenhouse air \(VP_{Air}\) and the top compartment \(VP_{Top}\) are described by: \\
-\begin{equation}
-  \begin{split}
-    cap_{VP_{Air}}\dot{VP_{Air}} = &\;MV_{CanAir} + MV_{PadAir} + MV_{FogAir} + MV_{BlowAir} \\
-    & -MV_{AirThScr} - MV_{AirTop} - MV_{AirOut} - MV_{AirOut\_Pad} \\
-    & -MV_{AirMech} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
-  \end{split}
-\end{equation}
+\begin{multline}
+  cap_{VP_{Air}}\dot{VP_{Air}} = MV_{CanAir} + MV_{PadAir} + MV_{FogAir} + MV_{BlowAir} \\
+  - MV_{AirThScr} - MV_{AirTop} - MV_{AirOut} \\
+  - MV_{AirOut\_Pad} - MV_{AirMech} ~~~~ [kg\;m^{-2}\;s^{-1}]
+\end{multline}
 \begin{equation}
   cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
 \end{equation}
@@ -303,16 +600,16 @@ Therefore, the vapor flux from the air to an object by condensation is described
 \end{equation}
 % TODO
 
-
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 6}
-\subsection{a)}
+\subsection{(a)}
 % TODO
 
-\subsection{b)}
+\subsection{(b)}
 % TODO
 
-\subsection{c)}
+\subsection{(c)}
 % TODO
 
 \begin{thebibliography}{80}

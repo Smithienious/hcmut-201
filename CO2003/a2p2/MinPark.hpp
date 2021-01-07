@@ -2,8 +2,8 @@
  * @file MinPark.hpp
  * @author NGUYEN Hoang (hoang.nguyen.bigunit@hcmut.edu.vn)
  * @brief
- * @version 0.1.2
- * @date 2021-01-01
+ * @version 0.1.3
+ * @date 2021-01-07
  *
  * @copyright Copyright (c) 2021
  *
@@ -20,11 +20,7 @@ public:
   int start;
   int end;
 
-  Interval(int start = 0, int end = 0)
-  {
-    this->start = start;
-    this->end = end;
-  }
+  Interval(int start = 0, int end = 0) : start(start), end(end) {}
 };
 
 int minPark(vector<Interval> lInterval)
@@ -32,7 +28,7 @@ int minPark(vector<Interval> lInterval)
   int count = 0, cur = 0;
   vector<pair<int, char>> tmp;
 
-  for (int i = 0; i < lInterval.size(); i += 1)
+  for (int i = 0; i < (int)lInterval.size(); i += 1)
   {
     tmp.push_back({lInterval[i].start, 'x'});
     tmp.push_back({lInterval[i].end, 'y'});

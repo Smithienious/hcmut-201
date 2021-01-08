@@ -10,25 +10,25 @@
 \pagestyle{fancy}
 \fancyhead{} % clear all header fields
 \fancyhead[L]{
-	\color{blue}
-	\begin{tabular}{rl}
-		\begin{picture}(25,15)(0,0)
-		\put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
-		\end{picture}
-		\begin{tabular}{l}
-			\textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
-			\textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
-		\end{tabular}
-	\end{tabular}
+  \color{blue}
+  \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+    \end{picture}
+    \begin{tabular}{l}
+      \textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+      \textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+    \end{tabular}
+  \end{tabular}
 }
 \fancyhead[R]{
-	\begin{tabular}{l}
-		\tiny \bf \\
-		\tiny \bf
-	\end{tabular}
+  \begin{tabular}{l}
+    \tiny \bf \\
+    \tiny \bf
+  \end{tabular}
 }
 \fancyfoot{} % clear all footer fields
-\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 6}
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 5}
 \fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
 \renewcommand{\headrulewidth}{0.3pt}
 \renewcommand{\footrulewidth}{0.3pt}
@@ -38,25 +38,25 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstset{frame=tb,
-	language=[MIPS]Assembler,
-	aboveskip=3mm,
-	belowskip=3mm,
-	showstringspaces=false,
-	columns=flexible,
-	basicstyle={\small\ttfamily},
-	numbers=none,
-	numberstyle=\tiny\color{gray},
-	keywordstyle=\color{blue},
-	commentstyle=\color{dkgreen},
-	stringstyle=\color{mauve},
-	breaklines=true,
-	breakatwhitespace=true,
-	tabsize=3,
-	numbers=left,
-	stepnumber=1,
-	numbersep=1pt,
-	firstnumber=1,
-	numberfirstline=true
+  language=[MIPS]Assembler,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  numbers=left,
+  stepnumber=1,
+  numbersep=1pt,
+  firstnumber=1,
+  numberfirstline=true
 }
 
 \begin{document}
@@ -132,11 +132,45 @@ Given the following program with MIPS assembly.
 \end{mdframed}
 Students run the program and answer the following question
 \begin{enumerate}
-  \item Explain the function of lwc1, add.s instructions.
-  \item Can we use lw to load value for \$f0 register? Explain.
-  \item Is the result that is stored in \$f2 3.3? If it is not, explain.
-  \item Analyze the values that are stored in \$f0, \$f1, \$f2 based on IEEE 754 standard.
+  \item Explain the function of lwc1, add.s instructions. \\
+        - lwc1: Load word into coprocessor 1 \\
+        - add.s: Floating point addition single precision
+  \item Can we use lw to load value for \$f0 register? Explain. \\
+        - No, because floating point registers are separate from ordinary registers
+  \item Is the result that is stored in \$f2 3.3? If it is not, explain. \\
+        - No. In base-2, the only prime factor is 2, so we can only cleanly express fractions whose denominator has only 2 as a prime factor.
+        So 0.1 and 0.2 (11/10 and 6/5) are repeating decimals in base-2. \\
+        When we perform math on repeating decimals, we end up with leftovers which carry over when converting base-2 to base-10.
+  \item Analyze the values that are stored in \$f0, \$f1, \$f2 based on IEEE 754 standard. \\
+        - \$f0: 0\(\times\)3f8ccccd = 0011 1111 1000 1100 1100 1100 1100 1101
+        \begin{align*}
+          Sign           = & \;0                                                         \\
+          Exponent       = & \;127                                                       \\
+          Fraction       = & \;2^{-4} + 2^{-5} + 2^{-8} + 2^{-9} + 2^{-12}  +            \\
+                           & \;2^{-13} + 2^{-16} + 2^{-17} + 2^{-20} + 2^{-21} + 2^{-23} \\
+          Decimal\;value = & \;{(-1)}^{0} \times 2^{(127 - 127)} \times (1 + Fraction)   \\
+          =                & \;1.1000000238
+        \end{align*}
+        - \$f1: 0\(\times\)400ccccd = 0100 0000 0000 1100 1100 1100 1100 1101
+        \begin{align*}
+          Sign           = & \;0                                                         \\
+          Exponent       = & \;128                                                       \\
+          Fraction       = & \;2^{-4} + 2^{-5} + 2^{-8} + 2^{-9} + 2^{-12}  +            \\
+                           & \;2^{-13} + 2^{-16} + 2^{-17} + 2^{-20} + 2^{-21} + 2^{-23} \\
+          Decimal\;value = & \;{(-1)}^{0} \times 2^{(128 - 127)} \times (1 + Fraction)   \\
+          =                & \;2.2000000477
+        \end{align*}
+        - \$f2: 0\(\times\)40533334 = 0100 0000 0101 0011 0011 0011 0011 0100
+        \begin{align*}
+          Sign           = & \;0                                                          \\
+          Exponent       = & \;128                                                        \\
+          Fraction       = & \;2^{-1} + 2^{-3} + 2^{-6} + 2^{-7} + 2^{-10}  +             \\
+                           & \;2^{-11} + 2^{-14} + 2^{-15}  + 2^{-18} + 2^{-19} + 2^{-21} \\
+          Decimal\;value = & \;{(-1)}^{0} \times 2^{(128 - 127)} \times (1 + Fraction)    \\
+          =                & \;3.300000191
+        \end{align*}
 \end{enumerate}
+
 
 \pdfbookmark[0]{Question 2}{ques2}
 \section*{Question 2:}
@@ -160,10 +194,32 @@ Given the following program with MIPS assembly.
 \end{mdframed}
 Students run the program and answer the following question
 \begin{enumerate}
-  \item List the differences between this program and the program in Question 1.
+  \item List the differences between this program and the program in Question 1. \\
+        - This program stores data with double precision floating point registers. \\
+        - This program doesn't run because the first register must be even numbered.
   \item Is the result that is stored in \$f2 3.3? If it is not, explain.
+        - No. In base-2, the only prime factor is 2, so we can only cleanly express fractions whose denominator has only 2 as a prime factor.
+        So 0.1 and 0.2 (11/10 and 6/5) are repeating decimals in base-2. \\
+        When we perform math on repeating decimals, we end up with leftovers which carry over when converting base-2 to base-10.
   \item Analyze the values that are stored in \$f0, \$f1, \$f2 based on IEEE 754 standard.
   \item Correct the program to add 2 double number 1.5 and 2.25.
+        \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+          \begin{lstlisting}
+    .data
+      d_a: .double 1.5
+      d_b: .double 2.25
+
+    .text
+      la      $t0, d_a
+      ldc1    $f0, 0($t0)
+      la      $t0, d_b
+      ldc1    $f2, 0($t0)
+      add.d   $f4, $f2, $f0
+
+      li      $v0, 10
+      syscall
+          \end{lstlisting}
+        \end{mdframed}
 \end{enumerate}
 
 \pdfbookmark[0]{Question 3}{ques3}
@@ -174,6 +230,7 @@ If the degree in Celsius higher than 99.5, print ``Warning'' to terminal, otherw
 \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
   \begin{lstlisting}
     # TODO
+    # Answer is attached in .zip file
   \end{lstlisting}
 \end{mdframed}
 

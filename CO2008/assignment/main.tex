@@ -1,0 +1,536 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vntex, inputenc}
+\usepackage{amsmath, amssymb, anyfontsize, array, color,  enumerate, enumitem, fancyhdr, float, graphicx, hyperref, lastpage, listings, mathtools, mips, natbib, pifont, tikz}
+\usepackage[open,openlevel=0]{bookmark}
+\usepackage[framemethod=tikz]{mdframed}
+
+\usetikzlibrary{calc}
+\newcommand\HRule{\rule{12cm}{1pt}}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+  \color{blue}
+  \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+    \end{picture}
+    \begin{tabular}{l}
+      \textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+      \textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+    \end{tabular}
+  \end{tabular}
+}
+\fancyhead[R]{
+  \begin{tabular}{l}
+    \tiny \bf \\
+    \tiny \bf
+  \end{tabular}
+}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Assignment}
+\fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=[MIPS]Assembler,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  numbers=left,
+  stepnumber=1,
+  numbersep=1pt,
+  firstnumber=1,
+  numberfirstline=true
+}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width = 2pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+  \end{tikzpicture}
+
+  \begin{center}
+
+    % Upper part of the page
+    \textbf{\fontsize{12pt}{1pt}\selectfont HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\[0.5cm]
+    {\fontsize{13pt}{1pt}\selectfont Faculty of Computer Science \& Engineering}\\[0.5cm]
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1.7in,height=1.7in]{BK.png}
+    \end{figure}
+
+    % Title
+    \HRule\\[0.5cm]
+    { \textbf{\fontsize{25pt}{1pt}\selectfont Computer Architecture Assignment}}\\[0.4cm]
+
+    \HRule\\[0.8cm]
+    \begin{minipage}{0.545\textwidth}
+      \begin{flushleft}
+        \textbf{Authors:}\\
+        \begin{tabular}{l l}
+          Lưu Nguyễn Hoàng Minh & 1952845 \\
+          Vũ Anh Nhi            & 1952380 \\
+          Nguyễn Chính Khôi     & 1952793 \\
+          Nguyễn Hoàng          & 1952255 \\
+        \end{tabular}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \textbf{Class:}\\
+        CO2008\_CC02\\
+        \textbf{Lecturer:}\\
+        Kiều Đỗ Nguyên Bình\\
+
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    \vspace{2cm}
+    {\large} %{\large \today}
+  \end{center}
+\end{titlepage}
+
+
+\pdfbookmark[0]{Question 1}{ques1}
+\section*{Question 1:}
+Given the following program with MIPS declaration in the data section of a MIPS program
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+    .data
+      nums: .word <an integer number>
+      elems: .word <array elements>
+  \end{lstlisting}
+\end{mdframed}
+Where \(<an\;integer\;number>\) will store the number of elements in the array \(elems\).
+\(elems\) is an array that stores integer elements whose size is equal to value \(<an\;integer\;number>\).
+You are required to choose those values when developing and testing your program.
+\begin{enumerate}
+  \item Write a MIPS program that sort the array \(elems\) in ascending order using the bubble sort algorithm.
+        \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+          \begin{lstlisting}
+    .data
+      nums: .word 10
+      elems: .word 1 0 2 9 3 8 4 7 5 6
+
+    .text
+      addi  $t9, $zero, 1       # 1
+      la    $s0, elems          # Address of element at index i
+      addi  $s1, $s0, 4         # Address of element at index i + 1
+      add   $s2, $zero, $zero   # Index i
+      addi  $s3, $s2, 1         # Index i + 1
+      la    $t7, nums           # Limiter base address
+      lw    $s7, 0($t7)         # Limiter
+
+  Sort:
+      beq   $t9, $s7, Exit
+
+      lw    $t0, 0($s0)
+      lw    $t1, 0($s1)
+
+      slt   $t2, $t0, $t1
+      beq   $t2, $t9, NoSwap
+      sw    $t0, 0($s1)
+      sw    $t1, 0($s0)
+
+  NoSwap:
+      addi  $s0, $s0, 4
+      addi  $s1, $s0, 4
+      addi  $s2, $s2, 1
+      addi  $s3, $s2, 1
+
+      bne   $s3, $s7, NotEnd
+      la    $s0, elems
+      addi  $s1, $s0, 4
+      add   $s2, $zero, $zero
+      addi  $s3, $s2, 1
+      addi  $s7, $s7, -1
+
+  NotEnd:
+      j Sort
+
+  Exit:
+      la    $s0, elems
+      add   $s2, $zero, $zero
+      la    $t7, nums
+      lw    $s7, 0($t7)
+
+  Print:
+      beq   $s2, $s7, SPrint
+      lw    $s1, 0($s0)
+
+      # Print array
+      li    $v0, 1
+      move  $a0, $s1
+      syscall
+
+      # Print space
+      li  $v0, 4
+      la  $a0, space
+      syscall
+
+      addi  $s0, $s0, 4
+      addi  $s2, $s2, 1
+      j Print
+
+  SPrint:
+      # Exit
+      li      $v0, 10
+      syscall
+          \end{lstlisting}
+        \end{mdframed}
+  \item Calculate the execution time of your program if one instruction requires 1 ns for processing. \\
+        % TODO
+
+        There are 714 instructions in total for sorting an array with 10 elemetns (including the printing instructions).
+
+        \begin{itemize}
+          \item 7 : load values into registers.
+          \item 576 : sort the array
+          \item 129 : print the sorted array
+          \item 2 : exit instructions
+        \end{itemize}
+
+        The total execution time of our program is $714 ns$.
+
+\end{enumerate}
+
+\pdfbookmark[0]{Question 2}{ques2}
+\section*{Question 2:}
+MIPS programm:
+\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+  \begin{lstlisting}
+.data
+	.align 2
+	student: .space 180
+	gen_select: .asciiz "Male\0|Female"
+	read: .asciiz "Student "
+	ID: .asciiz "Student id: "
+	name: .asciiz "Student name: "
+	age: .asciiz "Student age: "
+	gender: .asciiz "Student gender: "
+	av_score: .asciiz "Student average score: "
+	msg: .asciiz "This is a list of students\n"
+	sign_limit: .double 2147483647
+.text
+
+.globl main
+
+main:
+	la $s0, student
+
+	# for(int i = 0; i != 5; i++) readStudent(i);
+	addi $t5, $zero, 0
+readStd:
+	beq $t5, 5, readExit
+	move $a2, $t5		# pass parameter std_idx
+	jal readStudent
+	addi $t5, $t5, 1
+	j readStd
+readExit:
+
+	li $v0, 4
+	la $a0, msg
+	syscall
+
+	# for(int i = 0; i != 5; i++) printStudent(i);
+	addi $t5, $zero, 0
+printStd:
+	beq $t5, 5, printExit
+	move $a2, $t5		# pass parameter std_idx
+	jal printStudent
+	addi $t5, $t5, 1
+	j printStd
+printExit:
+
+	#sys_exit
+	li $v0, 10
+	syscall
+
+readStudent:		# a2 = std_index
+	addi $t7, $zero, 36 	# Students struct size
+	mul $t1, $a2, $t7	# Index offset
+	add $t0, $s0, $t1	# student address (address of student at index std_idx)
+
+	#Print Student label
+	li $v0, 4
+	la $a0, read
+	syscall
+	li $v0, 1
+	move $a0, $a2
+	syscall
+	#Print new line
+	li $v0, 11
+	li $a0, 0xA
+	syscall
+
+	#Read ID
+	li $v0, 4
+	la $a0, ID
+	syscall
+	li $v0, 7
+	syscall
+	#if exceeds sign limit
+	l.d $f2, sign_limit
+	addi $t3, $zero, 0
+	c.lt.d $f0, $f2
+	bc1t no_exceed
+	sub.d $f2, $f0, $f2
+	cvt.w.d $f2, $f2
+	mfc1 $t3, $f2
+no_exceed:
+	cvt.w.d $f0, $f0
+	mfc1 $t2, $f0
+	addu $t2, $t2, $t3
+	#Store ID - 1 Word (4 Bytes)
+	sw $t2, 0($t0) 		# ID address = student
+
+	#Read & store name - 25 Bytes
+	la $a0, name
+	li $v0, 4
+	syscall
+	addi $a0, $t0, 4	# name address = ID address + sizeof(ID) (a0 = address buffer)
+	li $a1, 25		# no more than 24 characters with 25th character being null-terminator
+	li $v0, 8
+	syscall
+
+	#Read age
+	la $a0, age
+	li $v0, 4
+	syscall
+	li $v0, 5
+	syscall
+	#Store age - 1 Byte
+	addi $t1, $v0, 0
+	sb $t1, 29($t0)		# age address = name address + sizeof(name)
+
+	#Read gender
+	la $a0, gender
+	li $v0, 4
+	syscall
+	li $v0, 5
+	syscall
+	#Store gender - 1 Byte
+	addi $t1, $v0, 0
+	sb $t1, 30($t0)		#gender address = age address + sizeof(age)
+
+	#Read average score
+	la $a0, av_score
+	li $v0, 4
+	syscall
+	li $v0, 6
+	syscall
+	#Store average score - 1 Word (4 Bytes)
+	swc1 $f0, 32($t0)	#av_score address = gender address + sizeof(gender) + 1 Padding Byte
+
+	# Total Bytes used: 35
+	# Padding 1 Bytes, total Bytes occupied: 36
+
+	#Print new line
+	li $v0, 11
+	li $a0, 0xA
+	syscall
+
+	jr $ra
+
+printStudent: 		# a2 = std_index
+	addi $t7, $zero, 36 	# Students struct size
+	mul $t1, $a2, $t7	# Index offset
+	add $t0, $s0, $t1	# student address (address of student at index std_idx)
+
+	#Load ID - 1 Word (4 Bytes)
+	lw $t2, 0($t0) 		# ID address = student
+	#Print ID
+	li $v0, 4
+	la $a0, ID
+	syscall
+	li $v0, 36		# Print unsigned int
+	move $a0, $t2
+	syscall
+
+	#Print new line
+	li $v0, 11
+	li $a0, 0xA
+	syscall
+
+	#Load & print name - 25 Bytes
+	la $a0, name
+	li $v0, 4
+	syscall
+	li $v0, 4
+	addi $a0, $t0, 4	# name address = ID address + sizeof(ID) (a0 = address buffer)
+	syscall
+
+	#Load age - 1 Byte
+	lb $t1, 29($t0)		# age address = name address + sizeof(name)
+	#Print age
+	la $a0, age
+	li $v0, 4
+	syscall
+	li $v0, 1
+	move $a0, $t1
+	syscall
+
+	#Print new line
+	li $v0, 11
+	li $a0, 0xA
+	syscall
+
+	#Load gender - 1 Byte
+	lb $t1, 30($t0)		#gender address = age address + sizeof(age)
+	#gen_select handling
+	la $t2, gen_select
+	beq $t1, 0, jump
+	addi $t1, $zero, 6
+jump:
+	add $t1, $t1, $t2
+	#Print gender
+	la $a0, gender
+	li $v0, 4
+	syscall
+	li $v0, 4
+	move $a0, $t1
+	syscall
+
+	#Print new line
+	li $v0, 11
+	li $a0, 0xA
+	syscall
+
+	#Load average score - 1 Word (4 Bytes)
+	lwc1 $f0, 32($t0)	#av_score address = gender address + sizeof(gender)
+	#Print average score
+	la $a0, av_score
+	li $v0, 4
+	syscall
+	li $v0, 2
+	mov.s $f12, $f0
+	syscall
+
+	#Print new line
+	li $v0, 11
+	li $a0, 0xA
+	syscall
+
+	#Print new line
+	li $v0, 11
+	li $a0, 0xA
+	syscall
+
+	jr $ra
+
+      \end{lstlisting}
+\end{mdframed}
+\begin{enumerate}
+  \item Organize memory allocation for the \textbf{Students struct} (padding is required). \\
+
+        Struct Students allocates total of 36 bytes of memory, its member:
+        \begin{itemize}
+          \item id: occupies from byte index 0 to 3. Total of 4 bytes.
+          \item name[25]: occupies from byte index 4 to 28, with maximum 24 characters and one null-terminator at the end. Total of 25 bytes.
+          \item age: occupies byte index 29. Total of 1 byte.
+          \item is\_male: occupies byte index 30. Total of 1 byte.
+          \item Padding 1 bytes index 31 for storing next member with size of one word.
+          \item average\_score: occupies from byte index 32 to 35. Total of 4 bytes.
+        \end{itemize}
+
+        With the size of array students is five, we allocate total of $36 \cdot 5 = 180$ bytes of memory
+
+  \item Initialize the array of 5 students. Assign any value for their information on the main program. \\
+
+        Get students information through user input:\\
+        Student 0\\
+        Student id: 2500000000 \\
+        Student name: Peter \\
+        Student age: 20\\
+        Student gender: 1\\
+        Student average score: 7.81\\
+        \\
+        Student 1\\
+        Student id: 64652156\\
+        Student name: Daisy \\
+        Student age: 19\\
+        Student gender: 0\\
+        Student average score: 9.75\\
+        \\
+        Student 2\\
+        Student id: 3548896568\\
+        Student name: Charles\\
+        Student age: 26\\
+        Student gender: 1\\
+        Student average score: 8.34\\
+        \\
+        Student 3\\
+        Student id: 527846889\\
+        Student name: Katherine\\
+        Student age: 23\\
+        Student gender: 0\\
+        Student average score: 6.23\\
+        \\
+        Student 4\\
+        Student id: 1565486232\\
+        Student name: Dick\\
+        Student age: 24\\
+        Student gender: 1\\
+        Student average score: 5.16\\
+
+  \item Write a MIPS program for print\_student procedure.\\
+
+        Included in the MIPS program above with label printStudent.
+
+  \item Use print\_student procedure to print information of 5 assigned students.\\
+
+  \item[\bullet] Result:\\
+
+        This is a list of students
+        Student id: 2500000000 \\
+        Student name: Peter \\
+        Student age: 20\\
+        Student gender: 1\\
+        Student average score: 7.81\\
+        \\
+        Student id: 64652156\\
+        Student name: Daisy \\
+        Student age: 19\\
+        Student gender: 0\\
+        Student average score: 9.75\\
+        \\
+        Student id: 3548896568\\
+        Student name: Charles\\
+        Student age: 26\\
+        Student gender: 1\\
+        Student average score: 8.34\\
+        \\
+        Student id: 527846889\\
+        Student name: Katherine\\
+        Student age: 23\\
+        Student gender: 0\\
+        Student average score: 6.23\\
+        \\
+        Student id: 1565486232\\
+        Student name: Dick\\
+        Student age: 24\\
+        Student gender: 1\\
+        Student average score: 5.16\\
+
+\end{enumerate}
+
+\end{document}

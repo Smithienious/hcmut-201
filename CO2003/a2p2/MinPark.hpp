@@ -9,6 +9,9 @@
  *
  ************/
 
+#ifndef MINPARK_HPP
+#define MINPARK_HPP
+
 #include <vector>
 #include <algorithm>
 
@@ -53,3 +56,5 @@ int minPark(vector<Interval> lInterval)
 
   return count;
 }
+
+#endif

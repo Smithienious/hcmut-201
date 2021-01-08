@@ -1,0 +1,234 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vntex, inputenc}
+\usepackage{amsmath, amssymb, anyfontsize, array, color,  enumerate, enumitem, fancyhdr, float, graphicx, hyperref, lastpage, listings, mathtools, mips, natbib, pifont, tikz}
+\usepackage[open,openlevel=0]{bookmark}
+\usepackage[framemethod=tikz]{mdframed}
+
+\usetikzlibrary{calc}
+\newcommand\HRule{\rule{12cm}{1pt}}
+
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+  \color{blue}
+  \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=8mm, height=8mm]{BK.png}}
+    \end{picture}
+    \begin{tabular}{l}
+      \textbf{\bf \ttfamily Ho Chi Minh University of Technology}\\
+      \textbf{\bf \ttfamily Faculty of Computer Science \& Engineering}
+    \end{tabular}
+  \end{tabular}
+}
+\fancyhead[R]{
+  \begin{tabular}{l}
+    \tiny \bf \\
+    \tiny \bf
+  \end{tabular}
+}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Computer Architecture Week 7}
+\fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=[MIPS]Assembler,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3,
+  numbers=left,
+  stepnumber=1,
+  numbersep=1pt,
+  firstnumber=1,
+  numberfirstline=true
+}
+
+\begin{document}
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \draw[line width = 2pt] ($(current page.north west) + (1in,-1in)$) rectangle ($(current page.south east) + (-1in,1in)$);
+  \end{tikzpicture}
+
+  \begin{center}
+
+    % Upper part of the page
+    \textbf{\fontsize{12pt}{1pt}\selectfont HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY}\\[0.5cm]
+    {\fontsize{13pt}{1pt}\selectfont Faculty of Computer Science \& Engineering}\\[0.5cm]
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=1.7in,height=1.7in]{BK.png}
+    \end{figure}
+
+    % Title
+    \HRule\\[0.5cm]
+    { \textbf{\fontsize{25pt}{1pt}\selectfont Computer Architecture Week 7}}\\[0.4cm]
+
+    \HRule\\[0.8cm]
+    \begin{minipage}{0.545\textwidth}
+      \begin{flushleft}
+        \textbf{Authors:}\\
+        \begin{tabular}{l l}
+          Lưu Nguyễn Hoàng Minh & 1952845 \\
+          Vũ Anh Nhi            & 1952380 \\
+          Nguyễn Chính Khôi     & 1952793 \\
+          Nguyễn Hoàng          & 1952255 \\
+        \end{tabular}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \textbf{Class:}\\
+        CO2008\_CC02\\
+        \textbf{Lecturer:}\\
+        Kiều Đỗ Nguyên Bình\\
+
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    % Bottom of the page
+    \vspace{2cm}
+    {\large} %{\large \today}
+  \end{center}
+\end{titlepage}
+
+
+\pdfbookmark[0]{Question 1}{ques1}
+\section*{Question 1:}
+
+A memory uses 32 bits for address, the size of cache is 4MB, the size of block is 256B. The system supports byte access. Determine the size of tag, index, offset in each following scenarios: \\
+
+- Each block contains 256 B = $2^8$ bytes, therefore the size of offset is 8 in all cases.
+
+- Cache size is 4 MB = $2^2 \times 2^{20}$ = $2^{22}$ bytes.
+
+
+\begin{enumerate}
+  \item Direct mapped
+
+        - Tag: 32 - 8 - 14 = 10 \\
+        - Index: 22 - 8 = 14 \\
+        - Offset: 8 \\
+
+  \item 4-way set associative
+
+        - Tag: 32 - 12 - 8 = 12 \\
+        - Index: 22 - (8+2) = 22 - 10 = 12\\
+        - Offset: 8
+
+  \item Fully associative
+
+        - Tag: 32 - 8 = 24\\
+        - Index: 0\\
+        - Offset: 8
+
+\end{enumerate}
+
+
+
+\pdfbookmark[0]{Question 2}{ques2}
+\section*{Question 2:}
+
+A memory has a size of 256MB, the size of cache is 256KB, each block contains 64 words. The system supports half-word access. Determine the tag, index, offset with the following cache’s configuration: \\
+
+- Memory size is 256 MB = $2^{8} \times 2^{20}$ B = $2^{28}$ B.
+
+- Half-word access: 16-bit or 2-byte access.
+
+- Each block contains 64 words = 256 bytes = $2^8$ bytes. Since this supports half-word access, offset would be 7 instead of 8.
+
+- Cache size is 256 KB = $2^8 \times 2^{10}$ = $2^{18}$ bytes.
+
+\begin{enumerate}
+  \item Direct mapped
+
+        - Tag:  11 \\ %10
+        - Index:  10 \\ %11
+        - Offset: 7
+
+  \item 8-way set associative
+
+        - Tag: 14 \\ % 13
+        - Index: 7 \\ % 8
+        - Offset: 7
+
+  \item Fully associative
+
+        - Tag: 21 \\
+        - Index: 0 \\
+        - Offset: 7
+
+\end{enumerate}
+
+
+\pdfbookmark[0]{Question 3}{ques3}
+\section*{Question 3:}
+
+A system integrates a 256B cache that is configured as direct mapped. The size of each cache block is 4 words. The system supports byte access. Assume that we access consecutively the following addresses:
+0 → 4 → 1 → 5 → 65 → 1 → 67 → 46 → 1 → 70 → 2 → 0.
+Determine the number of HIT/MISS with the following configuration:
+
+\begin{enumerate}
+  \item Direct mapped
+
+        - Hit: 1\\
+        - Miss: 11
+
+  \item 2-way set associative
+
+        - Hit: 2\\
+        - Miss: 10
+
+  \item 4-way set associative
+
+        - Hit: 3\\
+        - Miss: 9
+
+  \item Fully associative
+
+        - Hit: 3\\
+        - Miss: 9
+
+\end{enumerate}
+
+\pdfbookmark[0]{Question 4}{ques4}
+\section*{Question 4:}
+
+Define the following concept:
+
+\begin{itemize}
+
+  \item Page: a virtual memory block.
+  \item Page fault: a virtual memory miss.
+  \item Cache miss: data accessed is not found in cache.
+  \item Write back/ write through: In write back, data is only updated in the cache, after it is removed from the cache, it will be updated in the memory. In write through, data is updated in both the cache and memory.
+  \item PTE: page table entry. Each page table entry holds the mapping between a virtual address of a page and the address of a physical frame.
+  \item TLB: translation lookaside buffer. A translation lookaside buffer is a memory cache that stores recent translations of virtual memory to physical addresses for faster retrieval.
+
+\end{itemize}
+
+\pdfbookmark[0]{Question 5}{ques5}
+\section*{Question 5:}
+Calculate the average CPI of a pipeline system where the miss rate of instruction memory is $5\%$, the miss rate of data memory is $10\%$. Miss penalty is 100 cycles. Base CPI is 1.5. The proportion of load/store instructions is $36\%$.
+
+
+$$CPI = 1.5 + 0.05 \times 100 + 0.36 \times 0.1 \times 100 = 10.1 $$\\
+
+\end{document}

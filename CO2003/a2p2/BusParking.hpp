@@ -9,6 +9,9 @@
  *
  ************/
 
+#ifndef BUSPARKING_HPP
+#define BUSPARKING_HPP
+
 #include <vector>
 #include <algorithm>
 
@@ -23,7 +26,7 @@ public:
     int start;
     int end;
 
-    Interval(int start = 0, int end = 0) : start(start), end(end) {}
+    Interval(int start, int end) : start(start), end(end) {}
 
     bool operator==(const Interval &obj)
     {
@@ -53,6 +56,7 @@ public:
 
   public:
     Node *root;
+    vector<Interval> intervals;
 
     IntervalTree() : root(nullptr) {}
     ~IntervalTree() { this->clear(root); }
@@ -61,18 +65,27 @@ public:
     {
       if (root == nullptr)
       {
+        intervals.push_back(*interval);
         root = new Node(interval);
         return 1;
       }
 
       root = rAdd(interval, root);
-      return oSearch(*interval, root);
+      return oAdd(*interval, root);
     }
 
     Node *rAdd(Interval *interval, Node *pR)
     {
+
       if (pR == nullptr)
+      {
+        intervals.push_back(*interval);
         return new Node(interval);
+      }
+      else
+          // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=131962#p430058
+          if (*interval == *(pR->interval))
+        return nullptr;
 
       if (interval->start < pR->interval->start)
         pR->left = rAdd(interval, pR->left);
@@ -106,26 +119,57 @@ public:
       return pR;
     }
 
-    Node *remove(Interval itl, Node *pR, Node *pN)
+    int oAdd(Interval itl, Node *pR)
     {
       if (pR == nullptr)
-        return pR;
+        return 0;
+
+      int overlap = 0;
+      if (pR->doOverlap(itl))
+        overlap += 1;
+
+      if (pR->left != nullptr && itl.start <= pR->left->maxEnd)
+        overlap += oAdd(itl, pR->left);
+      if (pR->right != nullptr && itl.end >= pR->right->interval->start)
+        overlap += oAdd(itl, pR->right);
+
+      return overlap;
+    }
+
+    int remove(Interval itl)
+    {
+      if (root == nullptr)
+        return 0;
+
+      root = rRemove(itl, root, nullptr);
+      return oRemove();
+    }
+
+    Node *rRemove(Interval itl, Node *pR, Node *pN)
+    {
+      if (pR == nullptr)
+        return nullptr;
 
       if (itl.start < pR->interval->start)
-        pR->left = remove(itl, pR->left, pR);
+        pR->left = rRemove(itl, pR->left, pR);
       else if (itl.start > pR->interval->start)
-        pR->right = remove(itl, pR->right, pR);
-      else
+        pR->right = rRemove(itl, pR->right, pR);
+      else if (itl.end == pR->interval->end)
       {
-        // * No child
-        if (pR->left == nullptr && pR->right == nullptr)
+        // * No or one child
+        if (pR->left == nullptr || pR->right == nullptr)
         {
+          vector<Interval>::iterator itr = find(intervals.begin(), intervals.end(), itl);
+          intervals.erase(itr);
+
+          Node *tmp = (pR->left) ? pR->left : pR->right;
+
           if (pN != nullptr)
           {
             if (pN->left == pR)
-              pN->left = nullptr;
+              pN->left = tmp;
             else
-              pN->right = nullptr;
+              pN->right = tmp;
           }
 
           delete pR->interval;
@@ -139,56 +183,6 @@ public:
           }
 
           return nullptr;
-        }
-        // * Left child
-        else if (pR->right == nullptr)
-        {
-          Node *tmp = pR->left;
-
-          if (pN != nullptr)
-          {
-            if (pN->left == pR)
-              pN->left = tmp;
-            else
-              pN->right = tmp;
-          }
-
-          delete pR->interval;
-          delete pR;
-          pR = nullptr;
-
-          if (pN == nullptr)
-          {
-            root = pN;
-            return pN;
-          }
-
-          return tmp;
-        }
-        // * Right child
-        else if (pR->left == nullptr)
-        {
-          Node *tmp = pR->right;
-
-          if (pN != nullptr)
-          {
-            if (pN->left == pR)
-              pN->left = tmp;
-            else
-              pN->right = tmp;
-          }
-
-          delete pR->interval;
-          delete pR;
-          pR = nullptr;
-
-          if (pN == nullptr)
-          {
-            root = pN;
-            return pN;
-          }
-
-          return tmp;
         }
         else // * Two children
         {
@@ -229,9 +223,12 @@ public:
           cur = pR;
           pR = tmp;
 
-          pR->left = remove(itl, pR->left, pR);
+          pR->left = rRemove(itl, pR->left, pR);
         }
       }
+      else
+        // ? http://e-learning.hcmut.edu.vn/mod/forum/discuss.php?d=131962#p430054
+        return nullptr;
 
       if (pR == nullptr)
         return pR;
@@ -265,6 +262,37 @@ public:
       return pR;
     }
 
+    int oRemove()
+    {
+      int count = 0, cur = 0;
+      vector<pair<int, char>> tmp;
+
+      for (int i = 0; i < (int)intervals.size(); i += 1)
+      {
+        tmp.push_back({intervals[i].start, 'x'});
+        tmp.push_back({intervals[i].end, 'y'});
+      }
+
+      sort(tmp.begin(), tmp.end());
+
+      for (pair<int, char> itr : tmp)
+      {
+        // * If found x, a route begins
+        if (itr.second == 'x')
+          cur += 1;
+
+        // * If found y, a route ends
+        if (itr.second == 'y')
+          cur -= 1;
+
+        // * Min park === Max overlap
+        if (count < cur)
+          count = cur;
+      }
+
+      return count;
+    }
+
     void clear(Node *pR)
     {
       if (pR == nullptr)
@@ -277,23 +305,6 @@ public:
       delete pR;
 
       return;
-    }
-
-    int oSearch(Interval itl, Node *pR)
-    {
-      if (pR == nullptr)
-        return 0;
-
-      int overlap = 0;
-      if (pR->doOverlap(itl))
-        overlap += 1;
-
-      if (pR->left != nullptr && itl.start <= pR->left->maxEnd)
-        overlap += oSearch(itl, pR->left);
-      if (pR->right != nullptr && itl.end >= pR->right->interval->start)
-        overlap += oSearch(itl, pR->right);
-
-      return overlap;
     }
 
     int findMax(int a, int b)
@@ -380,7 +391,9 @@ public:
   {
     if (iTree == nullptr)
       return;
-    iTree->remove(Interval(s, t), iTree->root, nullptr);
+    minParkValue = iTree->remove(Interval(s, t));
+
+    return;
   }
 
   void clear()
@@ -388,6 +401,7 @@ public:
     if (iTree == nullptr)
       return;
     iTree->clear(iTree->root);
+    minParkValue = 0;
 
     return;
   }
@@ -397,3 +411,5 @@ public:
     return minParkValue;
   }
 }; // class BusParking
+
+#endif

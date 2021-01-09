@@ -2,8 +2,8 @@
  * @file BusParking.hpp
  * @author NGUYEN Hoang (hoang.nguyen.bigunit@hcmut.edu.vn)
  * @brief
- * @version 0.1.1
- * @date 2021-01-05
+ * @version 0.1.2
+ * @date 2021-01-09
  *
  * @copyright Copyright (c) 2021
  *
@@ -264,29 +264,36 @@ public:
 
     int oRemove()
     {
-      int count = 0, cur = 0;
-      vector<pair<int, char>> tmp;
+      int quan = intervals.size();
+      int *arr = new int[quan], *dep = new int[quan];
 
-      for (int i = 0; i < (int)intervals.size(); i += 1)
+      for (int i = 0; i < quan; i += 1)
       {
-        tmp.push_back({intervals[i].start, 'x'});
-        tmp.push_back({intervals[i].end, 'y'});
+        arr[i] = intervals[i].start;
+        dep[i] = intervals[i].end;
       }
 
-      sort(tmp.begin(), tmp.end());
+      // * These sorts are O(N log N)
+      sort(arr, arr + quan);
+      sort(dep, dep + quan);
 
-      for (pair<int, char> itr : tmp)
+      int cur = 1, count = 1;
+      int i = 1, j = 0;
+
+      while (i < quan && j < quan)
       {
-        // * If found x, a route begins
-        if (itr.second == 'x')
+        if (arr[i] < dep[j])
+        {
           cur += 1;
-
-        // * If found y, a route ends
-        if (itr.second == 'y')
+          i += 1;
+        }
+        else
+        {
           cur -= 1;
+          j += 1;
+        }
 
-        // * Min park === Max overlap
-        if (count < cur)
+        if (cur > count)
           count = cur;
       }
 

@@ -2,8 +2,8 @@
  * @file MinPark.hpp
  * @author NGUYEN Hoang (hoang.nguyen.bigunit@hcmut.edu.vn)
  * @brief
- * @version 0.1.3
- * @date 2021-01-07
+ * @version 0.1.4
+ * @date 2021-01-09
  *
  * @copyright Copyright (c) 2021
  *
@@ -28,29 +28,36 @@ public:
 
 int minPark(vector<Interval> lInterval)
 {
-  int count = 0, cur = 0;
-  vector<pair<int, char>> tmp;
+  int quan = lInterval.size();
+  int *arr = new int[quan], *dep = new int[quan];
 
-  for (int i = 0; i < (int)lInterval.size(); i += 1)
+  for (int i = 0; i < quan; i += 1)
   {
-    tmp.push_back({lInterval[i].start, 'x'});
-    tmp.push_back({lInterval[i].end, 'y'});
+    arr[i] = lInterval[i].start;
+    dep[i] = lInterval[i].end;
   }
 
-  sort(tmp.begin(), tmp.end());
+  // * These sorts are O(N log N)
+  sort(arr, arr + quan);
+  sort(dep, dep + quan);
 
-  for (pair<int, char> itr : tmp)
+  int cur = 1, count = 1;
+  int i = 1, j = 0;
+
+  while (i < quan && j < quan)
   {
-    // * If found x, a route begins
-    if (itr.second == 'x')
+    if (arr[i] < dep[j])
+    {
       cur += 1;
-
-    // * If found y, a route ends
-    if (itr.second == 'y')
+      i += 1;
+    }
+    else
+    {
       cur -= 1;
+      j += 1;
+    }
 
-    // * Min park === Max overlap
-    if (count < cur)
+    if (cur > count)
       count = cur;
   }
 

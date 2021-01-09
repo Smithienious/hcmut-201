@@ -40,6 +40,23 @@ void Task2()
   delete b;
 }
 
+void LocalTest1()
+{
+  vector<Interval> intervals;
+  intervals.push_back(Interval(2, 16));
+  intervals.push_back(Interval(4, 8));
+  intervals.push_back(Interval(4, 10));
+  intervals.push_back(Interval(6, 8));
+  intervals.push_back(Interval(6, 12));
+  intervals.push_back(Interval(10, 16));
+  intervals.push_back(Interval(10, 18));
+  intervals.push_back(Interval(12, 14));
+  intervals.push_back(Interval(13, 17));
+  intervals.push_back(Interval(13, 19));
+
+  cout << minPark(intervals);
+}
+
 int main(int, char **)
 {
   return 0;

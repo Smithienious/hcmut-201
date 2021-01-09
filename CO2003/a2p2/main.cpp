@@ -2,8 +2,8 @@
  * @file main.cpp
  * @author NGUYEN Hoang (hoang.nguyen.bigunit@hcmut.edu.vn)
  * @brief
- * @version 0.1.1
- * @date 2021-01-07
+ * @version 0.1.2
+ * @date 2021-01-09
  *
  * @copyright Copyright (c) 2021
  *

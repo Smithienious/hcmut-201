@@ -372,14 +372,47 @@ Substitution into the equation for \(y\) gives the particular solution
 
 
 \subsection{An approach to Euler and Runge-Kutta algorithms}
-\textit{Introduce and present the approximation steps of the Explicit Euler and Explicit Runge-Kutta of order 4 algorithms to solve general first-order differential equations.}
+\subsubsection{Explicit Euler algorithm}
+As a reminder, our general first-order differential equations take the form
+\begin{equation*}
+  \begin{cases}
+    \frac{dy}{dt} = f(y,t) \\
+    y(t_0) = y_0
+  \end{cases}
+\end{equation*}
 
+Regarding the definition of first order derivative of a function, we have:
+\begin{gather*}
+  \frac{dy}{dt} = \lim_{\Delta t \rightarrow 0} \frac{y(t + \Delta t) - y(t)}{\Delta t}
+\end{gather*}
+
+Thus, when \(\Delta t\) is sufficiently small - denoted \(h\), we can have the following approximation:
+\begin{gather*}
+  \frac{dy}{dt} \approx \frac{y(t + h) - y(t)}{h}
+\end{gather*}
+
+Combining with the first-order differential equation, we have:
+\begin{gather*}
+  f(y(t),t) \approx \frac{y(t + h) - y(t)}{h}
+\end{gather*}
+
+So, when we have \(y(t_1)\) and an arbitrarily small \(h\), we have approximate \(y(t_1 + h)\) by:
+\begin{gather*}
+  y(t + h) \approx y(t) + h \cdot f(y(t),t)
+\end{gather*}
+
+In the end, if we divide our time interval into discrete time steps, starting from \(t_0\) and \(t_i = t_{i-1} + h\), we can calculate \(y(t_i)\) at any \(t_i\) since our general first-order differential equations have provided us with the initial condition \(y(t_0) = y_0\). To put it more formally, we have:
+\begin{gather*}
+  y(t_{i+1}) \approx y(t_i) + h \cdot f(y(t_i), t_i)
+\end{gather*}
+
+That is the approximation steps of the Explicit Euler algorithm to solve general first-order differential equations.
+
+\subsubsection{Explicit Runge–Kutta of order 4 algorithm}
 
 % TODO
 
 \subsection{Applying Euler and Runge-Kutta algorithms in this system}
-\textit{Using Explicit Euler and Explicit Runge-Kutta, give approximate values of the exact solutions of the above examples and time \(t_0\), \(t_0 + h\), \(t_0 + 2h\),\dots, \(t_0 + 5h\) with optional \(h\).}
-
 
 % TODO
 
@@ -387,11 +420,8 @@ Substitution into the equation for \(y\) gives the particular solution
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 2}
-\subsection{(a)}
-\subsubsection{Chapter 2}
-\textit{Restate the model for the \(CO_2\) concentration in greenhouses in detail.}
-
-
+\subsection{\(CO_2\) concentration model}
+\subsubsection{\(CO_2\) exchange}
 To describe the concentration of \(CO_2\) in the greenhouse air, we consider a green house with thermal screens, which allow us to control light, temperature and humidity more precisely, which means a better climate control in the greenhouse.
 \begin{figure}[H]
   \centering
@@ -399,9 +429,8 @@ To describe the concentration of \(CO_2\) in the greenhouse air, we consider a g
   \caption{Greenhouse thermal screen}\label{fig:thrscr}
 \end{figure}
 
-In figure{}\ref{fig:thrscr}, we see that a thermal screen divides the green house into two compartments, above and below the screen.
+In figure~\ref{fig:thrscr}, we see that a thermal screen divides the green house into two compartments, above and below the screen.
 This results in different concentrations of \(CO_2\) in two of the compartments.
-
 \begin{figure}[H]
   \centering
   \includegraphics[width=9cm]{CO2}
@@ -409,12 +438,11 @@ This results in different concentrations of \(CO_2\) in two of the compartments.
 \end{figure}
 
 The exchange in concentrations of \(CO_2\) can be separated into three \(CO_2\) region: \(CO_{2Top}\) which is from above the screen, \(CO_{2Air}\) which is from below the screen and \(CO_{2Out}\) which is from outside the greenhouse.
-Each relates to each other in the diagram shown in Figure 2.
+Each relates to each other in the diagram shown in figure~\ref{fig:CO2}.
 
 %%%%%%%%%%
-\subsubsection{Chapter 3}
-From Figure{}\ref{fig:CO2}, the fluctuation of \(CO_2\) concentration in the lower and upper compartments of the greenhouse is represented by two differential equations.
-
+\subsubsection{Dynamical systems and assumptions}
+From figure~\ref{fig:CO2}, the fluctuation of \(CO_2\) concentration in the lower and upper compartments of the greenhouse is represented by two differential equations.
 \begin{equation}
   \begin{cases}
     cap_{CO_2 Air}\dot{CO_{2 Air}} = MC_{BlowAir} + MC_{ExtAir} + MC_{PadAir} \\ \qquad \qquad \qquad \qquad \qquad
@@ -423,26 +451,23 @@ From Figure{}\ref{fig:CO2}, the fluctuation of \(CO_2\) concentration in the low
   \end{cases}
 \end{equation}
 
-
 The notations \(cap_A, CO_{2 A}, \dot{CO_2}_A\) and \(MC_{AB}\) are respectively the capacity to store \(CO_2\) in \(A\) \((m)\), the \(CO_2\) concentration in \(A\) \((mg\;m^{-3})\), the rate of change of \(CO_2\) concentration in \(A\) \((mg\;m^{-3}\;s^{-1})\), and the net \(CO_2\) flux from \(A\) to \(B\) \((mg\;m^{-2}\;s^{-1})\), where \(Air\) and \(Top\) represent the lower and upper compartments, \(Blow\) represents the direct air heater, \(Ext\) represents the source from the third party, \(Pad\) represents the pad system, \(Can\) represents the total foliage of the plants inside the greenhouse, and \(Out\) represents the space outside the greenhouse.
 
 In order to solve the equations, we must consider the formulas that calculate each \(MC_{AB}\) that was presented.
 
 The amount of \(CO_2\) going from the direct air heater into the greenhouse air is given by taking the product of the capacity \(P_{Blow}\) \((W)\) of the heater, the amount of \(CO_2\) generated for each Joule of sensible heat released by the heater \(\eta_{HeatCO_2}\) \((mg_{CO_2}\;J^{-1})\), and the dimensionless parameter \(U_{Blow}\), then dividing it by the area of the greenhouse \(A_{Flr}\) \((m^2)\).
-
-\begin{equation}
+\begin{gather}
   MC_{BlowAir} = \frac{\eta_{HeatCO_2}U_{Blow}}{A_{Flr}}
-\end{equation}
+\end{gather}
 
-Similarly, the amount of \(CO_2\) that is pumped into the greenhouse by the third party equals the third party's ability to pump \(CO_2\) \(\phi_{ExtCO_2}\) (mg s\(^{-1}\)) times the dimensionless parameter \(U_{ExtCO_2}\), then divided by the area of the greenhouse.
-
-\begin{equation}
+Similarly, the amount of \(CO_2\) that is pumped into the greenhouse by the third party equals the third party's ability to pump \(CO_2\) \(\phi_{ExtCO_2}\) \((mg\;s^{-1})\) times the dimensionless parameter \(U_{ExtCO_2}\), then divided by the area of the greenhouse.
+\begin{gather}
   MC_{ExtAir} = \frac{U_{ExtCO_2}\phi_{ExtCO_2}}{A_{Flr}}
-\end{equation}
+\end{gather}
 
 The amount of \(CO_2\) that enters the greenhouse through the pad system is calculated differently.
 It depends on the difference between the concentration of \(CO_2\) inside and outside the greenhouse, and the ability of the pad system for the air to go through.
-As the pad can be adjusted to let more air in, the flux of the pad \(f_{Pad}\) (m\(^{-1}\)) can be given as the product of the permeability of the pad \(U_{Pad}\) and the ability for the airflow to pass through \(\phi_{Pad}\) (m\(^3\) s\(^{-1}\)) divided by the area of the greenhouse floor.
+As the pad can be adjusted to let more air in, the flux of the pad \(f_{Pad}\) \((m^{-1})\) can be given as the product of the permeability of the pad \(U_{Pad}\) and the ability for the airflow to pass through \(\phi_{Pad}\) \((m^3\;s^{-1})\) divided by the area of the greenhouse floor.
 \begin{equation}
   \begin{split}
     MC_{PadAir} & = f_{Pad} (CO_{2 Out} - CO_{2 Air}) \\
@@ -451,226 +476,226 @@ As the pad can be adjusted to let more air in, the flux of the pad \(f_{Pad}\) (
 \end{equation}
 
 The net flux of \(CO_2\) from the lower compartment to the upper compartment of the greenhouse is more complicated.
-It depends on the difference in temperature and air density between the two compartments and the airflow rate through the thermal screen \(f_{ThScr}\) (m s\(^{-1}\)).
-
-\begin{equation}
+It depends on the difference in temperature and air density between the two compartments and the airflow rate through the thermal screen \(f_{ThScr}\) \((m\;s^{-1})\).
+\begin{gather}
   MC_{AirTop} = f_{ThScr} (CO_{2 Air} - CO_{2 Top})
-\end{equation}
+\end{gather}
 
-Furthermore, $f_{ThScr}$ is given by
+Furthermore, \(f_{ThScr}\) is given by
+\begin{gather}
+  f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}| ^{\frac{2}{3}} + (1 - U_{ThScr}) {\Bigg[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\Bigg]}^{\frac{1}{2}}
+\end{gather}
 
-\begin{equation}
-  f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}| ^{\frac{2}{3}} + (1 - U_{ThScr}) \Bigg[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\Bigg]^{\frac{1}{2}}
-\end{equation}
+To calculate the the airflow rate, we consider the screen and the open regions separately, with \(U_{ThScr} \in [0,1]\) representing the percentage of places that are covered by the thermal screen. The flux through the screen depends on the difference between the temperature above and below the screen and the permeability of the screen \(K_{ThScr}\) \((m\;K^{-\frac{2}{3}}\;s^{-1})\).
 
-To calculate the the airflow rate, we consider the screen and the open regions separately, with $U_{ThScr} \in [0,1]$ representing the percentage of places that are covered by the thermal screen. The flux through the screen depends on the difference between the temperature above and below the screen and the permeability of the screen $K_{ThScr}$ (m K$^{-\frac{2}{3}}$ s$^{-1}$).
+At places that are not covered by the thermal screen, the flux is given by a Navier-Stokes equation depending on the difference of the air density below the screen \(\rho_{Air}\) and the air density above the screen \(\rho_{Top}\) \((kg\;m^{-3})\). \(W\) \((m)\) is width of the thermal screen.
 
-At places that are not covered by the thermal screen, the flux is given by a Navier-Stokes equation depending on the difference of the air density below the screen $\rho_{Air}$ and the air density above the screen $\rho_{Top}$ (kg m$^{-3}$). $W$ (m) is width of the thermal screen.
-
-The net CO2 flux from the inside to the outside of the greenhouse is given by the following formula
-
-\begin{equation}
+The net \(CO_2\) flux from the inside to the outside of the greenhouse is given by the following formula
+\begin{gather}
   MC_{AirOut} = (f_{VentSide} + f_{VentForced})(CO_{2 Air} - CO_{2 Out})
-\end{equation}
+\end{gather}
 
-The flux $f_{VentSide}$ and $f_{VentForced}$ (m s$^{-1}$) are respectively the flux due to the fan system on the sidewalls and the fan system inside the greenhouse.
+The flux \(f_{VentSide}\) and \(f_{VentForced}\) \((m s^{-1})\) are respectively the flux due to the fan system on the sidewalls and the fan system inside the greenhouse.
 
 %In this case, we should consider the Bernoulli principle in representing the pressure difference outside and inside of the greenhouse.
 
-$$ f_{VentRoofSide} = \frac{C_d}{A_{Flr}} \Bigg[\frac{U^2_{Roof}U^2_{Side} A^2_{Roof}A^2_{Side}}{U^2_{Roof} A^2_{Roof} + U^2_{Side} A^2_{Side}} . \frac{2gh_{SideRoof} (T_{Air} - T_{Out})}{T^{Mean}_{Air}}$$
-$$\qquad \qquad + \Bigg( \frac{U_{Roof}A_{Roof} + U_{Side}A_{Side}}{2} +  \Bigg) ^2 C_W v^2_{Wind} \Bigg]^{\frac{1}{2}}$$
-
-The above formula is the sum of the two components multiplied with the ratio between the discharged coefficient $C_d$ and the area of the greenhouse $A_{Flr}$ (m$^2$).
-
-The first component represents the Stack effect when the ventilation area on the roof $A_{Roof}$ (m$^2$) is non-zero. Stack effect happens when there exists a temperature difference between the interior and exterior of the building. In this case, the first component in the formula is given based on the equation of the Stack effect, that is caused by the temperature difference between the outside and inside of the greenhouse (the space under the thermal screen).
-The second component is given by the pressure difference inside and outside the greenhouse. The pressure from the outside of the greenhouse is caused by the natural airflow through the roof surface, while the pressure from the inside of the greenhouse is caused by the lateral airflow. Based on the Bernoulli principle, the pressure difference can be calculated as the total area of the ventilation openings on the greenhouse divided by two times the natural wind speed $v_{Wind}$ (m s$^{-1}$) squared and the global wind pressure coefficient $C_w$ (dimensionless).
-
-In the presence of an insect screen, the movement speed of the air currents through the ventilation areas will be reduced by a factor of $\eta_{InsScr}$, where $\zeta_{InsScr}$ is the porosity, the ratio of the area of the holes in the screen to the total area of the screen.
-
-$$ \eta_{InsScr} = \zeta_{InsScr} (2 -  \zeta_{InsScr})$$
-
-Given the leakage coefficient $c_{leakage}$, which depends on the greenhouse type and is dimensionless, an amount of approximately half the leakage rate is added to the air-exchange rate, where leakage rate is calculated as below.
-
-$$ f_{leakage} = \begin{cases}
-    0.25 . c_{leakage}, \qquad \qquad v_{Wind} < 0.25, \\
-    v_{Wind} . c_{leakage}, \qquad \qquad v_{Wind} \geq 0.25,
-  \end{cases}$$
-
-Let $\eta_{Side\_Thr}$ be the Stack-effect threshold. If $\eta_{Side}$, the ratio between the sidewalls ventilation
-area and the total ventilation area, exceeds the threshold, the Stack effect does not occur and vice versa. Then, $f_{VentSide}$ is given by the following
-
-$$ f_{VentSide} = \begin{cases}
-    \eta_{InsScr} f''_{VentSide} + 0.5f_{leakage},  \qquad \qquad \qquad \qquad \eta_{Side} \geq \eta_{Side\_Thr} , \\
-    \eta_{InsScr} [U_{ThScr}f''_{VentSide} +                                                                        \\
-    \qquad \qquad (1-U_{ThScr})f_{VentRoofSide} \eta_{Side} ] + 0.5 f_{leakage},  \qquad \qquad \eta_{Side} < \eta_{Side\_Thr}
-  \end{cases}$$
-
-In which,  $f''_{VentSide}$ is  $f_{VentSide}$ when $A_{Roof}$ = 0. Moreover, the Stack effect does not occur where is covered by the thermal screen.
-
-The flux $f_{VentForced}$ by the fan system inside the greenhouse is calculated as follows.
-
-$$f_{VentForced} = \frac{\eta_{InsScr} U_{VentForced} \phi_{VentForced} } {A_{Flr}}$$
-
-The dimensionless parameter $U_{VentForced} \in [0,1]$ is to adjust the wind speed $\phi_{VentForced}$ due to
-the system (m$^3$ s$^{-1}$).
-
-Similarly to $MC_{AirOut}$, the net $CO_2$ flux from the greenhouse to outside the greenhouse through the roof openings is calculated by using the formula below, where $f_{VentRoof}$ is the flux rate through the roof openings.
-
-\begin{equation}
-  MC_{TopOut} = f_{VentRoof}(CO_{2 Top} - CO_{2 Out})
+\begin{equation} \label{eq:vent_roof_side}
+  \begin{split}
+    f_{VentRoofSide} & = \frac{C_d}{A_{Flr}} \Bigg[\frac{U^2_{Roof} U^2_{Side} A^2_{Roof} A^2_{Side}}{U^2_{Roof} A^2_{Roof} + U^2_{Side} A^2_{Side}} .\times \frac{2gh_{SideRoof} (T_{Air} - T_{Out})}{T^{Mean}_{Air}} \\
+    &\;+ \Bigg(\frac{U_{Roof} A_{Roof} + U_{Side} A_{Side}}{2}\Bigg)^2 + C_W v^2_{Wind} \Bigg]^{\frac{1}{2}}
+  \end{split}
 \end{equation}
 
-$f_{VentRoof}$ is the flux rate openings and is given by
+The above formula is the sum of the two components multiplied with the ratio between the discharged coefficient \(C_d\) and the area of the greenhouse \(A_{Flr}\) \((m^2)\).
 
-$$ f_{VentRoof} = \begin{cases}
-    \eta_{InsScr} f''_{VentRoof} + 0.5f_{leakage},  \qquad \qquad \qquad \qquad \eta_{Roof} \geq \eta_{Roof\_Thr} , \\
-    \eta_{InsScr} [U_{ThScr}f''_{VentRoof} +                                                                        \\
-    \qquad \qquad (1-U_{ThScr})f_{VentRoofSide} \eta_{Side} ] + 0.5 f_{leakage},  \qquad \qquad \eta_{Roof} < \eta_{Roof\_Thr}
-  \end{cases}$$
+The first component represents the Stack effect when the ventilation area on the roof \(A_{Roof}\) \((m^2)\) is non-zero. Stack effect happens when there exists a temperature difference between the interior and exterior of the building. In this case, the first component in the formula is given based on the equation of the Stack effect, that is caused by the temperature difference between the outside and inside of the greenhouse (the space under the thermal screen).
+The second component is given by the pressure difference inside and outside the greenhouse. The pressure from the outside of the greenhouse is caused by the natural airflow through the roof surface, while the pressure from the inside of the greenhouse is caused by the lateral airflow. Based on the Bernoulli principle, the pressure difference can be calculated as the total area of the ventilation openings on the greenhouse divided by two times the natural wind speed \(v_{Wind}\) \((m\;s^{-1})\) squared and the global wind pressure coefficient \(C_w\) (dimensionless).
+
+In the presence of an insect screen, the movement speed of the air currents through the ventilation areas will be reduced by a factor of \(\eta_{InsScr}\), where \(\zeta_{InsScr}\) is the porosity, the ratio of the area of the holes in the screen to the total area of the screen.
+\begin{gather}
+  \eta_{InsScr} = \zeta_{InsScr} (2 -  \zeta_{InsScr})
+\end{gather}
+
+Given the leakage coefficient \(c_{leakage}\), which depends on the greenhouse type and is dimensionless, an amount of approximately half the leakage rate is added to the air-exchange rate, where leakage rate is calculated as below.
+\begin{gather}
+  f_{leakage} = \begin{cases}
+    0.25 \times c_{leakage}     & \text{if} v_{Wind} < 0.25    \\
+    v_{Wind} \times c_{leakage} & \text{if} v_{Wind} \geq 0.25
+  \end{cases}
+\end{gather}
+
+Let \(\eta_{Side\_Thr}\) be the Stack-effect threshold. If \(\eta_{Side}\), the ratio between the sidewalls ventilation
+area and the total ventilation area, exceeds the threshold, the Stack effect does not occur and vice versa. Then, \(f_{VentSide}\) is given by the following
+\begin{gather}
+  f_{VentSide} =
+  \begin{cases}
+    \eta_{InsScr} f''_{VentSide} + 0.5f_{leakage} & \text{if} \eta_{Side} \geq \eta_{Side\_Thr} \\
+    \begin{split}
+      & \eta_{InsScr} [U_{ThScr}f''_{VentSide} + \\
+      & (1-U_{ThScr})f_{VentRoofSide} \eta_{Side}] + 0.5 f_{leakage}
+    \end{split}                    & \text{if} \eta_{Side} < \eta_{Side\_Thr}
+  \end{cases}
+\end{gather}
+
+In which,  \(f''_{VentSide}\) is  \(f_{VentSide}\) when \(A_{Roof} = 0\).
+Moreover, the Stack effect does not occur where is covered by the thermal screen.
+
+The flux \(f_{VentForced}\) by the fan system inside the greenhouse is calculated as follows.
+\begin{gather}
+  f_{VentForced} = \frac{\eta_{InsScr} U_{VentForced} \phi_{VentForced} } {A_{Flr}}
+\end{gather}
+
+The dimensionless parameter \(U_{VentForced} \in [0,1]\) is to adjust the wind speed \(\phi_{VentForced}\) due to
+the system \((m^3\;s^{-1})\).
+
+Similarly to \(MC_{AirOut}\), the net \(CO_2\) flux from the greenhouse to outside the greenhouse through the roof openings is calculated by using the formula below, where \(f_{VentRoof}\) is the flux rate through the roof openings.
+\begin{gather}
+  MC_{TopOut} = f_{VentRoof}(CO_{2 Top} - CO_{2 Out})
+\end{gather}
+
+\(f_{VentRoof}\) is the flux rate openings and is given by
+\begin{gather}
+  f_{VentRoof} =
+  \begin{cases}
+    \eta_{InsScr} f''_{VentRoof} + 0.5f_{leakage} & \text{if} \eta_{Roof} \geq \eta_{Roof\_Thr} \\
+    \begin{split}
+      & \eta_{InsScr} [U_{ThScr}f''_{VentRoof} + \\
+      & (1-U_{ThScr})f_{VentRoofSide} \eta_{Side}] + 0.5 f_{leakage}
+    \end{split}                    & \text{if}  \eta_{Roof} < \eta_{Roof\_Thr}
+  \end{cases}
+\end{gather}
 
 % check again part
-However, when the ratio of the roof-opening area to the total ventilation area exceeds the Stack-effect threshold, the Stack effect does not occur and we cannot reuse the formula $f_{VentRoofSide}$ where $A_{Side}$ = 0 to
-calculate $f''_{VentRoof}$.
+However, when the ratio of the roof-opening area to the total ventilation area exceeds the Stack-effect threshold, the Stack effect does not occur and we cannot reuse the formula~\ref{eq:vent_roof_side} where \(A_{Side} = 0\) to
+calculate \(f''_{VentRoof}\).
+\begin{gather}
+  f''_{VentRoof} = \frac{C_d U_{Roof} A_{Roof}}{2A_{Flr}} {\Big[\frac{gh_{Roof}(T_{Air} - T_{Out})}{2T^{Mean}_{Air}} + C_w v^2_{Wind} \Big]}^{ \frac{1}{2}}
+\end{gather}
 
-$$f''_{VentRoof} = \frac{C_d U_{Roof} A_{Roof}}{2A_{Flr}} \Big[\frac{gh_{Roof}(T_{Air} - T_{Out})}{2T^{Mean}_{Air}} + C_wv^2_{Wind} \Big]^{ \frac{1}{2}}$$
-
-Finally, we need to consider the amount of $CO_2$ absorbed into the leaves due to photosynthesis.
-
-\begin{equation}
+Finally, we need to consider the amount of \(CO_2\) absorbed into the leaves due to photosynthesis.
+\begin{gather}
   MC_{AirCan} = M_{CH_2O} h_{C_{Buf}} (P - R)
-\end{equation}
+\end{gather}
 
-Here, $M_{CH_2O}$ is the molar mass of $CH_2O$ (mg $\mu$ mol$^{-1}$), $P$ is the photosynthetic rate ($\mu$ mol$_{CO_2}$ m$^{-2}$s${-1}$), $R$ is the respiration rate ($\mu$ mol$_{CO_2}$ m$^{-2}$s${-1}$), and $h_{C_{Buf}}$ shows the cessation of photosynthesis when $CH_2O$ is $C_{Buf}$ (mg m$^{-2}$) has reached $C_{Max}$ (mg m$^{-2}$), which is the limit of the carbohydrates storage of the plants. The respiration rate during this process is usually as about $1\%$ of the photosynthesis rate, and thus can be omitted during further calculation. The photosynthesis rate is described in more detail in Chapter 4.
+Here, \(M_{CH_2O}\) is the molar mass of \(CH_2O\) \((mg\;\mu mol^{-1})\), \(P\) is the photosynthetic rate \((\mu mol_{CO_2}\;m^{-2}\;s{-1})\), \(R\) is the respiration rate \((\mu mol_{CO_2}\;m^{-2}\;s^{-1})\), and \(h_{C_{Buf}}\) shows the cessation of photosynthesis when \(CH_2O\) is \(C_{Buf}\) \((mg\;m^{-2})\) has reached \(C_{Max}\) \((mg\;m^{-2})\), which is the limit of the carbohydrates storage of the plants. The respiration rate during this process is usually as about \(1\%\) of the photosynthesis rate, and thus can be omitted during further calculation. The photosynthesis rate is described in more detail in Chapter 4.
 
 %%%%%%%%%%%
 
 
-\subsubsection{Chapter 4}
-% TODO
+\subsubsection{Photosynthesis of C3 plants}
 \setcounter{equation}{19}
 Photosynthesis, the process by which green plants and certain other organisms transform light energy into chemical energy. During photosynthesis in green plants, light energy is captured and used to convert water, carbon dioxide, and minerals into oxygen and energy-rich organic compounds.
 
-Photosynthesis has two phases consisting of the light-dependence phase and the light-indepe-ndence (or dark) phase.
+Photosynthesis has two phases consisting of the light-dependence phase and the light-independence (or dark) phase.
 
-The photosynthetic rate $P$ is defined as the diffusion of $CO_2$ from air into the leaf cells through stomata. From Fick's law for gas diffusion, we construct:
-\begin{equation}
+The photosynthetic rate \(P\) is defined as the diffusion of \(CO_2\) from air into the leaf cells through stomata. From Fick's law for gas diffusion, we construct:
+\begin{gather}
   P = \frac{CO_{2Air} - CO_{2Stom}}{Res}
-\end{equation}
-The notation $CO_{2 Stom}$ is the concentration of CO2 in the stomata ($\mu mol.m^{-3}$) and Res is the resistance-to-absorption coefficient ($s.m^{-1}$).
+\end{gather}
 
-This way of calculating photosynthetic rate $P$ is different from the model of Vanthoor 2011. In there the author uses:
+The notation \(CO_{2Stom}\) is the concentration of CO2 in the stomata \((\mu mol\;m^{-3})\) and \(Res\) is the resistance-to-absorption coefficient \((s\;m^{-1})\).
 
-\begin{equation}
+This way of calculating photosynthetic rate \(P\) is different from the model of Vanthoor 2011. In there the author uses:
+
+\begin{gather}
   P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
-\end{equation}
+\end{gather}
 
-where J $(\mu mol \{e^-\} m^{-2} s^{-1})$ is the electron transport rate, 4 $(\mu mol \{e^-\} \mu mol^{-1} \{CO2\})$ is the
-number of electrons per fixed $CO_2$ molecule, $CO_{2Stom}$ $(\mu mol \{CO_2\} mol^{-1} \{air\})$ is the $CO_2$ concentration in the stomata and $\Gamma$ $(\mu mol \{CO_2\} mol^{-1} \{air\})$ is the $CO_2$ compensation point.
+where \(J\) \((\mu mol \{e^-\} m^{-2} s^{-1})\) is the electron transport rate, 4 \((\mu mol \{e^-\} \mu mol^{-1} \{CO2\})\) is the
+number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) \((\mu mol\{CO_2\}\;mol^{-1}\{air\})\) is the \(CO_2\) concentration in the stomata and \(\Gamma\) \((\mu mol \{CO_2\} mol^{-1} \{air\})\) is the \(CO_2\) compensation point.
 
-Following by the photorespiration $R$:
-
-\begin{equation}
+Following by the photorespiration \(R\):
+\begin{gather}
   R = P \cdot \frac{\Gamma}{CO_{2Stom}}
-\end{equation}
+\end{gather}
 
-But since we do not consider electron transport rate, we will use equation (20) constructed from Fick's law combined with Michaelis-Menten model.
+But since we do not consider electron transport rate, we will use equation $(20)$ constructed from Fick's law combined with Michaelis-Menten model.
 
 In the dark phase, through Michaelis-Menten relationship describing enzyme-substrate reaction, the photosynthetic rate is given by:
-\begin{equation}
+\begin{gather}
   P = \frac{P_{Max} \cdot CO_{2Stom}}{CO_{2 0.5} + CO_{2Stom}}
-\end{equation}
-where $CO_{2 0.5}$ is the concentration of CO2 in the substrate when $P = P_{Max}/2$ $(\mu mol.m^{-3})$.
+\end{gather}
+where \(CO_{2 0.5}\) is the concentration of CO2 in the substrate when \(P = P_{Max}/2\) \((\mu mol\;m^{-3})\).
 
-From $(20)$ and $(21)$, we form a quadratic equation for the rate of photosynthetic $P$. The photosynthetic rate $P$ then no longer depends on the concentration of $CO_2$ in the stomata but only on the concentration of $CO_2$ in the air, the resistance coefficient Res, and the maximum photosynthetic rate.
-\begin{equation}
+From $(20)$ and $(21)$, we form a quadratic equation for the rate of photosynthetic \(P\). The photosynthetic rate \(P\) then no longer depends on the concentration of \(CO_2\) in the stomata but only on the concentration of \(CO_2\) in the air, the resistance coefficient Res, and the maximum photosynthetic rate.
+\begin{gather}
   ResP^2 - (CO_{2Air} + CO_{2 0.5} + ResP_{Max})P + CO_{2Air}P_{Max} = 0
-\end{equation}
+\end{gather}
 
-Solving equation $(22)$ requires $P_{Max}$ to be obtained. For the model for the photosynthesis of one leaf unit, the maximum photosynthetic rate is usually be found through the Arrhenius model.
-\begin{equation}
+Solving equation $(22)$ requires \(P_{Max}\) to be obtained. For the model for the photosynthesis of one leaf unit, the maximum photosynthetic rate is usually be found through the Arrhenius model.
+\begin{gather}
   k(T) = k(T_0)e^{-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})}
-\end{equation}
-where $k(T)$ is the reaction rate at $T (K)$, $T_0$ is the optimum temperature for which the reaction
-rate is known ($K$), $H_a$ is the activation energy for the reaction ($J.mol^{_1}$), and $R$ is the ideal gas constant.
+\end{gather}
+where \(k(T)\) is the reaction rate at \(T (K)\), \(T_0\) is the optimum temperature for which the reaction
+rate is known \((K)\), \(H_a\) is the activation energy for the reaction \((J\;mol^{-1})\), and \(R\) is the ideal gas constant.
 
 Yet a problem is raised when the temperature increases to a certain threshold, the enzyme activity will be inhibited and the photosynthesis is slowed down and cease to advance. A model represents the activity of the Rubisco enzyme during photosynthesis with temperature as its parameter.
-\begin{equation}
+\begin{gather}
   f(T) = \frac{1 + e^{-\frac{H_d}{R}( \frac{1}{T_0} - \frac{1}{\frac{H_d}{S}} )}}{1 + e^{-\frac{H_d}{R}(\frac{1}{T} - \frac{1}{\frac{H_d}{S}})}}
-\end{equation}
-In the model (24), $f(T)$ represents the enzyme activity at $T (K)$, $H_d$ is the deactivation energy ($J.mol^{-1}$), and $S$ is the corresponding entropy quantity ($J.mol^{-1}.K^{-1}$)
+\end{gather}
+In the model $(24)$, \(f(T)\) represents the enzyme activity at \(T(K)\), \(H_d\) is the deactivation energy \((J\;mol^{-1})\), and \(S\) is the corresponding entropy quantity \((J\;mol^{-1}\;K^{-1})\).
 
 Combining $(23)$ and $(24)$, we obtain the formula for maximum rate of photosynthetic rate.
-\begin{equation}
+\begin{gather}
   P_{Max}(T) = k(T)f(T)
-\end{equation}
+\end{gather}
 
-For a photosynthesis for the whole canopy, considering $LAI$ (leaf area index), due to Beer's law, the intensity of the transmitted beam $I$ with the initial state is $I_0$ $(\mu mol\{photons\}.m^{-2}.s^{-1})$ is equal to
-\begin{equation}
+For a photosynthesis for the whole canopy, considering \(LAI\) (leaf area index), due to Beer's law, the intensity of the transmitted beam \(I\) with the initial state is \(I_0\) \((\mu mol\{photons\}\;m^{-2}\;s^{-1})\) is equal to
+\begin{gather}
   I = \frac{I_0.K.e^{-K.LAI}}{1 - m}
-\end{equation}
-If the leaves are horizontally stratified such as in the case of tomato, the dimensionless extinction coefficient K will be between 0.7 and 1.0. Meanwhile, if the leaves are sloping as in the case of wet rice, K will be between 0.3 and 0.5. m is the transmittance coefficient of the leaves which is set as 0.1.
+\end{gather}
+
+If the leaves are horizontally stratified such as in the case of tomato, the dimensionless extinction coefficient \(K\) will be between 0.7 and 1.0. Meanwhile, if the leaves are sloping as in the case of wet rice, \(K\) will be between 0.3 and 0.5. \(m\) is the transmittance coefficient of the leaves which is set as 0.1.
 
 The amount of light absorbed by the canopy can be measured as the difference in the intensity of the light ray before entering the foliage and after passing through the foliage
-\begin{equation}
+\begin{gather}
   L =L_0(1 - \frac{K.e^{-K.LAI}}{1 - m})
-\end{equation}
-In this formula, L is luminous flux received by the leaves per unit area of the greenhouse floor ($\mu mol \{photons\}. m^{-2}. s^{-1}$) and $L_0$ is the initial value of L.
+\end{gather}
+
+In this formula, L is luminous flux received by the leaves per unit area of the greenhouse floor \((\mu mol\{photons\}\;m^{-2}\;s^{-1})\) and \(L_0\) is the initial value of L.
 
 For calculating the maximum photosynthetic rate of all leaves in the greenhouse, we apply the modified Arrhenius model.
-\begin{equation}
+\begin{gather}
   k(T) = LAI \cdot k(T_0) \cdot e^{-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})}
-\end{equation}
-Here, $k(T)$ is the reaction rate for the whole canopy at $T (K)$ and $k(T_0)$ is the reaction rate under the optimal condition $T_0$ ($K$) of one leaf unit,
+\end{gather}
 
-Unlike the photosynthesis model for one leaf unit, the amount of light energy absorbed into the foliage in response to $LAI$ needs to be added since it affects the maximum photosynthetic rate $P_{Max}$. Therefore, we consider the following formula of $P_{Max}$, which is a dependent function on $L$ and $T$.
-\begin{equation}
+Here, \(k(T)\) is the reaction rate for the whole canopy at \(T (K)\) and \(k(T_0)\) is the reaction rate under the optimal condition \(T_0\) \(K\) of one leaf unit.
+
+Unlike the photosynthesis model for one leaf unit, the amount of light energy absorbed into the foliage in response to \(LAI\) needs to be added since it affects the maximum photosynthetic rate \(P_{Max}\). Therefore, we consider the following formula of \(P_{Max}\), which is a dependent function on \(L\) and \(T\).
+\begin{gather}
   P_{Max} (L,T) = \frac{P_{MLT} \cdot P_{Max}(T) \cdot L}{L + L_{0.5}}
-\end{equation}
-In which, $L_{0.5}$ is light intensity when $P_{Max} (L,T) = PMax(T)/2$ ($\mu mol \{photons\} m^{-2}.s^{-1}$)
-$P_{Max}(T)$ is calculated by using the formula (25) with $k(T)$ as in (28), and $P_{MLT}$ are the maximum
-photosynthetic rate at the point of light saturation and the optimal temperature $T$.
+\end{gather}
+
+In which, \(L_{0.5}\) is light intensity when \(P_{Max} (L,T) = PMax(T)/2\) \((\mu mol\{photons\}\;m^{-2}\;s^{-1})\)
+\(P_{Max}(T)\) is calculated by using the formula (25) with \(k(T)\) as in (28), and \(P_{MLT}\) are the maximum
+photosynthetic rate at the point of light saturation and the optimal temperature \(T\).
 
 
-\subsection{(b)}
-\textit{Write programs that calculate the net \(CO_2\) flux from one place to another}
-
-
+\subsection{Implementing the programs}
 % TODO
 
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Exercise 3}
-\textit{Assuming constant temperature difference and constant air density difference, study related citations to find specific and reasonable for each input.
-  Check if the programs work properly with the values found}
+\section{Testing the programs}
 % TODO
 
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 4}
-\subsection{(a)}
-\textit{Write two programs performing the Euler and Runge-Kutta of order 4 algorithms}
-
-
+\subsection{Euler and Runge-Kutta of order 4 algorithms as computer programs}
 % TODO
 
-\subsection{(b)}
-\textit{Select specific values of \(CO_{2Air}\) and \(CO_{2Top}\) at time \(t\) from the data set to run the solvers. Compare the results with the actual data.}
-
-
+\subsection{Predicting \(CO_2\) concentration and comparing to actual data}
 % TODO
-
-
 
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Exercise 5}
-\textit{Do the same as Ex.2 - Ex.4 but for vapor pressure}
-
-
+\section{A dynamical system for vapor pressure}
 % TODO
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{overview}
@@ -708,6 +733,7 @@ Therefore, the vapor flux from the air to an object by condensation is described
   ~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
 \end{equation}
 % TODO
+
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

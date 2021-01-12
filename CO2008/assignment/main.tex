@@ -124,51 +124,55 @@ Where \(<an\;integer\;number>\) will store the number of elements in the array \
 \(elems\) is an array that stores integer elements whose size is equal to value \(<an\;integer\;number>\).
 You are required to choose those values when developing and testing your program.
 \begin{enumerate}
-  \item Write a MIPS program that sort the array \(elems\) in ascending order using the bubble sort algorithm.
+  \item \textbf{Write a MIPS program that sort the array \(elems\) in ascending order using the bubble sort algorithm.}
         \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
           \begin{lstlisting}
     .data
       nums: .word 10
       elems: .word 1 0 2 9 3 8 4 7 5 6
+      space: .asciiz " "
 
-    .text
+.text
+
+	# load values into registers
       addi  $t9, $zero, 1       # 1
-      la    $s0, elems          # Address of element at index i
-      addi  $s1, $s0, 4         # Address of element at index i + 1
-      add   $s2, $zero, $zero   # Index i
-      addi  $s3, $s2, 1         # Index i + 1
+      la    $s0, elems          # Load the base address of the array arr[0] into $s0
+      addi  $s1, $s0, 4         # Load the base address of the arr[1] into $s1
+      add   $s2, $zero, $zero   # Index i = 0
+      addi  $s3, $s2, 1         # Index j = i + 1
       la    $t7, nums           # Limiter base address
-      lw    $s7, 0($t7)         # Limiter
+      lw    $s7, 0($t7)         # Limiter used as stopping condition in the loop for j, limiter = (n - i)
 
   Sort:
-      beq   $t9, $s7, Exit
+      beq   $t9, $s7, Exit	# If the limiter is now 1, end the program.
 
-      lw    $t0, 0($s0)
-      lw    $t1, 0($s1)
+      lw    $t0, 0($s0)		# Load data of arr[i] into $t0
+      lw    $t1, 0($s1)		# Load data of arr[j] into $t1
 
-      slt   $t2, $t0, $t1
-      beq   $t2, $t9, NoSwap
-      sw    $t0, 0($s1)
+      slt   $t2, $t0, $t1	# Compare arr[i] and arr[j]
+      beq   $t2, $t9, NoSwap	# If arr[i] < arr[j], skip to NoSwap
+      sw    $t0, 0($s1)		# Else swap arr[i] and arr[j]
       sw    $t1, 0($s0)
 
   NoSwap:
-      addi  $s0, $s0, 4
-      addi  $s1, $s0, 4
-      addi  $s2, $s2, 1
-      addi  $s3, $s2, 1
+  				# After either swap or noSwap, update i and j
+      addi  $s0, $s0, 4		# Increase the address of arr[i] to arr[i+1]
+      addi  $s1, $s0, 4		# Increase the address of arr[j] to arr[i+1]
+      addi  $s2, $s2, 1		# Increase i = i + 1
+      addi  $s3, $s2, 1		# Increase j = i + 1
 
-      bne   $s3, $s7, NotEnd
-      la    $s0, elems
-      addi  $s1, $s0, 4
-      add   $s2, $zero, $zero
-      addi  $s3, $s2, 1
-      addi  $s7, $s7, -1
+      bne   $s3, $s7, NotEnd	# Continue if j < limiter
+      la    $s0, elems		# Load arr[i] = arr[0] to $s0
+      addi  $s1, $s0, 4		# Load arr[j] = arr[1] to $s1
+      add   $s2, $zero, $zero	# Set i = 0
+      addi  $s3, $s2, 1		# Set j = 1
+      addi  $s7, $s7, -1	# Decrease the limiter by 1
 
   NotEnd:
       j Sort
 
   Exit:
-      la    $s0, elems
+      la    $s0, elems		# Reset all values of registers for printing
       add   $s2, $zero, $zero
       la    $t7, nums
       lw    $s7, 0($t7)
@@ -177,7 +181,7 @@ You are required to choose those values when developing and testing your program
       beq   $s2, $s7, SPrint
       lw    $s1, 0($s0)
 
-      # Print array
+      # Print array element
       li    $v0, 1
       move  $a0, $s1
       syscall
@@ -195,27 +199,36 @@ You are required to choose those values when developing and testing your program
       # Exit
       li      $v0, 10
       syscall
+
           \end{lstlisting}
         \end{mdframed}
-  \item Calculate the execution time of your program if one instruction requires 1 ns for processing. \\
+
+
+        \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+          \begin{lstlisting}
+    Output: 0 1 2 3 4 5 6 7 8 9
+         \end{lstlisting}
+        \end{mdframed}
+  \item \textbf{Calculate the execution time of your program if one instruction requires 1 ns for processing.} \\
         % TODO
 
         There are 714 instructions in total for sorting an array with 10 elemetns (including the printing instructions).
 
         \begin{itemize}
-          \item 7 : load values into registers.
-          \item 576 : sort the array
-          \item 129 : print the sorted array
-          \item 2 : exit instructions
+          \item 7: load values into registers.
+          \item 576: sort the array
+          \item 129: print the sorted array
+          \item 2: exit instructions
         \end{itemize}
 
-        The total execution time of our program is $714 ns$.
+        The total execution time of our program is \(714 ns\).
 
 \end{enumerate}
 
+\newpage
 \pdfbookmark[0]{Question 2}{ques2}
 \section*{Question 2:}
-MIPS programm:
+\textbf{MIPS programm:}
 \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
   \begin{lstlisting}
 .data
@@ -440,7 +453,8 @@ jump:
       \end{lstlisting}
 \end{mdframed}
 \begin{enumerate}
-  \item Organize memory allocation for the \textbf{Students struct} (padding is required). \\
+  \newpage
+  \item \textbf{Organize memory allocation for the \textbf{Students struct} (padding is required).} \\
 
         Struct Students allocates total of 36 bytes of memory, its member:
         \begin{itemize}
@@ -452,9 +466,9 @@ jump:
           \item average\_score: occupies from byte index 32 to 35. Total of 4 bytes.
         \end{itemize}
 
-        With the size of array students is five, we allocate total of $36 \cdot 5 = 180$ bytes of memory
+        With the size of array students is five, we allocate total of \(36 \cdot 5 = 180\) bytes of memory
 
-  \item Initialize the array of 5 students. Assign any value for their information on the main program. \\
+  \item \textbf{Initialize the array of 5 students. Assign any value for their information on the main program.} \\
 
         Get students information through user input:\\
         Student 0\\
@@ -492,45 +506,51 @@ jump:
         Student gender: 1\\
         Student average score: 5.16\\
 
-  \item Write a MIPS program for print\_student procedure.\\
+  \item \textbf{Write a MIPS program for print\_student procedure.}\\
 
         Included in the MIPS program above with label printStudent.
 
-  \item Use print\_student procedure to print information of 5 assigned students.\\
 
-  \item[\bullet] Result:\\
+  \item \textbf{Use print\_student procedure to print information of 5 assigned students.}\\
 
-        This is a list of students
-        Student id: 2500000000 \\
-        Student name: Peter \\
-        Student age: 20\\
-        Student gender: 1\\
-        Student average score: 7.81\\
-        \\
-        Student id: 64652156\\
-        Student name: Daisy \\
-        Student age: 19\\
-        Student gender: 0\\
-        Student average score: 9.75\\
-        \\
-        Student id: 3548896568\\
-        Student name: Charles\\
-        Student age: 26\\
-        Student gender: 1\\
-        Student average score: 8.34\\
-        \\
-        Student id: 527846889\\
-        Student name: Katherine\\
-        Student age: 23\\
-        Student gender: 0\\
-        Student average score: 6.23\\
-        \\
-        Student id: 1565486232\\
-        Student name: Dick\\
-        Student age: 24\\
-        Student gender: 1\\
-        Student average score: 5.16\\
+  \item[\(\bullet\)] Result:\\
 
+        \begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
+          \begin{lstlisting}
+
+    This is a list of students
+    Student id: 2500000000
+    Student name: Peter
+    Student age: 20
+    Student gender: 1
+    Student average score: 7.81
+
+    Student id: 64652156
+    Student name: Daisy
+    Student age: 19
+    Student gender: 0
+    Student average score: 9.75
+
+    Student id: 3548896568
+    Student name: Charles
+    Student age: 26
+    Student gender: 1
+    Student average score: 8.34
+
+    Student id: 527846889
+    Student name: Katherine
+    Student age: 23
+    Student gender: 0
+    Student average score: 6.23
+
+    Student id: 1565486232
+    Student name: Dick
+    Student age: 24
+    Student gender: 1
+    Student average score: 5.16
+
+  \end{lstlisting}
+        \end{mdframed}
 \end{enumerate}
 
 \end{document}

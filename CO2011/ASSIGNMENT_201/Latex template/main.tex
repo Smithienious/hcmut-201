@@ -484,7 +484,7 @@ It depends on the difference in temperature and air density between the two comp
 
 Furthermore, \(f_{ThScr}\) is given by
 \begin{align}
-  f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}| ^{\frac{2}{3}} + (1 - U_{ThScr}) {\left[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\right]}^{\frac{1}{2}}
+  f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}| ^{\frac{2}{3}} + (1 - U_{ThScr}) {\Bigg[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\Bigg]}^{\frac{1}{2}}
 \end{align}
 
 To calculate the the airflow rate, we consider the screen and the open regions separately, with \(U_{ThScr} \in [0,1]\) representing the percentage of places that are covered by the thermal screen. The flux through the screen depends on the difference between the temperature above and below the screen and the permeability of the screen \(K_{ThScr}\) (\(m\;K^{-\frac{2}{3}}\;s^{-1}\)).
@@ -580,10 +580,10 @@ Finally, we need to consider the amount of \(CO_2\) absorbed into the leaves due
 Here, \(M_{CH_2O}\) is the molar mass of \(CH_2O\) (\(mg\;\mu mol^{-1}\)), \(P\) is the photosynthetic rate (\(\mu mol_{CO_2}\;m^{-2}\;s{-1}\)), \(R\) is the respiration rate (\(\mu mol_{CO_2}\;m^{-2}\;s^{-1}\)), and \(h_{C_{Buf}}\) shows the cessation of photosynthesis when \(CH_2O\) is \(C_{Buf}\) (\(mg\;m^{-2}\)) has reached \(C_{Max}\) (\(mg\;m^{-2}\)), which is the limit of the carbohydrates storage of the plants. The respiration rate during this process is usually as about \(1\%\) of the photosynthesis rate, and thus can be omitted during further calculation. The photosynthesis rate is described in more detail in Section~\ref{sssec:photo_c3}.
 
 %%%%%%%%%%%
-\subsubsection{Photosynthesis of C3 plants}\label{sssec:photo_c3}
+\subsubsection{A model of photosynthesis of C3 plants}\label{sssec:photo_c3}
 Photosynthesis, the process by which green plants and certain other organisms transform light energy into chemical energy. During photosynthesis in green plants, light energy is captured and used to convert water, carbon dioxide, and minerals into oxygen and energy-rich organic compounds.
 
-Photosynthesis has two phases consisting of the light-dependent phase and the light-independent (or dark) phase.
+Photosynthesis has two phases: light-dependent phase and light-independent (or dark) phase.
 
 The photosynthetic rate \(P\) is defined as the diffusion of \(CO_2\) from air into the leaf cells through stomata. From Fick's law for gas diffusion, we construct:
 \begin{align}
@@ -593,19 +593,7 @@ The photosynthetic rate \(P\) is defined as the diffusion of \(CO_2\) from air i
 
 The notation \(CO_{2Stom}\) is the concentration of \(CO_2\) in the stomata (\(\mu mol\;m^{-3}\)) and \(Res\) is the resistance-to-absorption coefficient (\(s\;m^{-1}\)).
 
-This way of calculating photosynthetic rate \(P\) is different from the model of Vanthoor 2011. In there the author uses:
-\begin{align}
-  P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
-\end{align}
-where \(J\) (\(\mu mol \{e^-\} m^{-2} s^{-1}\)) is the electron transport rate, 4 (\(\mu mol \{e^-\} \mu mol^{-1} \{CO_2\}\)) is the
-number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\;mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\} mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
-
-Following by the photorespiration \(R\):
-\begin{align}
-  R = P \cdot \frac{\Gamma}{CO_{2Stom}}
-\end{align}
-
-But since we do not consider electron transport rate, we will use equation~\eqref{eq:photo_co2} constructed from Fick's law combined with Michaelis-Menten model.
+This way of calculating photosynthetic rate \(P\) is different from the model of Vanthoor 2011. In there the author includes electron transport rate which will be discussed later. In this , we will use equation~\eqref{eq:photo_co2} constructed from Fick's law combined with Michaelis-Menten model.
 
 In the dark phase, through Michaelis-Menten relationship describing enzyme-substrate reaction, the photosynthetic rate is given by:
 \begin{align}
@@ -672,6 +660,74 @@ In which, \(L_{0.5}\) is light intensity when \(P_{Max} (L,T) = PMax(T)/2\) (\(\
 \(P_{Max}(T)\) is calculated by using the formula~\eqref{eq:photo_max} with \(k(T)\) as in~\eqref{eq:photo_rate_mod}, and \(P_{MLT}\) are the maximum
 photosynthetic rate at the point of light saturation and the optimal temperature \(T\).
 
+\subsubsection{Vanthoor 2011 model of photosynthesis}
+For calculating photosynthesis rate and respiration rate, we implement through the photosynthesis model described in Vanthoor 2011.
+
+The photosynthesis rate is calculated through:
+\begin{align}
+  P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
+\end{align}
+where \(J\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the electron transport rate, 4 (\(\mu mol \{e^-\} \; \mu mol^{-1} \{CO_2\}\)) is the number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\;mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\}\; mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
+
+Following by the photorespiration \(R\):
+\begin{align}
+  R = P \cdot \frac{\Gamma}{CO_{2Stom}}
+\end{align}
+
+The electron transport rate, J, is a function of the potential rate of electron transport and of the absorbed \(PAR\) by the canopy:
+
+\begin{align}
+  J = \frac{J^{POT} + \alpha PAR_{can} - {\sqrt{(J^{POT} + \alpha PAR_{can})}^2 - 4\Theta\cdot J^{POT}\cdot \alpha PAR_{can}}}{2 \Theta}
+\end{align}
+where \(J^{POT}\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the potential rate of electron transport, \(PAR_{Can}\) (\(PAR\) by the canopy) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) is the absorbed \(PAR\), \(\alpha\) (\(\mu mol\{e^-\}\;\mu mol^{-1}\{photons\}\)) is the conversion factor from photons to electrons, including an efficiency term, and \(\Theta\) (\(-\)) is the degree of curvature of the electron transport rate.
+
+The potential rate of electron transport \(J^{POT}\), depends on temperature:
+
+\begin{align}
+  J^{POT} = J^{MAX}_{25,Can} \cdot e^{E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}}\cdot\frac{1 + e^{\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}}}}{1 + e^{\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}}}}
+\end{align}
+where \(J^{MAX}_{25,Can}\) (\(\mu mol \{e^-\}\;m^{-2}\;s^{-1}\)) is the maximum rate of electron transport at \(25 \degree C\) for the canopy, \(E_j\) (\(J\;mol^{-1}\)) is the activation energy for \(J^{POT}\), \(T_{Can,K}\) (\(K\)) is the canopy temperature, \(T_{25,K}\) (\(K\)) is the reference temperature at \(25 \degree C\), \(R\) (\(J\;mol^{-1}\;K^{-1}\)) is the molar gas constant, \(S\) (\(J\;mol^{-1}\;K^{-1}\)) is the entropy term and \(H\) (\(J\;mol^{-1}\)) is the deactivation energy.
+
+The maximum rate of electron transport at \(25 \degree C\) for the canopy is calculated by:
+\begin{align}
+  J^{MAX}_{25,Can} = LAI \cdot J^{MAX}_{25,Leaf}
+\end{align}
+where \(J^{MAX}_{25,Leaf}\), (\(\mu mol\{e^-\}\;m^{-2}\{leaf\}\;s^{-1}\)) is the maximum rate of electron transport for the leaf at \(25 \degree C\).
+
+The total \(PAR\) absorbed by the canopy is the sum of the \(PAR\) transmitted by the greenhouse cover that is directly absorbed, and the \(PAR\) reflected by the greenhouse floor that is indirectly absorbed:
+\begin{align}
+  PAR_{Can} = PAR_{GhCan} + PAR_{FlrCan}
+\end{align}
+
+The \(PAR\) which is directly absorbed by the canopy is described by a negative exponential decay of light with \(LAI\) in a homogeneous crop:
+\begin{align}
+  PAR_{GhCan} = PAR_{Gh}\cdot (1-\rho_{can})\cdot(1-e^{-K_1\cdot LAI})
+\end{align}
+where \(PAR_{Gh}\) (\(\mu mol \{photons\}\;m^{-2}\;s^{-1}\)) is the \(PAR\) above the canopy, \(\rho_{can}\) (\(-\)) is the reflection coefficient of the canopy for \(PAR\) and \(K_1\) is the extinction coefficient of the canopy for \(PAR\) (\(-\)).
+
+The PAR above the canopy is described by:
+\begin{align}
+  PAR_{Gh} = \tau_{Gh} \cdot \eta_{Glob\_PAR}\cdot I_{Glob}
+\end{align}
+where \(\tau_{Gh}\) (\(-\)) is the light transmission of the greenhouse cover \(\eta_{Glob\_PAR}\) (\(\mu mol\{photons\}\;J^{-1}\)) is a conversion factor from global radiation to \(PAR\) and \(I_{Glob}\) (\(W\;m^{-2}\)) is the outside global radiation.
+
+Absorption of \(PAR\) reflected by the greenhouse floor is described by:
+\begin{align}
+  PAR_{FlrCan} = \rho_{Flr}PAR_{Gh}\cdot (1-\rho_{Can})\cdot e^{K_1\cdot LAI} \cdot (1 -e^{K_2\cdot LAI})
+\end{align}
+where \(\rho_{Flr}\) (\(-\)) is the reflection coefficient of the greenhouse floor and \(K_2\) (\(-\)) is the extinction coefficient of the canopy when \(PAR\) is reflected from the floor to the canopy. We assumed \(K_2\) to be equal to \(K_1\).
+
+The CO2-concentration inside the stomata, \(CO_{2Stom}\) depends on the stomatal and mesophyll conductance, boundary layer resistance, the photosynthesis rate and the difference between the CO2-concentration in the stomata and the CO2-concentration of the greenhouse air. However, the CO2-concentration in the stomata is assumed to be a fixed fraction of the CO2-concentration in the greenhouse air:
+\begin{align}
+  CO_{2Stom} = \eta_{CO_{2Air\_Stom}} \cdot CO_{2Air}
+\end{align}
+where \(\eta_{CO_{2Air\_Stom}}\) is conversion factor from the CO2-concentration of the greenhouse air, \(CO_{2Air}\), to the CO2-concentration in the stomata.
+
+The CO2 compensation point (\(\Gamma\)) affects the leaf photosynthesis rate and depends on temperature. To avoid unrealistically low optimal canopy temperatures, the sensitivity of the compensation point to temperature was adjusted by making the slope dependent of the ratio of \(J^{MAX}_{25,Leaf}\) and \(J^{MAX}_{25,Can}\):
+\begin{align}
+  \Gamma = \frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}}c_{\Gamma} T_{Can} + 20 c_{\Gamma}(1-\frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}})
+\end{align}
+where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\;mol^{-1}\{air\}\;K^{-1}\)) determines the effect of canopy temperature on the CO2 compensation point. The right term of the equation above is introduced to assure that, for all values of \(J^{MAX}_{25,Can}\) at a temperature of \(20 \degree C\).
 
 \subsection{Implementing the programs}
 % TODO

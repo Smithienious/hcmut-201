@@ -2,6 +2,8 @@
 \usepackage{a4wide,amssymb,epsfig,latexsym,multicol,array,hhline,fancyhdr}
 \usepackage[utf8]{vntex, inputenc}
 \usepackage[english]{babel}
+\usepackage[backend=biber,style=alphabetic,sorting=ynt]{biblatex}
+\addbibresource{ref.bib}
 \usepackage{amsmath}
 \usepackage{lastpage}
 \usepackage[lined,boxed,commentsnumbered]{algorithm2e}
@@ -25,12 +27,6 @@
 \usepackage{float}
 \hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true}
 %\usepackage{pstcol} 								% PSTricks with the standard color package
-
-\newtheorem{theorem}{{\bf Theorem}}
-\newtheorem{property}{{\bf Property}}
-\newtheorem{proposition}{{\bf Proposition}}
-\newtheorem{corollary}[proposition]{{\bf Corollary}}
-\newtheorem{lemma}[proposition]{{\bf Lemma}}
 
 \AtBeginDocument{\renewcommand*\contentsname{Contents}}
 \AtBeginDocument{\renewcommand*\refname{References}}
@@ -61,21 +57,6 @@
 \fancyfoot[R]{\scriptsize \ttfamily Page {\thepage}/\pageref{LastPage}}
 \renewcommand{\headrulewidth}{0.3pt}
 \renewcommand{\footrulewidth}{0.3pt}
-
-
-%%%
-\setcounter{secnumdepth}{4}
-\setcounter{tocdepth}{3}
-\makeatletter
-\newcounter{subsubsubsection}[subsubsection]
-\renewcommand\thesubsubsubsection{\thesubsubsection.\@alph\c@subsubsubsection}
-\newcommand\subsubsubsection{\@startsection{subsubsubsection}{4}{\z@}%
-                                     {-3.25ex\@plus-1ex \@minus-.2ex}%
-                                     {1.5ex \@plus.2ex}%
-                                     {\normalfont\normalsize\bfseries}}
-\newcommand*\l@subsubsubsection{\@dottedtocline{3}{10.0em}{4.1em}}
-\newcommand*{\subsubsubsectionmark}[1]{}
-\makeatother
 
 \everymath{\color{blue}}
 
@@ -870,13 +851,13 @@ The stomatal resistance of the canopy is described by a simplification of the st
 \end{align}
 where \(r_{s,\min}\) (\(s\;m^{-1}\)) is the minimum canopy resistance and \(rf\) is the resistance factor for high radiation levels, high \(CO_2\) levels and large vapor pressure differences.
 The resistance factors are described according to Stangellini (1987):
-\begin{equation*}
+\begin{equation}
   \begin{split}
     & rf(R_{Can}) = \frac{R_{Can} + c_{evap1}}{R_{Can} + c_{evap2}} \\
     & rf(CO_{2Air}) = 1 + {c_{evap3} (\eta_{mg\_ppm} CO_{2Air} - 200)}^2 \\
     & rf(VP_{Can} - VP_{Air}) = 1 + {c_{evap4} (VP_{Can} - VP_{Air})}^2
   \end{split}
-\end{equation*}
+\end{equation}
 where \(R_{Can}\) (\(W\;m^{-2}\)) is the global radiation above the canopy, \(c_{evap1}\) (\(W\;m^{-2}\)), \(c_{evap2}\) (\(W\;m^{-2}\)), \(c_{evap3}\) (\(ppm^{-2}\)), \(c_{evap4}\) (\(Pa^{-2}\)) are empirically determined parameters and \(\eta_{mg\_ppm}\) (\(ppm\;mg^{-1}\;m^3\)) is the conversion factor from \(mg\;m^{-3}\;CO_2\) to \(ppm\).
 Stanghellini limited the resistance factor for high \(CO_2\) levels to 1.5 and the resistance factor for large vapor pressure differences to 5.8 and determined the transpiration variables \(c_{evap3}\) and \(c_{evap4}\) for day time and night time.
 The values of the transpiration parameters \(c_{evap3}\) and \(c_{evap4}\) differed between the night period and day period which means that the accompanying equations are not differentiable at sunrise and sunset. Therefore the parameters \(c_{evap3}\) and \(c_{evap4}\) were smoothed using the differentiable switch function:
@@ -937,36 +918,30 @@ The latent head flux from the greenhouse air depends on the vapor flux from the 
 \end{align}
 where \(U_{Fog}\) (\(-\)) is the control valve of the fogging system and \(\phi_{Fog}\) (\(kg\{water\}\;s^{-1}\)) is the capacity of the fogging system.
 
-% TODO: Implement programs
+% TODO: Implement programs for formulas: 42 - 45, 47 - 63
 
 \subsection{Testing the programs}
-% TODO
+% TODO: Check if the programs work properly
 
 \subsection{Predicting vapor pressure and comparing to actual data}
-% TODO
+% TODO: 2 programs to predict vapor pressure
+% TODO: calculate and compare with actual data
 
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Exercise 6}
 \subsection{(a)}
-% TODO
+% TODO: Algorithm for general ODE model
 
 \subsection{(b)}
-% TODO
+% TODO: Train a deep learning model for at least one differential equation
 
 \subsection{(c)}
-% TODO
+% TODO: Train a deep learning model for CO2 concentration
 
-\begin{thebibliography}{80}
-  \bibitem{bib1}
-  % TODO
+\newpage
+\printbibliography[heading=bibintoc]
 
-
-  \bibitem{bib2}
-  % TODO
-
-
-\end{thebibliography}
 \end{document}
 

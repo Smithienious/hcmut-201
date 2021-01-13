@@ -484,7 +484,7 @@ It depends on the difference in temperature and air density between the two comp
 
 Furthermore, \(f_{ThScr}\) is given by
 \begin{align}
-  f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}| ^{\frac{2}{3}} + (1 - U_{ThScr}) {\Bigg[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\Bigg]}^{\frac{1}{2}}
+  f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}| ^{\frac{2}{3}} + (1 - U_{ThScr}) {\left[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\right]}^{\frac{1}{2}}
 \end{align}
 
 To calculate the the airflow rate, we consider the screen and the open regions separately, with \(U_{ThScr} \in [0,1]\) representing the percentage of places that are covered by the thermal screen. The flux through the screen depends on the difference between the temperature above and below the screen and the permeability of the screen \(K_{ThScr}\) (\(m\;K^{-\frac{2}{3}}\;s^{-1}\)).
@@ -593,7 +593,19 @@ The photosynthetic rate \(P\) is defined as the diffusion of \(CO_2\) from air i
 
 The notation \(CO_{2Stom}\) is the concentration of \(CO_2\) in the stomata (\(\mu mol\;m^{-3}\)) and \(Res\) is the resistance-to-absorption coefficient (\(s\;m^{-1}\)).
 
-This way of calculating photosynthetic rate \(P\) is different from the model of Vanthoor 2011. In there the author includes electron transport rate which will be discussed later. In this , we will use equation~\eqref{eq:photo_co2} constructed from Fick's law combined with Michaelis-Menten model.
+This way of calculating photosynthetic rate \(P\) is different from the model of Vanthoor 2011. In there the author uses:
+\begin{align}
+  P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
+\end{align}
+where \(J\) (\(\mu mol \{e^-\} m^{-2} s^{-1}\)) is the electron transport rate, 4 (\(\mu mol \{e^-\} \mu mol^{-1} \{CO_2\}\)) is the
+number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\;mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\} mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
+
+Following by the photorespiration \(R\):
+\begin{align}
+  R = P \cdot \frac{\Gamma}{CO_{2Stom}}
+\end{align}
+
+But since we do not consider electron transport rate, we will use equation~\eqref{eq:photo_co2} constructed from Fick's law combined with Michaelis-Menten model.
 
 In the dark phase, through Michaelis-Menten relationship describing enzyme-substrate reaction, the photosynthetic rate is given by:
 \begin{align}

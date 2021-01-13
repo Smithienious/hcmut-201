@@ -317,18 +317,18 @@ Here, \(\frac{dy}{dx} = f(x)g(y)\) with \(f(x) = -x\) and \(g(y) = \frac{1}{y-3}
                                                             & = 3 \pm \sqrt{9 - x^2 + 2C}
 \end{align*}
 With \(a = 9 + 2c\)
-\begin{gather*}
+\begin{align*}
   y = 3 \pm \sqrt{a - x^2}
-\end{gather*}
+\end{align*}
 Combining the general solution with the given initial value, we obtain
-\begin{gather*}
+\begin{align*}
   1 = y(0) = 3 \pm \sqrt{a - 0^2} = 3 \pm \sqrt{a} \\
   a = 4
-\end{gather*}
+\end{align*}
 Thus, the particular solution is
-\begin{gather*}
+\begin{align*}
   y = 3 - \sqrt{4-x^2}
-\end{gather*} \\
+\end{align*} \\
 
 - Second equation:
 \begin{equation*}
@@ -338,38 +338,38 @@ Thus, the particular solution is
   \end{cases}
 \end{equation*}
 With \(x > 0\), we write the equation in standard form:
-\begin{gather*}
+\begin{align*}
   y' - \frac{1}{3x}y = \frac{lnx + 1}{3x}
-\end{gather*}
+\end{align*}
 Then the integrating factor is given by
-\begin{gather*}
-  v = \exp(\int -dx/3x) = \exp((-1/3)lnx), \;x > 0
-\end{gather*}
+\begin{align*}
+  v = \exp \left(\int -dx/3x\right) = \exp((-1/3)lnx), \;x > 0
+\end{align*}
 Thus
-\begin{gather*}
+\begin{align*}
   vy = x^{-1/3} y = \frac{1}{3} \int(lnx + 1) x^{-4/3} dx
-\end{gather*}
+\end{align*}
 Integration by parts of the right-hand side gives
-\begin{gather*}
+\begin{align*}
   x^{-1/3}y = -x^{-1/3}(lnx+1) + \int x^{-4/3}dx + C
-\end{gather*}
+\end{align*}
 Therefore
-\begin{gather*}
+\begin{align*}
   x^{-1/3}y = -x^{-1/3}(lnx+1) - 3x^{-1/3} + C
-\end{gather*}
+\end{align*}
 or, solving for \(y\),
-\begin{gather*}
+\begin{align*}
   y = -(lnx + 4) + Cx^{1/3}
-\end{gather*}
+\end{align*}
 When \(x = 1\) and \(y = -2\) this last equation becomes
-\begin{gather*}
+\begin{align*}
   -2 = -(0+4) + C \\
   \Leftrightarrow C = 2
-\end{gather*}
+\end{align*}
 Substitution into the equation for \(y\) gives the particular solution
-\begin{gather*}
+\begin{align*}
   y = 2x^{1/3} - lnx - 4
-\end{gather*}
+\end{align*}
 
 
 \subsection{An approach to Euler and Runge-Kutta algorithms}
@@ -383,29 +383,29 @@ As a reminder, our general first-order differential equations take the form
 \end{equation*}
 
 Regarding the definition of first order derivative of a function, we have:
-\begin{gather*}
+\begin{align*}
   \frac{dy}{dt} = \lim_{\Delta t \rightarrow 0} \frac{y(t + \Delta t) - y(t)}{\Delta t}
-\end{gather*}
+\end{align*}
 
 Thus, when \(\Delta t\) is sufficiently small - denoted \(h\), we can have the following approximation:
-\begin{gather*}
+\begin{align*}
   \frac{dy}{dt} \approx \frac{y(t + h) - y(t)}{h}
-\end{gather*}
+\end{align*}
 
 Combining with the first-order differential equation, we have:
-\begin{gather*}
+\begin{align*}
   f(y(t),t) \approx \frac{y(t + h) - y(t)}{h}
-\end{gather*}
+\end{align*}
 
 So, when we have \(y(t_1)\) and an arbitrarily small \(h\), we have approximate \(y(t_1 + h)\) by:
-\begin{gather*}
+\begin{align*}
   y(t + h) \approx y(t) + h \cdot f(y(t),t)
-\end{gather*}
+\end{align*}
 
 In the end, if we divide our time interval into discrete time steps, starting from \(t_0\) and \(t_i = t_{i-1} + h\), we can calculate \(y(t_i)\) at any \(t_i\) since our general first-order differential equations have provided us with the initial condition \(y(t_0) = y_0\). To put it more formally, we have:
-\begin{gather*}
+\begin{align*}
   y(t_{i+1}) \approx y(t_i) + h \cdot f(y(t_i), t_i)
-\end{gather*}
+\end{align*}
 
 That is the approximation steps of the Explicit Euler algorithm to solve general first-order differential equations.
 
@@ -623,7 +623,7 @@ From~\eqref{eq:photo_co2} and~\eqref{eq:photo_dark}, we form a quadratic equatio
 Solving equation~\eqref{eq:resist_photo} requires \(P_{Max}\) to be obtained. For the model for the photosynthesis of one leaf unit, the maximum photosynthetic rate is usually be found through the Arrhenius model.
 \begin{align}
   \label{eq:photo_rate}
-  k(T) = k(T_0)\exp(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0}))
+  k(T) = k(T_0)\exp \left(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})\right)
 \end{align}
 where \(k(T)\) is the reaction rate at \(T(K)\), \(T_0\) is the optimum temperature for which the reaction
 rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\;mol^{-1}\)), and \(R\) is the ideal gas constant.
@@ -631,7 +631,7 @@ rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\;m
 Yet a problem is raised when the temperature increases to a certain threshold, the enzyme activity will be inhibited and the photosynthesis is slowed down and cease to advance. A model represents the activity of the Rubisco enzyme during photosynthesis with temperature as its parameter.
 \begin{align}
   \label{eq:rubisco}
-  f(T) = \frac{1 + \exp(-\frac{H_d}{R}( \frac{1}{T_0} - \frac{1}{\frac{H_d}{S}} ))}{1 + \exp(-\frac{H_d}{R}(\frac{1}{T} - \frac{1}{\frac{H_d}{S}}))}
+  f(T) = \frac{1 + \exp \left(-\frac{H_d}{R}( \frac{1}{T_0} - \frac{1}{\frac{H_d}{S}} )\right)}{1 + \exp \left(-\frac{H_d}{R}(\frac{1}{T} - \frac{1}{\frac{H_d}{S}})\right)}
 \end{align}
 In the model~\eqref{eq:rubisco}, \(f(T)\) represents the enzyme activity at \(T(K)\), \(H_d\) is the deactivation energy (\(J\;mol^{-1}\)), and \(S\) is the corresponding entropy quantity (\(J\;mol^{-1}\;K^{-1}\)).
 
@@ -643,14 +643,14 @@ Combining~\eqref{eq:photo_rate} and~\eqref{eq:rubisco}, we obtain the formula fo
 
 For a photosynthesis for the whole canopy, considering \(LAI\) (leaf area index), due to Beer's law, the intensity of the transmitted beam \(I\) with the initial state is \(I_0\) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) is equal to
 \begin{align}
-  I = \frac{I_0 \cdot K \cdot \exp(-K \cdot LAI)}{1 - m}
+  I = \frac{I_0 \cdot K \cdot \exp \left(-K \cdot LAI\right)}{1 - m}
 \end{align}
 
 If the leaves are horizontally stratified such as in the case of tomato, the dimensionless extinction coefficient \(K\) will be between 0.7 and 1.0. Meanwhile, if the leaves are sloping as in the case of wet rice, \(K\) will be between 0.3 and 0.5. \(m\) is the transmittance coefficient of the leaves which is set as 0.1.
 
 The amount of light absorbed by the canopy can be measured as the difference in the intensity of the light ray before entering the foliage and after passing through the foliage
 \begin{align}
-  L =L_0(1 - \frac{K \cdot \exp(-K \cdot LAI)}{1 - m})
+  L =L_0(1 - \frac{K \cdot \exp \left(-K \cdot LAI\right)}{1 - m})
 \end{align}
 
 In this formula, \(L\) is luminous flux received by the leaves per unit area of the greenhouse floor (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) and \(L_0\) is the initial value of \(L\).
@@ -658,7 +658,7 @@ In this formula, \(L\) is luminous flux received by the leaves per unit area of 
 For calculating the maximum photosynthetic rate of all leaves in the greenhouse, we apply the modified Arrhenius model.
 \begin{align}
   \label{eq:photo_rate_mod}
-  k(T) = LAI \cdot k(T_0) \cdot \exp(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0}))
+  k(T) = LAI \cdot k(T_0) \cdot \exp \left(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})\right)
 \end{align}
 
 Here, \(k(T)\) is the reaction rate for the whole canopy at \(T(K)\) and \(k(T_0)\) is the reaction rate under the optimal condition \(T_0\) \(K\) of one leaf unit.
@@ -696,7 +696,7 @@ where \(J^{POT}\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the potential rate of 
 The potential rate of electron transport \(J^{POT}\), depends on temperature:
 
 \begin{align}
-  J^{POT} = J^{MAX}_{25,Can} \cdot \exp(E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}) \cdot \frac{1 + \exp(\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}})}{1 + \exp(\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}})}
+  J^{POT} = J^{MAX}_{25,Can} \cdot \exp \left(E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}\right) \cdot \frac{1 + \exp \left(\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}}\right)}{1 + \exp \left(\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}}\right)}
 \end{align}
 where \(J^{MAX}_{25,Can}\) (\(\mu mol \{e^-\}\;m^{-2}\;s^{-1}\)) is the maximum rate of electron transport at \(25 \degree C\) for the canopy, \(E_j\) (\(J\;mol^{-1}\)) is the activation energy for \(J^{POT}\), \(T_{Can,K}\) (\(K\)) is the canopy temperature, \(T_{25,K}\) (\(K\)) is the reference temperature at \(25 \degree C\), \(R\) (\(J\;mol^{-1}\;K^{-1}\)) is the molar gas constant, \(S\) (\(J\;mol^{-1}\;K^{-1}\)) is the entropy term and \(H\) (\(J\;mol^{-1}\)) is the deactivation energy.
 
@@ -713,7 +713,7 @@ The total \(PAR\) absorbed by the canopy is the sum of the \(PAR\) transmitted b
 
 The \(PAR\) which is directly absorbed by the canopy is described by a negative exponential decay of light with \(LAI\) in a homogeneous crop:
 \begin{align}
-  PAR_{GhCan} = PAR_{Gh}\cdot (1-\rho_{can})\cdot(1 - \exp(-K_1\cdot LAI))
+  PAR_{GhCan} = PAR_{Gh}\cdot (1-\rho_{can})\cdot(1 - \exp \left(-K_1\cdot LAI\right))
 \end{align}
 where \(PAR_{Gh}\) (\(\mu mol \{photons\}\;m^{-2}\;s^{-1}\)) is the \(PAR\) above the canopy, \(\rho_{can}\) (\(-\)) is the reflection coefficient of the canopy for \(PAR\) and \(K_1\) is the extinction coefficient of the canopy for \(PAR\) (\(-\)).
 
@@ -725,7 +725,7 @@ where \(\tau_{Gh}\) (\(-\)) is the light transmission of the greenhouse cover \(
 
 Absorption of \(PAR\) reflected by the greenhouse floor is described by:
 \begin{align}
-  PAR_{FlrCan} = \rho_{Flr}PAR_{Gh}\cdot (1-\rho_{Can})\cdot \exp(K_1\cdot LAI) \cdot (1 - \exp(K_2\cdot LAI))
+  PAR_{FlrCan} = \rho_{Flr}PAR_{Gh}\cdot (1-\rho_{Can})\cdot \exp \left(K_1\cdot LAI\right) \cdot (1 - \exp \left(K_2\cdot LAI\right))
 \end{align}
 where \(\rho_{Flr}\) (\(-\)) is the reflection coefficient of the greenhouse floor and \(K_2\) (\(-\)) is the extinction coefficient of the canopy when \(PAR\) is reflected from the floor to the canopy. We assumed \(K_2\) to be equal to \(K_1\).
 
@@ -808,7 +808,7 @@ where \(MV_{12}\) (\(kg\;m^{-2}\;s^{-1}\)) is the vapor flux from air of locatio
 
 Because this model should consist of only differentiable functions, equation~\eqref{eq:vapor_conden} was smoothed to:
 \begin{align}
-  MV_{12} = \frac{1}{1 + \exp(s_{MV_{12}} (VP_1 - VP_2))} \cdot 6.4 \cdot 10^{-9} HEC_{12} (VP_1 - VP_2)
+  MV_{12} = \frac{1}{1 + \exp \left(s_{MV_{12}} (VP_1 - VP_2)\right)} \cdot 6.4 \cdot 10^{-9} HEC_{12} (VP_1 - VP_2)
 \end{align}
 where \(s_{MV_{12}}\) (\(-\)) is the slope of the differentiable switch function for vapor pressure differences.
 
@@ -881,7 +881,7 @@ where \(R_{Can}\) (\(W\;m^{-2}\)) is the global radiation above the canopy, \(c_
 Stanghellini limited the resistance factor for high \(CO_2\) levels to 1.5 and the resistance factor for large vapor pressure differences to 5.8 and determined the transpiration variables \(c_{evap3}\) and \(c_{evap4}\) for day time and night time.
 The values of the transpiration parameters \(c_{evap3}\) and \(c_{evap4}\) differed between the night period and day period which means that the accompanying equations are not differentiable at sunrise and sunset. Therefore the parameters \(c_{evap3}\) and \(c_{evap4}\) were smoothed using the differentiable switch function:
 \begin{align}
-  S_{r_s} = \frac{1}{1 + \exp(s_{r_s} (R_{Can} - R_{Can\_SP}))}
+  S_{r_s} = \frac{1}{1 + \exp \left(s_{r_s} (R_{Can} - R_{Can\_SP})\right)}
 \end{align}
 where \(S_{r_s}\) (\(-\)) is the value of the differentiable switch, \(s_{r_s}\) (\(m\;W^{-2}\)) is the slope of the differentiable switch for the stomatal resistance model and \(R_{Can\_SP}\) (\(W\;m^{-2}\)) is the radiation value above the canopy to define sunrise and sunset.
 Using the differential switch, the smoothed transpiration parameters were described by:

@@ -343,7 +343,7 @@ With \(x > 0\), we write the equation in standard form:
 \end{gather*}
 Then the integrating factor is given by
 \begin{gather*}
-  v = e^{\int -dx/3x} = e^{(-1/3)lnx},\;x > 0
+  v = \exp(\int -dx/3x) = \exp((-1/3)lnx), \;x > 0
 \end{gather*}
 Thus
 \begin{gather*}
@@ -611,7 +611,7 @@ From~\eqref{eq:photo_co2} and~\eqref{eq:photo_dark}, we form a quadratic equatio
 Solving equation~\eqref{eq:resist_photo} requires \(P_{Max}\) to be obtained. For the model for the photosynthesis of one leaf unit, the maximum photosynthetic rate is usually be found through the Arrhenius model.
 \begin{align}
   \label{eq:photo_rate}
-  k(T) = k(T_0)e^{-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})}
+  k(T) = k(T_0)\exp(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0}))
 \end{align}
 where \(k(T)\) is the reaction rate at \(T(K)\), \(T_0\) is the optimum temperature for which the reaction
 rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\;mol^{-1}\)), and \(R\) is the ideal gas constant.
@@ -619,7 +619,7 @@ rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\;m
 Yet a problem is raised when the temperature increases to a certain threshold, the enzyme activity will be inhibited and the photosynthesis is slowed down and cease to advance. A model represents the activity of the Rubisco enzyme during photosynthesis with temperature as its parameter.
 \begin{align}
   \label{eq:rubisco}
-  f(T) = \frac{1 + e^{-\frac{H_d}{R}( \frac{1}{T_0} - \frac{1}{\frac{H_d}{S}} )}}{1 + e^{-\frac{H_d}{R}(\frac{1}{T} - \frac{1}{\frac{H_d}{S}})}}
+  f(T) = \frac{1 + \exp(-\frac{H_d}{R}( \frac{1}{T_0} - \frac{1}{\frac{H_d}{S}} ))}{1 + \exp(-\frac{H_d}{R}(\frac{1}{T} - \frac{1}{\frac{H_d}{S}}))}
 \end{align}
 In the model~\eqref{eq:rubisco}, \(f(T)\) represents the enzyme activity at \(T(K)\), \(H_d\) is the deactivation energy (\(J\;mol^{-1}\)), and \(S\) is the corresponding entropy quantity (\(J\;mol^{-1}\;K^{-1}\)).
 
@@ -631,14 +631,14 @@ Combining~\eqref{eq:photo_rate} and~\eqref{eq:rubisco}, we obtain the formula fo
 
 For a photosynthesis for the whole canopy, considering \(LAI\) (leaf area index), due to Beer's law, the intensity of the transmitted beam \(I\) with the initial state is \(I_0\) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) is equal to
 \begin{align}
-  I = \frac{I_0 \cdot K \cdot e^{-K \cdot LAI}}{1 - m}
+  I = \frac{I_0 \cdot K \cdot \exp(-K \cdot LAI)}{1 - m}
 \end{align}
 
 If the leaves are horizontally stratified such as in the case of tomato, the dimensionless extinction coefficient \(K\) will be between 0.7 and 1.0. Meanwhile, if the leaves are sloping as in the case of wet rice, \(K\) will be between 0.3 and 0.5. \(m\) is the transmittance coefficient of the leaves which is set as 0.1.
 
 The amount of light absorbed by the canopy can be measured as the difference in the intensity of the light ray before entering the foliage and after passing through the foliage
 \begin{align}
-  L =L_0(1 - \frac{K \cdot e^{-K \cdot LAI}}{1 - m})
+  L =L_0(1 - \frac{K \cdot \exp(-K \cdot LAI)}{1 - m})
 \end{align}
 
 In this formula, \(L\) is luminous flux received by the leaves per unit area of the greenhouse floor (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) and \(L_0\) is the initial value of \(L\).
@@ -646,7 +646,7 @@ In this formula, \(L\) is luminous flux received by the leaves per unit area of 
 For calculating the maximum photosynthetic rate of all leaves in the greenhouse, we apply the modified Arrhenius model.
 \begin{align}
   \label{eq:photo_rate_mod}
-  k(T) = LAI \cdot k(T_0) \cdot e^{-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})}
+  k(T) = LAI \cdot k(T_0) \cdot \exp(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0}))
 \end{align}
 
 Here, \(k(T)\) is the reaction rate for the whole canopy at \(T(K)\) and \(k(T_0)\) is the reaction rate under the optimal condition \(T_0\) \(K\) of one leaf unit.
@@ -684,7 +684,7 @@ where \(J^{POT}\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the potential rate of 
 The potential rate of electron transport \(J^{POT}\), depends on temperature:
 
 \begin{align}
-  J^{POT} = J^{MAX}_{25,Can} \cdot e^{E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}}\cdot\frac{1 + e^{\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}}}}{1 + e^{\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}}}}
+  J^{POT} = J^{MAX}_{25,Can} \cdot \exp(E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}) \cdot \frac{1 + \exp(\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}})}{1 + \exp(\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}})}
 \end{align}
 where \(J^{MAX}_{25,Can}\) (\(\mu mol \{e^-\}\;m^{-2}\;s^{-1}\)) is the maximum rate of electron transport at \(25 \degree C\) for the canopy, \(E_j\) (\(J\;mol^{-1}\)) is the activation energy for \(J^{POT}\), \(T_{Can,K}\) (\(K\)) is the canopy temperature, \(T_{25,K}\) (\(K\)) is the reference temperature at \(25 \degree C\), \(R\) (\(J\;mol^{-1}\;K^{-1}\)) is the molar gas constant, \(S\) (\(J\;mol^{-1}\;K^{-1}\)) is the entropy term and \(H\) (\(J\;mol^{-1}\)) is the deactivation energy.
 
@@ -701,7 +701,7 @@ The total \(PAR\) absorbed by the canopy is the sum of the \(PAR\) transmitted b
 
 The \(PAR\) which is directly absorbed by the canopy is described by a negative exponential decay of light with \(LAI\) in a homogeneous crop:
 \begin{align}
-  PAR_{GhCan} = PAR_{Gh}\cdot (1-\rho_{can})\cdot(1-e^{-K_1\cdot LAI})
+  PAR_{GhCan} = PAR_{Gh}\cdot (1-\rho_{can})\cdot(1 - \exp(-K_1\cdot LAI))
 \end{align}
 where \(PAR_{Gh}\) (\(\mu mol \{photons\}\;m^{-2}\;s^{-1}\)) is the \(PAR\) above the canopy, \(\rho_{can}\) (\(-\)) is the reflection coefficient of the canopy for \(PAR\) and \(K_1\) is the extinction coefficient of the canopy for \(PAR\) (\(-\)).
 
@@ -713,7 +713,7 @@ where \(\tau_{Gh}\) (\(-\)) is the light transmission of the greenhouse cover \(
 
 Absorption of \(PAR\) reflected by the greenhouse floor is described by:
 \begin{align}
-  PAR_{FlrCan} = \rho_{Flr}PAR_{Gh}\cdot (1-\rho_{Can})\cdot e^{K_1\cdot LAI} \cdot (1 -e^{K_2\cdot LAI})
+  PAR_{FlrCan} = \rho_{Flr}PAR_{Gh}\cdot (1-\rho_{Can})\cdot \exp(K_1\cdot LAI) \cdot (1 - \exp(K_2\cdot LAI))
 \end{align}
 where \(\rho_{Flr}\) (\(-\)) is the reflection coefficient of the greenhouse floor and \(K_2\) (\(-\)) is the extinction coefficient of the canopy when \(PAR\) is reflected from the floor to the canopy. We assumed \(K_2\) to be equal to \(K_1\).
 

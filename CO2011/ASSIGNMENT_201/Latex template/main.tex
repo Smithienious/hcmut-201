@@ -435,7 +435,7 @@ This results in different concentrations of \(CO_2\) in two of the compartments.
 \begin{figure}[H]
   \centering
   \includegraphics[width=9cm]{CO2}
-  \caption{The CO2 flow inside and outside a greenhouse}\label{fig:CO2}
+  \caption{The \(CO_2\) flow inside and outside a greenhouse}\label{fig:CO2}
 \end{figure}
 
 The exchange in concentrations of \(CO_2\) can be separated into three \(CO_2\) region: \(CO_{2Top}\) which is from above the screen, \(CO_{2Air}\) which is from below the screen and \(CO_{2Out}\) which is from outside the greenhouse.
@@ -569,7 +569,7 @@ Similarly to \(MC_{AirOut}\), the net \(CO_2\) flux from the greenhouse to outsi
 However, when the ratio of the roof-opening area to the total ventilation area exceeds the Stack-effect threshold, the Stack effect does not occur and we cannot reuse the formula~\eqref{eq:vent_roof_side} where \(A_{Side} = 0\) to
 calculate \(f''_{VentRoof}\).
 \begin{align}
-  f''_{VentRoof} = \frac{C_d U_{Roof} A_{Roof}}{2A_{Flr}} {\left[\frac{gh_{Roof}(T_{Air} - T_{Out})}{2T^{Mean}_{Air}} + C_w v^2_{Wind} \right]}^{ \frac{1}{2}}
+  f''_{VentRoof} = \frac{C_d U_{Roof} A_{Roof}}{2A_{Flr}} {\left[\frac{gh_{Roof}(T_{Air} - T_{Out})}{2T^{Mean}_{Air}} + C_w v^2_{Wind}\right]}^{ \frac{1}{2}}
 \end{align}
 
 Finally, we need to consider the amount of \(CO_2\) absorbed into the leaves due to photosynthesis.
@@ -623,7 +623,7 @@ From~\eqref{eq:photo_co2} and~\eqref{eq:photo_dark}, we form a quadratic equatio
 Solving equation~\eqref{eq:resist_photo} requires \(P_{Max}\) to be obtained. For the model for the photosynthesis of one leaf unit, the maximum photosynthetic rate is usually be found through the Arrhenius model.
 \begin{align}
   \label{eq:photo_rate}
-  k(T) = k(T_0)\exp \left(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})\right)
+  k(T) = k(T_0)\exp \left(-\frac{H_a}{R} \left(\frac{1}{T} - \frac{1}{T_0}\right)\right)
 \end{align}
 where \(k(T)\) is the reaction rate at \(T(K)\), \(T_0\) is the optimum temperature for which the reaction
 rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\;mol^{-1}\)), and \(R\) is the ideal gas constant.
@@ -631,7 +631,7 @@ rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\;m
 Yet a problem is raised when the temperature increases to a certain threshold, the enzyme activity will be inhibited and the photosynthesis is slowed down and cease to advance. A model represents the activity of the Rubisco enzyme during photosynthesis with temperature as its parameter.
 \begin{align}
   \label{eq:rubisco}
-  f(T) = \frac{1 + \exp \left(-\frac{H_d}{R}( \frac{1}{T_0} - \frac{1}{\frac{H_d}{S}} )\right)}{1 + \exp \left(-\frac{H_d}{R}(\frac{1}{T} - \frac{1}{\frac{H_d}{S}})\right)}
+  f(T) = \frac{1 + \exp \left(-\frac{H_d}{R} \left(\frac{1}{T_0} - \frac{1}{\frac{H_d}{S}}\right)\right)}{1 + \exp \left(-\frac{H_d}{R}\left(\frac{1}{T} - \frac{1}{\frac{H_d}{S}}\right)\right)}
 \end{align}
 In the model~\eqref{eq:rubisco}, \(f(T)\) represents the enzyme activity at \(T(K)\), \(H_d\) is the deactivation energy (\(J\;mol^{-1}\)), and \(S\) is the corresponding entropy quantity (\(J\;mol^{-1}\;K^{-1}\)).
 
@@ -646,11 +646,11 @@ For a photosynthesis for the whole canopy, considering \(LAI\) (leaf area index)
   I = \frac{I_0 \cdot K \cdot \exp \left(-K \cdot LAI\right)}{1 - m}
 \end{align}
 
-If the leaves are horizontally stratified such as in the case of tomato, the dimensionless extinction coefficient \(K\) will be between 0.7 and 1.0. Meanwhile, if the leaves are sloping as in the case of wet rice, \(K\) will be between 0.3 and 0.5. \(m\) is the transmittance coefficient of the leaves which is set as 0.1.
+If the leaves are horizontally stratified such as in the case of tomato, the dimensionless extinction coefficient \(K\) will be between 0.7 and 1.0. Meanwhile, if the leaves are sloped as in the case of wet rice, \(K\) will be between 0.3 and 0.5. \(m\) is the transmittance coefficient of the leaves which is set as \(0.1\).
 
 The amount of light absorbed by the canopy can be measured as the difference in the intensity of the light ray before entering the foliage and after passing through the foliage
 \begin{align}
-  L =L_0(1 - \frac{K \cdot \exp \left(-K \cdot LAI\right)}{1 - m})
+  L =L_0 \left(1 - \frac{K \cdot \exp \left(-K \cdot LAI\right)}{1 - m}\right)
 \end{align}
 
 In this formula, \(L\) is luminous flux received by the leaves per unit area of the greenhouse floor (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) and \(L_0\) is the initial value of \(L\).
@@ -658,7 +658,7 @@ In this formula, \(L\) is luminous flux received by the leaves per unit area of 
 For calculating the maximum photosynthetic rate of all leaves in the greenhouse, we apply the modified Arrhenius model.
 \begin{align}
   \label{eq:photo_rate_mod}
-  k(T) = LAI \cdot k(T_0) \cdot \exp \left(-\frac{H_a}{R}(\frac{1}{T} - \frac{1}{T_0})\right)
+  k(T) = LAI \cdot k(T_0) \cdot \exp \left(-\frac{H_a}{R} \left(\frac{1}{T} - \frac{1}{T_0}\right)\right)
 \end{align}
 
 Here, \(k(T)\) is the reaction rate for the whole canopy at \(T(K)\) and \(k(T_0)\) is the reaction rate under the optimal condition \(T_0\) \(K\) of one leaf unit.
@@ -668,7 +668,7 @@ Unlike the photosynthesis model for one leaf unit, the amount of light energy ab
   P_{Max} (L,T) = \frac{P_{MLT} \cdot P_{Max}(T) \cdot L}{L + L_{0.5}}
 \end{align}
 
-In which, \(L_{0.5}\) is light intensity when \(P_{Max} (L,T) = PMax(T)/2\) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\))
+In which, \(L_{0.5}\) is light intensity when \(P_{Max} (L,T) = P_{Max}(T)/2\) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\))
 \(P_{Max}(T)\) is calculated by using the formula~\eqref{eq:photo_max} with \(k(T)\) as in~\eqref{eq:photo_rate_mod}, and \(P_{MLT}\) are the maximum
 photosynthetic rate at the point of light saturation and the optimal temperature \(T\).
 
@@ -679,7 +679,7 @@ The photosynthesis rate is calculated through:
 \begin{align}
   P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
 \end{align}
-where \(J\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the electron transport rate, 4 (\(\mu mol \{e^-\} \; \mu mol^{-1} \{CO_2\}\)) is the number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\;mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\}\; mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
+where \(J\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the electron transport rate, \(4\) (\(\mu mol \{e^-\} \; \mu mol^{-1} \{CO_2\}\)) is the number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\;mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\}\; mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
 
 Following by the photorespiration \(R\):
 \begin{align}
@@ -729,17 +729,17 @@ Absorption of \(PAR\) reflected by the greenhouse floor is described by:
 \end{align}
 where \(\rho_{Flr}\) (\(-\)) is the reflection coefficient of the greenhouse floor and \(K_2\) (\(-\)) is the extinction coefficient of the canopy when \(PAR\) is reflected from the floor to the canopy. We assumed \(K_2\) to be equal to \(K_1\).
 
-The CO2-concentration inside the stomata, \(CO_{2Stom}\) depends on the stomatal and mesophyll conductance, boundary layer resistance, the photosynthesis rate and the difference between the CO2-concentration in the stomata and the CO2-concentration of the greenhouse air. However, the CO2-concentration in the stomata is assumed to be a fixed fraction of the CO2-concentration in the greenhouse air:
+The \(CO_2\) concentration inside the stomata, \(CO_{2Stom}\) depends on the stomatal and mesophyll conductance, boundary layer resistance, the photosynthesis rate and the difference between the \(CO_2\) concentration in the stomata and the \(CO_2\) concentration of the greenhouse air. However, the \(CO_2\) concentration in the stomata is assumed to be a fixed fraction of the \(CO_2\) concentration in the greenhouse air:
 \begin{align}
   CO_{2Stom} = \eta_{CO_{2Air\_Stom}} \cdot CO_{2Air}
 \end{align}
-where \(\eta_{CO_{2Air\_Stom}}\) is conversion factor from the CO2-concentration of the greenhouse air, \(CO_{2Air}\), to the CO2-concentration in the stomata.
+where \(\eta_{CO_{2Air\_Stom}}\) is conversion factor from the \(CO_2\) concentration of the greenhouse air, \(CO_{2Air}\), to the \(CO_2\) concentration in the stomata.
 
-The CO2 compensation point (\(\Gamma\)) affects the leaf photosynthesis rate and depends on temperature. To avoid unrealistically low optimal canopy temperatures, the sensitivity of the compensation point to temperature was adjusted by making the slope dependent of the ratio of \(J^{MAX}_{25,Leaf}\) and \(J^{MAX}_{25,Can}\):
+The \(CO_2\) compensation point (\(\Gamma\)) affects the leaf photosynthesis rate and depends on temperature. To avoid unrealistically low optimal canopy temperatures, the sensitivity of the compensation point to temperature was adjusted by making the slope dependent of the ratio of \(J^{MAX}_{25,Leaf}\) and \(J^{MAX}_{25,Can}\):
 \begin{align}
   \Gamma = \frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}}c_{\Gamma} T_{Can} + 20 c_{\Gamma}(1-\frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}})
 \end{align}
-where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\;mol^{-1}\{air\}\;K^{-1}\)) determines the effect of canopy temperature on the CO2 compensation point. The right term of the equation above is introduced to assure that, for all values of \(J^{MAX}_{25,Can}\) at a temperature of \(20 \degree C\).
+where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\;mol^{-1}\{air\}\;K^{-1}\)) determines the effect of canopy temperature on the \(CO_2\) compensation point. The right term of the equation above is introduced to assure that, for all values of \(J^{MAX}_{25,Can}\) at a temperature of \(20 \degree C\).
 
 \subsection{Implementing the programs}
 % TODO
@@ -913,7 +913,7 @@ where \(U_{Pad}\) (\(-\)) is the control valve of the pad and fan system and \(\
 % AirOut_Pad
 The vapor flux from the greenhouse air to the outside air when using the pad and fan system is described by:
 \begin{align}
-  MV_{AirOut\_Pad} = f_{Pad} \frac{M_{Water}}{R} \left(\frac{VP_{Air}}{T_{Air} + 273.15} \right)
+  MV_{AirOut\_Pad} = f_{Pad} \frac{M_{Water}}{R} \left(\frac{VP_{Air}}{T_{Air} + 273.15}\right)
 \end{align}
 
 % AirMech

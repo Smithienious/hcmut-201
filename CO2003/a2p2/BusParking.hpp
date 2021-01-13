@@ -3,7 +3,7 @@
  * @author NGUYEN Hoang (hoang.nguyen.bigunit@hcmut.edu.vn)
  * @brief
  * @version 0.1.2
- * @date 2021-01-09
+ * @date 2021-01-13
  *
  * @copyright Copyright (c) 2021
  *
@@ -383,6 +383,9 @@ public:
 
   void add(int s, int t)
   {
+    if (s > t)
+      return;
+
     if (iTree == nullptr)
       iTree = new IntervalTree();
 
@@ -396,6 +399,9 @@ public:
 
   void remove(int s, int t)
   {
+    if (s > t)
+      return;
+
     if (iTree == nullptr)
       return;
     minParkValue = iTree->remove(Interval(s, t));

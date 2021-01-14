@@ -3,9 +3,7 @@
 \usepackage[utf8]{vntex, inputenc}
 \usepackage[english]{babel}
 \usepackage[backend=biber,style=alphabetic,sorting=ynt]{biblatex}
-\usepackage{listings} %verbatim with breaklines
 \usepackage[framemethod=tikz]{mdframed}
-\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,columns=flexible,breakatwhitespace=true}
 \usepackage{amsmath}
 \usepackage{lastpage}
 \usepackage[lined,boxed,commentsnumbered]{algorithm2e}
@@ -27,7 +25,7 @@
 %\usepackage{pstcol} 								% PSTricks with the standard color package
 
 \usetikzlibrary{arrows,snakes,backgrounds}
-\hypersetup{urlcolor=blue,linkcolor=black,citecolor=black,colorlinks=true}
+\hypersetup{urlcolor=blue,linkcolor=black,citecolor=red,colorlinks=true}
 \addbibresource{ref.bib}
 \usemintedstyle{emacs}
 
@@ -63,46 +61,7 @@
 
 \everymath{\color{blue}}
 
-\definecolor{listinggray}{gray}{0.9}
-\definecolor{graphgray}{gray}{0.7}
-\definecolor{blue}{rgb}{0,0,1}
-\definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{mygray}{rgb}{0.5,0.5,0.5}
-\definecolor{mymauve}{rgb}{0.58,0,0.82}
-
-% define a custom mathematica language for syntax highlighting
-\lstdefinelanguage{myMMA}{
-  language=Mathematica,
-  keywords={SetDirectory, NotebookDirectory, Exp, IdentityMatrix, Eigenvalues,
-  ListPlot, PlotRange, PlotStyle, Directive, PointSize, AspectRatio, Blue, Graphics, Line,
-  Manipulate, Show, Sqrt, UniformDistribution, GammaDistribution, BetaDistribution,
-  Nintegrate, For, DataRange, AxesLabel, PlotLabel, Transpose, Export, Plot, Append, Infinity},
-  frame=tb,
-  aboveskip=3mm,
-	belowskip=3mm,
-	showstringspaces=false,
-  columns=flexible,
-	basicstyle={\small\ttfamily},
-  numbers=none,
-	numberstyle=\tiny\color{mygray},
-  keywordstyle=\color{black},
-  commentstyle=\color{gray},
-  stringstyle=\color{mymauve},
-  identifierstyle=\color{blue},
-  sensitive=false,
-  comment=[l]{(*},
-  morecomment=[s]{/*}{*/},
-  morestring=[b]',
-  morestring=[b]",
-  breaklines=true,
-	breakatwhitespace=true,
-	tabsize=2,
-	numbers=left,
-	stepnumber=1,
-	numbersep=1pt,
-	firstnumber=1,
-	numberfirstline=true
-}
+\newcommand*\mean[1]{\bar{#1}}
 
 \begin{document}
 
@@ -170,32 +129,32 @@
 \begin{center}
   \begin{tabular}{|c|c|c|l|c|}
     \hline
-    \textbf{No.}       & \textbf{Fullname}                      & \textbf{Student ID}      & \textbf{Problems}                             & \textbf{Percentage of work} \\
+    \textbf{No.}       & \textbf{Fullname}                      & \textbf{Student ID}      & \textbf{Problems}              & \textbf{Percentage of work} \\
     \hline
     %%%%%Student 1%%%%%%%%%%
-    \multirow{3}{*}{1} & \multirow{3}{*}{Lưu Nguyễn Hoàng Minh} & \multirow{3}{*}{1952845} & \textendash{} Relation \& Counting: 1, 2, 3   & \multirow{3}{*}{20\%}       \\
-                       &                                        &                          & Bonus: 1, 2, 3.                               &                             \\
-                       &                                        &                          & \textendash{} Probability: 1, 2, 3.           &                             \\
+    \multirow{3}{*}{1} & \multirow{3}{*}{Lưu Nguyễn Hoàng Minh} & \multirow{3}{*}{1952845} & \textendash{} Pending          & \multirow{3}{*}{100\%}      \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
+                       &                                        &                          & \textendash{} Exercise 5       &                             \\
     \hline
     %%%%%Student 2%%%%%%%%%%%
-    \multirow{3}{*}{2} & \multirow{3}{*}{Vũ Anh Nhi}            & \multirow{3}{*}{1952380} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
-                       &                                        &                          & Bonus: 4, 5, 6.                               &                             \\
-                       &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
+    \multirow{3}{*}{2} & \multirow{3}{*}{Vũ Anh Nhi}            & \multirow{3}{*}{1952380} & \textendash{} Exercise 1: c    & \multirow{3}{*}{100\%}      \\
+                       &                                        &                          & \textendash{} Exercise 2: a    &                             \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
     \hline
     %%%%%Student 3%%%%%%%%%%%
-    \multirow{3}{*}{3} & \multirow{3}{*}{Nguyễn Phú Nghĩa}      & \multirow{3}{*}{1952355} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
-                       &                                        &                          & Bonus: 4, 5, 6.                               &                             \\
-                       &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
+    \multirow{3}{*}{3} & \multirow{3}{*}{Nguyễn Phú Nghĩa}      & \multirow{3}{*}{1952355} & \textendash{} Exercise 1: d, e & \multirow{3}{*}{100\%}      \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
+                       &                                        &                          & \textendash{} Exercise 5       &                             \\
     \hline
     %%%%%Student 4%%%%%%%%%%%
-    \multirow{3}{*}{4} & \multirow{3}{*}{Nguyễn Chính Khôi}     & \multirow{3}{*}{1952793} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
-                       &                                        &                          & Bonus: 4, 5, 6.                               &                             \\
-                       &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
+    \multirow{3}{*}{4} & \multirow{3}{*}{Nguyễn Chính Khôi}     & \multirow{3}{*}{1952793} & \textendash{} Exercise 1: b    & \multirow{3}{*}{100\%}      \\
+                       &                                        &                          & \textendash{} Exercise 2: a    &                             \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
     \hline
     %%%%%Student 5%%%%%%%%%%%
-    \multirow{3}{*}{5} & \multirow{3}{*}{Nguyễn Hoàng}          & \multirow{3}{*}{1952255} & \textendash{} Relation \& Counting: 4, 5, 6   & \multirow{3}{*}{20\%}       \\
-                       &                                        &                          & Bonus: 4, 5, 6.                               &                             \\
-                       &                                        &                          & \textendash{} Graph: 1, 2, 3, Bonus: 1, 2, 3. &                             \\
+    \multirow{3}{*}{5} & \multirow{3}{*}{Nguyễn Hoàng}          & \multirow{3}{*}{1952255} & \textendash{} Exercise 1: a    & \multirow{3}{*}{100\%}      \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
+                       &                                        &                          & \textendash{} Exercise 5       &                             \\
     \hline
   \end{tabular}
 \end{center}
@@ -487,23 +446,23 @@ For consistency, we expand \(f(t,y)\) around \((t_n, y_n)\) to order \({(t-t_n)}
 \end{multline*}
 
 Now, we run the following \textit{Mathematica} script to calculate \(y_{n+1}\) with respect to \(y_n\), \(h\), \(b_i\), \(c_i\), and \(a_{ij}\)
-\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
-  \begin{lstlisting}[language=myMMA]
-    taylor = f + ft(t - tn) + fy(y - yn) + 1/2*ftt(t - tn)^2 + fty(t - tn)(y - yn) + 1/2*fyy(y - yn)^2 + 1/6*fttt(t - tn)^3 + 1/2*ftty(t - tn)^2(y - yn) + 1/2*ftyy(t - tn)(y - yn)^2 + 1/6*fyyy(y - yn)^3 (* expansion of f(t,y) *)
-    k1 = Expand[taylor /.t->tn /.y->yn] (* calculate k1 *)
-    k2 = Expand[taylor /.t->tn + c2*h /.y->yn + h*a21*k1] (* base on k1 *)
-    k3 = Expand[taylor /.t->tn + c3*h /.y->yn + h*(a31*k1 + a32*k2)] (* base on k1, k2 *)
-    k4 = Expand[taylor /.t->tn + c4*h /.y->yn + h*(a41*k1 + a42*k2 + a43*k3)] (* base on k1, k2, k3 *)
-    yn1 = yn + h*(b1*k1 + b2*k2 + b3*k3 + b4*k4) (* y_{n+1} *)
-  \end{lstlisting}
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Mathematica}
+taylor = f + ft(t - tn) + fy(y - yn) + 1/2*ftt(t - tn)^2 + fty(t - tn)(y - yn) + 1/2*fyy(y - yn)^2 + 1/6*fttt(t - tn)^3 + 1/2*ftty(t - tn)^2(y - yn) + 1/2*ftyy(t - tn)(y - yn)^2 + 1/6*fyyy(y - yn)^3 (* expansion of f(t,y) *)
+k1 = Expand[taylor /.t->tn /.y->yn] (* calculate k1 *)
+k2 = Expand[taylor /.t->tn + c2*h /.y->yn + h*a21*k1] (* base on k1 *)
+k3 = Expand[taylor /.t->tn + c3*h /.y->yn + h*(a31*k1 + a32*k2)] (* base on k1, k2 *)
+k4 = Expand[taylor /.t->tn + c4*h /.y->yn + h*(a41*k1 + a42*k2 + a43*k3)] (* base on k1, k2, k3 *)
+yn1 = yn + h*(b1*k1 + b2*k2 + b3*k3 + b4*k4) (* y_{n+1} *)
+  \end{minted}
 \end{mdframed}
 
 Now we have our function for \(y_{n+1}\), but trying equating coefficients with \((*)\) would give rise to infinitely many solutions, corresponding with infinitely many Runge-Kutta methods in the family. So to check for the correctness of RK4, we only need to substitute the variables to the one specified in the standard RK4 method to see if it coincides with \((*)\) or not. Observe that RK4 is the general RK methods with \(s = 4\), \(b_1 = \frac{1}{6}\), \(b_2 = \frac{1}{3}\), \(b_3 = \frac{1}{3}\), \(b_4 = \frac{1}{6}\), \(c_2 = \frac{1}{2}\), \(c_3 = \frac{1}{2}\), \(c_4 = 1\), \(a_{21} = \frac{1}{2}\), \(a_{31} = 0\), \(a_{32} = \frac{1}{2}\), \(a_{41} = 0\), \(a_{42} = 0\), and \(a_{43} = 1\), we then execute the following code to print out the coefficient of \(h^i\) in \(y_{n+1}\) with the mentioned variables set as above.
-\begin{mdframed}[hidealllines=true,backgroundcolor=magenta!10]
-  \begin{lstlisting}[language=myMMA]
-    yn1 = yn1 /.b1->1/6 /.b2->1/3 /.b3->1/3 /.b4->1/6 /.c2->1/2 /.c3->1/2 /.c4->1 /.a21->1/2 /.a31->0 /.a32->1/2 /.a41->0 /.a42->0 /.a43->1 (* adjust the variables *)
-    For[i=0, i<5, i++, Print[Simplify[Coefficient[yn1, h, i]]]] (* print out the coefficients *)
-  \end{lstlisting}
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Mathematica}
+yn1 = yn1 /.b1->1/6 /.b2->1/3 /.b3->1/3 /.b4->1/6 /.c2->1/2 /.c3->1/2 /.c4->1 /.a21->1/2 /.a31->0 /.a32->1/2 /.a41->0 /.a42->0 /.a43->1 (* adjust the variables *)
+For[i=0, i<5, i++, Print[Simplify[Coefficient[yn1, h, i]]]] (* print out the coefficients *)
+  \end{minted}
 \end{mdframed}
 
 The execution yields the exact coefficients we have seen in \((*)\), which in turn has proven the correctness of RK4.
@@ -514,7 +473,7 @@ The execution yields the exact coefficients we have seen in \((*)\), which in tu
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Exercise 2}
+\section{Forecasting \(CO_2\) concentration using flux}
 \subsection{A \(CO_2\) concentration model}
 \subsubsection{\(CO_2\) exchange}
 To describe the concentration of \(CO_2\) in the greenhouse air, we consider a green house with thermal screens, which allow us to control light, temperature and humidity more precisely, which means a better climate control in the greenhouse.
@@ -836,10 +795,31 @@ The \(CO_2\) compensation point (\(\Gamma\)) affects the leaf photosynthesis rat
 where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\;mol^{-1}\{air\}\;K^{-1}\)) determines the effect of canopy temperature on the \(CO_2\) compensation point. The right term of the equation above is introduced to assure that, for all values of \(J^{MAX}_{25,Can}\) at a temperature of \(20 \degree C\).
 
 \subsection{Implementing the programs}
-\begin{minted}{Python}
-  def isMMFun():
-    return false
-\end{minted}
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def dx_CO2(self, t, CO2_Air, CO2_Top):
+  # Update environment variable at time t (s)
+  self.update(data_Tair[int(t / 300)],
+              data_Tout[int(t / 300)],
+              wind_speed[int(t / 300)])
+
+  self.CO2_Air = CO2_Air
+  self.CO2_Top = CO2_Top
+
+  cap_CO2Air = self.Coefficients.Construction.cap_CO2Air
+  cap_CO2Top = self.Coefficients.Construction.cap_CO2Top
+  MC_BlowAir = self.MC_BlowAir()
+  MC_ExtAir = self.MC_ExtAir()
+  MC_PadAir = self.MC_PadAir()
+  MC_AirTop = self.MC_AirTop()
+  MC_AirOut = self.MC_AirOut()
+  MC_TopOut = self.MC_TopOut()
+  MC_AirCan = self.MC_AirCan()
+  return ((MC_BlowAir + MC_ExtAir + MC_PadAir - MC_AirCan - MC_AirTop - MC_AirOut) / cap_CO2Air,
+          (MC_AirTop - MC_TopOut) / cap_CO2Top)
+  \end{minted}
+\end{mdframed}
+
 % TODO
 
 
@@ -851,16 +831,26 @@ where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\;mol^{-1}\{air\}\;K^{-1}\)) determines th
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Exercise 4}
+\section{Predicting \(CO_2\) concentration with Euler and Runge-Kutta algorithms}
 \subsection{Euler and Runge-Kutta of order 4 algorithms as computer programs}
-\begin{minted}{Python}
-  def isMMFun():
-    return false
-\end{minted}
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def isMMFun():
+  return false
+  \end{minted}
+\end{mdframed}
 % TODO
 
 \subsection{Predicting \(CO_2\) concentration and comparing to actual data}
-% TODO
+% TODO: Predict
+
+Model performance is evaluated in quantitative terms using the relative root mean square error (\(RRMSE\))\cite{kobayashi2000comparing}:
+\begin{align}
+  RRMSE = \frac{100}{\mean{y}_{Data}} \sqrt{\frac{1}{n} \sum_{i=1}^{n} {\left(y_{Mod,i} - y_{Data,i}\right)}^2}
+\end{align}
+where \(mean{y}_{Data}\) is the mean of measured data over the total time span, \(n\) is the number of measurements, \(y_{Mod,i}\) is the simulated climate value at time constant \(i\) and \(y_{Data,i}\) is the measured climate value at time constant \(i\).
+
+% TODO: Compare
 
 
 \newpage
@@ -920,7 +910,7 @@ The vapor flux from the greenhouse air compartment to the thermal screen and the
   MV_{AirThScr}  & = \begin{cases}
     0                                                       & \text{if~} VP_{Air} < VP_{ThScr} \\
     6.4 \cdot 10^{-9} HEC_{AirThScr}(VP_{Air} - VP_{ThScr}) & \text{if~} VP_{Air} > VP_{ThScr} \\
-  \end{cases}  \\
+  \end{cases} \\
   % TopCov,in
   MV_{TopCov,in} & = \begin{cases}
     0                                                         & \text{if~} VP_{Top} < VP_{Cov,in} \\
@@ -1028,7 +1018,7 @@ The vapor flux from the greenhouse air to the surface of mechanical cooling syst
 \end{align}
 with \(HEC_{AirMech}\) is the heat exchange coefficient between the greenhouse air and the surface of the mechanical cooling unit:
 \begin{align}
-  HEC_{AirMech} = - \frac{U_{MechCool} COP_{MechCool} P_{MechCool} / A_{Flr}}{T_{Air} - T_{MechCool} + 6.4 \cdot 10^{-9} \Delta H(VP_{Air} - VP_{MechCool})}
+  HEC_{AirMech} = \frac{U_{MechCool} COP_{MechCool} P_{MechCool} / A_{Flr}}{T_{Air} - T_{MechCool} + 6.4 \cdot 10^{-9} \Delta H(VP_{Air} - VP_{MechCool})}
 \end{align}
 where \(U_{MechCool}\) (\(-\)) is the control valve of the mechanical cooling mechanism, \(COP_{MechCool}\) (\(-\)) is the coefficient of performance of the mechanical cooling system and \(P_{MechCool}\) is the electrical capacity of the mechanical cooling system, \(T_{MechCool}\) (\(\degree C\)) is the temperature of the cooling surface, and \(VP_{MechCool}\) (\(Pa\)) is the saturated vapor pressure of the mechanical cooling mechanism.
 
@@ -1040,10 +1030,12 @@ The latent heat flux from the greenhouse air depends on the vapor flux from the 
 where \(U_{Fog}\) (\(-\)) is the control valve of the fogging system and \(\phi_{Fog}\) (\(kg\{water\}\;s^{-1}\)) is the capacity of the fogging system.
 
 % TODO: Implement programs for formulas: 42 - 45, 47 - 63
-\begin{minted}{Python}
-  def isMMFun():
-    return false
-\end{minted}
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def isMMFun():
+  return false
+  \end{minted}
+\end{mdframed}
 % TODO
 
 \subsection{Testing the programs}
@@ -1056,14 +1048,14 @@ where \(U_{Fog}\) (\(-\)) is the control valve of the fogging system and \(\phi_
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Exercise 6}
-\subsection{(a)}
+\section{Applying deep learning models}
+\subsection{An approach to solving a simple ODE model}
 % TODO: Algorithm for general ODE model
 
-\subsection{(b)}
+\subsection{A simple deep learning model for a set of differential equations}
 % TODO: Train a deep learning model for at least one differential equation
 
-\subsection{(c)}
+\subsection{A deep learning model for \(CO_2\) concentration}
 % TODO: Train a deep learning model for CO2 concentration
 
 \newpage

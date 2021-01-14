@@ -24,6 +24,7 @@
 \usepackage{float}
 %\usepackage{pstcol} 								% PSTricks with the standard color package
 
+\allowdisplaybreaks
 \usetikzlibrary{arrows,snakes,backgrounds}
 \hypersetup{urlcolor=blue,linkcolor=black,citecolor=red,colorlinks=true}
 \addbibresource{ref.bib}
@@ -132,29 +133,34 @@
     \textbf{No.}       & \textbf{Fullname}                      & \textbf{Student ID}      & \textbf{Problems}              & \textbf{Percentage of work} \\
     \hline
     %%%%%Student 1%%%%%%%%%%
-    \multirow{3}{*}{1} & \multirow{3}{*}{Lưu Nguyễn Hoàng Minh} & \multirow{3}{*}{1952845} & \textendash{} Pending          & \multirow{3}{*}{100\%}      \\
-                       &                                        &                          & \textendash{} Pending          &                             \\
+    \multirow{4}{*}{1} & \multirow{4}{*}{Lưu Nguyễn Hoàng Minh} & \multirow{4}{*}{1952845} & \textendash{} Exercise 1: e    & \multirow{4}{*}{100\%}      \\
+                       &                                        &                          & \textendash{} Exercise 2: b    &                             \\
+                       &                                        &                          & \textendash{} Exercise 4: a    &                             \\
                        &                                        &                          & \textendash{} Exercise 5       &                             \\
     \hline
     %%%%%Student 2%%%%%%%%%%%
-    \multirow{3}{*}{2} & \multirow{3}{*}{Vũ Anh Nhi}            & \multirow{3}{*}{1952380} & \textendash{} Exercise 1: c    & \multirow{3}{*}{100\%}      \\
-                       &                                        &                          & \textendash{} Exercise 2: a    &                             \\
+    \multirow{4}{*}{2} & \multirow{4}{*}{Vũ Anh Nhi}            & \multirow{4}{*}{1952380} & \textendash{} Exercise 1: c    & \multirow{4}{*}{100\%}      \\
+                       &                                        &                          & \textendash{} Exercise 2: a, b &                             \\
+                       &                                        &                          & \textendash{} Exercise 4: a    &                             \\
                        &                                        &                          & \textendash{} Pending          &                             \\
     \hline
     %%%%%Student 3%%%%%%%%%%%
-    \multirow{3}{*}{3} & \multirow{3}{*}{Nguyễn Phú Nghĩa}      & \multirow{3}{*}{1952355} & \textendash{} Exercise 1: d, e & \multirow{3}{*}{100\%}      \\
+    \multirow{4}{*}{3} & \multirow{4}{*}{Nguyễn Phú Nghĩa}      & \multirow{4}{*}{1952355} & \textendash{} Exercise 1: d    & \multirow{4}{*}{100\%}      \\
                        &                                        &                          & \textendash{} Pending          &                             \\
                        &                                        &                          & \textendash{} Exercise 5       &                             \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
     \hline
     %%%%%Student 4%%%%%%%%%%%
-    \multirow{3}{*}{4} & \multirow{3}{*}{Nguyễn Chính Khôi}     & \multirow{3}{*}{1952793} & \textendash{} Exercise 1: b    & \multirow{3}{*}{100\%}      \\
+    \multirow{4}{*}{4} & \multirow{4}{*}{Nguyễn Chính Khôi}     & \multirow{4}{*}{1952793} & \textendash{} Exercise 1: b    & \multirow{4}{*}{100\%}      \\
                        &                                        &                          & \textendash{} Exercise 2: a    &                             \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
                        &                                        &                          & \textendash{} Pending          &                             \\
     \hline
     %%%%%Student 5%%%%%%%%%%%
-    \multirow{3}{*}{5} & \multirow{3}{*}{Nguyễn Hoàng}          & \multirow{3}{*}{1952255} & \textendash{} Exercise 1: a    & \multirow{3}{*}{100\%}      \\
+    \multirow{4}{*}{5} & \multirow{4}{*}{Nguyễn Hoàng}          & \multirow{4}{*}{1952255} & \textendash{} Exercise 1: a    & \multirow{4}{*}{100\%}      \\
                        &                                        &                          & \textendash{} Pending          &                             \\
                        &                                        &                          & \textendash{} Exercise 5       &                             \\
+                       &                                        &                          & \textendash{} Pending          &                             \\
     \hline
   \end{tabular}
 \end{center}
@@ -258,7 +264,6 @@ These components are are normally affected by one or many elements presented ins
         \end{multline*}
 \end{itemize}
 
-
 \subsection{Necessary and sufficient conditions for this dynamical system}
 All of the differential equations in the dynamical system above are/can be transformed into in the form of:
 \begin{equation*}
@@ -281,81 +286,77 @@ Then there exists an interval \(I=[x_0-h, x_0+h]\) (with \(h \leq a\)) such that
 \end{equation*}
 has a unique solution \(y(x)\) defined on the interval \(I\).
 
-
 \subsection{Examples of solvable first-order differential equations with exact solutions}
-% howellkb.uah.edu
-% math.hawaii.edu
 - First equation:
 \begin{equation*}
   \begin{cases}
-    \frac{dy}{dx} & = - \frac{x}{y - 3} \\
+    \frac{dy}{dt} & = - \frac{t}{y - 3} \\
     y(0)          & = 1
   \end{cases}
 \end{equation*}
-Here, \(\frac{dy}{dx} = f(x)g(y)\) with \(f(x) = -x\) and \(g(y) = \frac{1}{y-3}\)
+Here, \(\frac{dy}{dt} = f(t)g(y)\) with \(f(t) = -t\) and \(g(y) = \frac{1}{y-3}\)
 \begin{align*}
-  (y - 3) \frac{dy}{dx}                                     & = -x                                                \\
-  {\color{black}\Leftrightarrow} ~~~ (y - 3) dy             & = -x dx                                             \\
-  {\color{black}\Leftrightarrow}  \int (y - 3) dy           & = -\int xdx                                         \\
-  {\color{black}\Leftrightarrow} ~~~~ \frac {1}{2} y^2 - 3y & = \frac{1}{2} x^2 + C                               \\
-  {\color{black}\Rightarrow} ~~~~~~~~~~~~~~ y               & = \frac{-(-6) \pm \sqrt{{(-6)}^2 - 4(x^2 - 2C)}}{2} \\
-                                                            & = 3 \pm \sqrt{9 - x^2 + 2C}
+  (y - 3) \frac{dy}{dt}                                     & = -t                                                \\
+  {\color{black}\Leftrightarrow} ~~~ (y - 3) dy             & = -t dt                                             \\
+  {\color{black}\Leftrightarrow}  \int (y - 3) dy           & = -\int tdt                                         \\
+  {\color{black}\Leftrightarrow} ~~~~ \frac {1}{2} y^2 - 3y & = \frac{1}{2} t^2 + C                               \\
+  {\color{black}\Rightarrow} ~~~~~~~~~~~~~~ y               & = \frac{-(-6) \pm \sqrt{{(-6)}^2 - 4(t^2 - 2C)}}{2} \\
+                                                            & = 3 \pm \sqrt{9 - t^2 + 2C}
 \end{align*}
 With \(a = 9 + 2c\)
 \begin{align*}
-  y = 3 \pm \sqrt{a - x^2}
+  y = 3 \pm \sqrt{a - t^2}
 \end{align*}
 Combining the general solution with the given initial value, we obtain
 \begin{align*}
-  1 = y(0) = 3 \pm \sqrt{a - 0^2} = 3 \pm \sqrt{a} \\
-  a = 4
+  1 & = y(0) = 3 \pm \sqrt{a - 0^2} = 3 \pm \sqrt{a} \\
+  a & = 4
 \end{align*}
 Thus, the particular solution is
 \begin{align*}
-  y = 3 - \sqrt{4-x^2}
+  y = 3 - \sqrt{4-t^2}
 \end{align*} \\
 
 - Second equation:
 \begin{equation*}
   \begin{cases}
-    3xy' - y & = lnx + 1, (x > 0) \\
+    3ty' - y & = lnt + 1, (t > 0) \\
     y(1)     & = -2
   \end{cases}
 \end{equation*}
-With \(x > 0\), we write the equation in standard form:
+With \(t > 0\), we write the equation in standard form:
 \begin{align*}
-  y' - \frac{1}{3x}y = \frac{lnx + 1}{3x}
+  y' - \frac{1}{3t}y = \frac{lnt + 1}{3t}
 \end{align*}
 Then the integrating factor is given by
 \begin{align*}
-  v = \exp \left(\int -dx/3x\right) = \exp((-1/3)lnx), \;x > 0
+  v = \exp \left(\int -dt/3t\right) = \exp((-1/3)lnt), \;t > 0
 \end{align*}
 Thus
 \begin{align*}
-  vy = x^{-1/3} y = \frac{1}{3} \int(lnx + 1) x^{-4/3} dx
+  vy = t^{-1/3} y = \frac{1}{3} \int(lnt + 1) t^{-4/3} dt
 \end{align*}
 Integration by parts of the right-hand side gives
 \begin{align*}
-  x^{-1/3}y = -x^{-1/3}(lnx+1) + \int x^{-4/3}dx + C
+  t^{-1/3}y = -t^{-1/3}(lnt+1) + \int t^{-4/3}dt + C
 \end{align*}
 Therefore
 \begin{align*}
-  x^{-1/3}y = -x^{-1/3}(lnx+1) - 3x^{-1/3} + C
+  t^{-1/3}y = -t^{-1/3}(lnt+1) - 3t^{-1/3} + C
 \end{align*}
 or, solving for \(y\),
 \begin{align*}
-  y = -(lnx + 4) + Cx^{1/3}
+  y = -(lnt + 4) + Ct^{1/3}
 \end{align*}
-When \(x = 1\) and \(y = -2\) this last equation becomes
+When \(t = 1\) and \(y = -2\) this last equation becomes
 \begin{align*}
   -2 = -(0+4) + C \\
   \Leftrightarrow C = 2
 \end{align*}
 Substitution into the equation for \(y\) gives the particular solution
 \begin{align*}
-  y = 2x^{1/3} - lnx - 4
+  y = 2t^{1/3} - lnt - 4
 \end{align*}
-
 
 \subsection{An approach to Euler and Runge-Kutta algorithms}
 \subsubsection{Explicit Euler algorithm}\label{sssec:explicit_euler}
@@ -448,28 +449,185 @@ For consistency, we expand \(f(t,y)\) around \((t_n, y_n)\) to order \({(t-t_n)}
 Now, we run the following \textit{Mathematica} script to calculate \(y_{n+1}\) with respect to \(y_n\), \(h\), \(b_i\), \(c_i\), and \(a_{ij}\)
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Mathematica}
-taylor = f + ft(t - tn) + fy(y - yn) + 1/2*ftt(t - tn)^2 + fty(t - tn)(y - yn) + 1/2*fyy(y - yn)^2 + 1/6*fttt(t - tn)^3 + 1/2*ftty(t - tn)^2(y - yn) + 1/2*ftyy(t - tn)(y - yn)^2 + 1/6*fyyy(y - yn)^3 (* expansion of f(t,y) *)
-k1 = Expand[taylor /.t->tn /.y->yn] (* calculate k1 *)
-k2 = Expand[taylor /.t->tn + c2*h /.y->yn + h*a21*k1] (* base on k1 *)
-k3 = Expand[taylor /.t->tn + c3*h /.y->yn + h*(a31*k1 + a32*k2)] (* base on k1, k2 *)
-k4 = Expand[taylor /.t->tn + c4*h /.y->yn + h*(a41*k1 + a42*k2 + a43*k3)] (* base on k1, k2, k3 *)
-yn1 = yn + h*(b1*k1 + b2*k2 + b3*k3 + b4*k4) (* y_{n+1} *)
+    taylor = f + ft(t - tn) + fy(y - yn) + 1/2*ftt(t - tn)^2 + fty(t - tn)(y - yn) + 1/2*fyy(y - yn)^2 + 1/6*fttt(t - tn)^3 + 1/2*ftty(t - tn)^2(y - yn) + 1/2*ftyy(t - tn)(y - yn)^2 + 1/6*fyyy(y - yn)^3 (* expansion of f(t,y) *)
+    k1 = Expand[taylor /.t->tn /.y->yn] (* calculate k1 *)
+    k2 = Expand[taylor /.t->tn + c2*h /.y->yn + h*a21*k1] (* base on k1 *)
+    k3 = Expand[taylor /.t->tn + c3*h /.y->yn + h*(a31*k1 + a32*k2)] (* base on k1, k2 *)
+    k4 = Expand[taylor /.t->tn + c4*h /.y->yn + h*(a41*k1 + a42*k2 + a43*k3)] (* base on k1, k2, k3 *)
+    yn1 = yn + h*(b1*k1 + b2*k2 + b3*k3 + b4*k4) (* y_{n+1} *)
   \end{minted}
 \end{mdframed}
 
 Now we have our function for \(y_{n+1}\), but trying equating coefficients with \((*)\) would give rise to infinitely many solutions, corresponding with infinitely many Runge-Kutta methods in the family. So to check for the correctness of RK4, we only need to substitute the variables to the one specified in the standard RK4 method to see if it coincides with \((*)\) or not. Observe that RK4 is the general RK methods with \(s = 4\), \(b_1 = \frac{1}{6}\), \(b_2 = \frac{1}{3}\), \(b_3 = \frac{1}{3}\), \(b_4 = \frac{1}{6}\), \(c_2 = \frac{1}{2}\), \(c_3 = \frac{1}{2}\), \(c_4 = 1\), \(a_{21} = \frac{1}{2}\), \(a_{31} = 0\), \(a_{32} = \frac{1}{2}\), \(a_{41} = 0\), \(a_{42} = 0\), and \(a_{43} = 1\), we then execute the following code to print out the coefficient of \(h^i\) in \(y_{n+1}\) with the mentioned variables set as above.
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Mathematica}
-yn1 = yn1 /.b1->1/6 /.b2->1/3 /.b3->1/3 /.b4->1/6 /.c2->1/2 /.c3->1/2 /.c4->1 /.a21->1/2 /.a31->0 /.a32->1/2 /.a41->0 /.a42->0 /.a43->1 (* adjust the variables *)
-For[i=0, i<5, i++, Print[Simplify[Coefficient[yn1, h, i]]]] (* print out the coefficients *)
+    yn1 = yn1 /.b1->1/6 /.b2->1/3 /.b3->1/3 /.b4->1/6 /.c2->1/2 /.c3->1/2 /.c4->1 /.a21->1/2 /.a31->0 /.a32->1/2 /.a41->0 /.a42->0 /.a43->1 (* adjust the variables *)
+    For[i=0, i<5, i++, Print[Simplify[Coefficient[yn1, h, i]]]] (* print out the coefficients *)
   \end{minted}
 \end{mdframed}
 
 The execution yields the exact coefficients we have seen in \((*)\), which in turn has proven the correctness of RK4.
 
 \subsection{Applying Euler and Runge-Kutta algorithms give approximate solution of the above examples}
-% TODO
+For consistency, we use \(h = 0.4\) for both of our following examples to signify the relative error the two methods make when used.
 
+\subsubsection{Explicit Euler}
+First system of equations:
+\begin{equation*}
+  \begin{cases}
+    \frac{dy}{dt} & = - \frac{t}{y - 3} \\
+    y(0)          & = 1
+  \end{cases}
+\end{equation*}
+
+And its exact solution:
+\begin{align*}
+  y = 3 - \sqrt{4-t^2}
+\end{align*}
+
+We are given the initial point of our solution, \(t_0 = 0 \rightarrow y_0 = 1\). So \(t_i = t_0 + i \cdot h = 0.4i\).
+
+Applying the explicit Euler method as stated in~\ref{sssec:explicit_euler}, we have:
+\begin{align*}
+  y_1 & = y(t_0 + h) \approx y(t_0) + h\frac{dy}{dt}\biggr|_{t_0} = y_0 + hf(t_0, y_0)                                      \\
+      & = 1 + 0.4 \cdot \left(-\frac{0}{1-3}\right) = 1                                                                     \\
+  y_2 & = y(t_0 + 2h) \approx y(t_1) + h\frac{dy}{dt}\biggr|_{t_1} = y_1 + hf(t_1, y_1)                                     \\
+      & = 1 + 0.4 \cdot \left(-\frac{0.4}{1-3}\right) = \frac{27}{25}                                                       \\
+  y_3 & = y(t_0 + 3h) \approx y(t_2) + h\frac{dy}{dt}\biggr|_{t_2} = y_2 + hf(t_2, y_2)                                     \\
+      & = \frac{27}{25} + 0.4 \cdot \left(-\frac{0.8}{\frac{27}{25} - 3}\right) = \frac{187}{150}                           \\
+  y_4 & = y(t_0 + 4h) \approx y(t_3) + h\frac{dy}{dt}\biggr|_{t_3} = y_3 + hf(t_3, y_3)                                     \\
+      & = \frac{187}{150} + 0.4 \cdot \left(-\frac{1.2}{\frac{187}{150} - 3}\right) = \frac{59981}{39450}                   \\
+  y_5 & = y(t_0 + 5h) \approx y(t_4) + h\frac{dy}{dt}\biggr|_{t_4} = y_4 + hf(t_4, y_4)                                     \\
+      & = \frac{59981}{39450} + 0.4 \cdot \left(-\frac{1.6}{\frac{59981}{39450} - 3}\right) = \frac{4497064589}{2302657050}
+\end{align*}
+
+Compare \(y_i\) with the ones obtained when using the exact solution, we have the error table for explicit Euler method (the numbers are rounded to 3 decimal places) as follows:
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+            & Approximation & Exact solution & Relative error (\%) \\
+    \hline
+    \(y_0\) & 1             & 1              & 0                   \\
+    \hline
+    \(y_1\) & 1             & 1.040          & 3.846               \\
+    \hline
+    \(y_2\) & 1.08          & 1.167          & 7.455               \\
+    \hline
+    \(y_3\) & 1.247         & 1.4            & 10.929              \\
+    \hline
+    \(y_4\) & 1.520         & 1.8            & 15.556              \\
+    \hline
+    \(y_5\) & 1.953         & 3              & 34.9                \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Alternatively, we can use RK4 to approximate the values of the exact solution, the process is performed as follows:
+First, we have \((t_0, y_0) = (0, 1)\). Then, the calculation of \(y_1\) is based on \(y_0\) with:
+\begin{alignat*}{4}
+  k_1 & = f(t_0, y_0)                                            &  & = f(0, 1)                    &  & = 0                   \\
+  k_2 & = f \left(t_0 + \frac{h}{2}, y_0 + k_1\frac{h}{2}\right) &  & = f(0.2, 1)                  &  & = 0.1                 \\
+  k_3 & = f \left(t_0 + \frac{h}{2}, y_0 + k_2\frac{h}{2}\right) &  & = f(0.2, 1.02)               &  & = 0.10101010101010102 \\
+  k_4 & = f(t_0 + h, y_0 + k_3h)                                 &  & = f(0.4, 1.0404040404040404) &  & = 0.2041237113402062
+\end{alignat*}
+
+We have
+\begin{align*}
+  y_1 & = y_0 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                              \\
+      & = 1 + \frac{1}{6} \cdot 0.4\left(0 + 2 \cdot 0.1 + 2 \cdot 0.10101010101010102 + 0.2041237113402062\right) \\
+      & \approx 1.0404095942240272
+\end{align*}
+
+The calculation of \(y_2\) is based on \(y_1\) with:
+\begin{alignat*}{4}
+  k_1 & = f(t_1, y_1)                                            &  & = f(0.4, 1.0404095942240272) &  & = 0.20412428986230166 \\
+  k_2 & = f \left(t_1 + \frac{h}{2}, y_1 + k_1\frac{h}{2}\right) &  & = f(0.6, 1.0812344521964876) &  & = 0.3127010492172137  \\
+  k_3 & = f \left(t_1 + \frac{h}{2}, y_1 + k_2\frac{h}{2}\right) &  & = f(0.6, 1.10294980406747)   &  & = 0.316280508173406   \\
+  k_4 & = f(t_1 + h, y_1 + k_3h)                                 &  & = f(0.8, 1.1669217974933896) &  & = 0.43642437016928914
+\end{alignat*}
+
+We have
+\begin{align*}
+  y_2 & = y_1 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                             \\
+      & = 1.0404095942240272 + \frac{1}{6} \cdot 0.4\left(0.20412428986230166 + 2 \cdot 0.3127010492172137\right. \\
+      & \;\left.+\ 2 \cdot 0.316280508173406 + 0.43642437016928914\vphantom{1}\right)                             \\
+      & \approx 1.1669770458782158
+\end{align*}
+
+The calculation of \(y_3\) is based on \(y_2\) with:
+\begin{alignat*}{4}
+  k_1 & = f(t_2, y_2)                                            &  & = f(0.8, 1.1669770458782158) &  & = 0.43643752425527393 \\
+  k_2 & = f \left(t_2 + \frac{h}{2}, y_2 + k_1\frac{h}{2}\right) &  & = f(1, 1.2542645507292707)   &  & = 0.5728244794580668  \\
+  k_3 & = f \left(t_2 + \frac{h}{2}, y_2 + k_2\frac{h}{2}\right) &  & = f(1, 1.2815419417698293)   &  & = 0.5819170245155089  \\
+  k_4 & = f(t_2 + h, y_2 + k_3h)                                 &  & = f(1.2, 1.3997438556844193) &  & = 0.7498799515706484
+\end{alignat*}
+
+We have
+\begin{align*}
+  y_3 & = y_2 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                             \\
+      & = 1.1669770458782158 + \frac{1}{6} \cdot 0.4\left(0.43643752425527393 + 2 \cdot 0.5728244794580668\right. \\
+      & \;\left.+\ 2 \cdot 0.5819170245155089 + 0.7498799515706484\vphantom{1}\right)                             \\
+      & \approx 1.4000304114630875
+\end{align*}
+
+The calculation of \(y_4\) is based on \(y_3\) with:
+\begin{alignat*}{4}
+  k_1 & = f(t_3, y_3)                                            &  & = f(1.2, 1.4000304114630875) &  & = 0.7500142556442817 \\
+  k_2 & = f \left(t_3 + \frac{h}{2}, y_3 + k_1\frac{h}{2}\right) &  & = f(1.4, 1.5500332625919437) &  & = 0.9655393905812101 \\
+  k_3 & = f \left(t_3 + \frac{h}{2}, y_3 + k_2\frac{h}{2}\right) &  & = f(1.4, 1.5931382895793296) &  & = 0.9951226830826048 \\
+  k_4 & = f(t_3 + h, y_3 + k_3h)                                 &  & = f(1.6, 1.7980794846961294) &  & = 1.3312028371489164
+\end{alignat*}
+
+We have
+\begin{align*}
+  y_4 & = y_3 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                            \\
+      & = 1.4000304114630875 + \frac{1}{6} \cdot 0.4\left(0.7500142556442817 + 2 \cdot 0.9655393905812101\right. \\
+      & \;\left.+\ 2 \cdot 0.9951226830826048 + 1.3312028371489164\vphantom{1}\right)                            \\
+      & \approx 1.8001998274711428
+\end{align*}
+
+The calculation of \(y_5\) is based on \(y_4\) with:
+\begin{alignat*}{4}
+  k_1 & = f(t_4, y_4)                                            &  & = f(1.6, 1.8001998274711428) &  & = 1.3335554008361483 \\
+  k_2 & = f \left(t_4 + \frac{h}{2}, y_4 + k_1\frac{h}{2}\right) &  & = f(1.8, 2.0669109076383725) &  & = 1.9290762422741867 \\
+  k_3 & = f \left(t_4 + \frac{h}{2}, y_4 + k_2\frac{h}{2}\right) &  & = f(1.8, 2.1860150759259804) &  & = 2.2113431671325614 \\
+  k_4 & = f(t_4 + h, y_4 + k_3h)                                 &  & = f(2, 2.6847370943241673)   &  & = 6.343911586149272
+\end{alignat*}
+
+We have
+\begin{align*}
+  y_5 & = y_4 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                            \\
+      & = 1.8001998274711428 + \frac{1}{6} \cdot 0.4\left(1.3335554008361483 + 2 \cdot 1.9290762422741867\right. \\
+      & \;\left.+\ 2 \cdot 2.2113431671325614 + 6.343911586149272\vphantom{1}\right)                             \\
+      & \approx 2.8640868811910707
+\end{align*}
+
+Compare \(y_i\) with the ones obtained when using the exact solution, we have the error table for RK4 method (the numbers are rounded to 9 decimal places) as follows:
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+            & Approximation      & Exact solution     & Relative error (\%)    \\
+    \hline
+    \(y_0\) & 1                  & 1                  & 0                      \\
+    \hline
+    \(y_1\) & 1.0404095942240272 & 1.0404082057734576 & 0.00013345248162436595 \\
+    \hline
+    \(y_2\) & 1.1669770458782158 & 1.166969722017664  & 0.000627596450329253   \\
+    \hline
+    \(y_3\) & 1.4000304114630875 & 1.4                & 0.002172247363398304   \\
+    \hline
+    \(y_4\) & 1.8001998274711428 & 1.8                & 0.011101526174586396   \\
+    \hline
+    \(y_5\) & 2.8640868811910707 & 3                  & 4.5304372936309765     \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Our final observation is that, despite being able to maintain a relatively less error than explicit Euler method, RK4 requires much more resources (space and time) to calculate the approximation for each time step. So there is a trade-off between predicting the values accurately and predicting them quickly.
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -794,61 +952,377 @@ The \(CO_2\) compensation point (\(\Gamma\)) affects the leaf photosynthesis rat
 \end{align}
 where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\;mol^{-1}\{air\}\;K^{-1}\)) determines the effect of canopy temperature on the \(CO_2\) compensation point. The right term of the equation above is introduced to assure that, for all values of \(J^{MAX}_{25,Can}\) at a temperature of \(20 \degree C\).
 
+\newpage
 \subsection{Implementing the programs}
+To calculate \(\dot{CO_{2 Air}}\) and \(\dot{CO_{2 Top}}\), we use the following \(dx\) function. Each of the \(MC\) formula will be given and explained further below.
+
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
-def dx_CO2(self, t, CO2_Air, CO2_Top):
-  # Update environment variable at time t (s)
-  self.update(data_Tair[int(t / 300)],
-              data_Tout[int(t / 300)],
-              wind_speed[int(t / 300)])
+  def dx_CO2(self, t, CO2_Air, CO2_Top):
+    # Update environment variable at time t (s)
+    self.update(data_Tair[int(t / 300)],
+                data_Tout[int(t / 300)],
+                wind_speed[int(t / 300)])
 
-  self.CO2_Air = CO2_Air
-  self.CO2_Top = CO2_Top
+    self.CO2_Air = CO2_Air
+    self.CO2_Top = CO2_Top
 
-  cap_CO2Air = self.Coefficients.Construction.cap_CO2Air
-  cap_CO2Top = self.Coefficients.Construction.cap_CO2Top
-  MC_BlowAir = self.MC_BlowAir()
-  MC_ExtAir = self.MC_ExtAir()
-  MC_PadAir = self.MC_PadAir()
-  MC_AirTop = self.MC_AirTop()
-  MC_AirOut = self.MC_AirOut()
-  MC_TopOut = self.MC_TopOut()
-  MC_AirCan = self.MC_AirCan()
-  return ((MC_BlowAir + MC_ExtAir + MC_PadAir - MC_AirCan - MC_AirTop - MC_AirOut) / cap_CO2Air,
-          (MC_AirTop - MC_TopOut) / cap_CO2Top)
+    cap_CO2Air = self.Coefficients.Construction.cap_CO2Air
+    cap_CO2Top = self.Coefficients.Construction.cap_CO2Top
+    MC_BlowAir = self.MC_BlowAir()
+    MC_ExtAir = self.MC_ExtAir()
+    MC_PadAir = self.MC_PadAir()
+    MC_AirTop = self.MC_AirTop()
+    MC_AirOut = self.MC_AirOut()
+    MC_TopOut = self.MC_TopOut()
+    MC_AirCan = self.MC_AirCan()
+    return ((MC_BlowAir + MC_ExtAir + MC_PadAir - MC_AirCan - MC_AirTop - MC_AirOut) / cap_CO2Air,
+            (MC_AirTop - MC_TopOut) / cap_CO2Top)
   \end{minted}
 \end{mdframed}
 
-% TODO
+\(MC_{BlowAir}\) is assumed to be zero in this assignment.
+Since \(P_{Blow}\) is assumed to be zero, this results in \(H_{BlowAir} = 0\).
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def MC_BlowAir(self):  # this Assignment assumes MC_BLowAir is zero
+    # (P_Blow = 0)
+    # Equation (3) in pdf
+    H_BlowAir = self.H_BlowAir()
+    return self.Constant.ETA_HEATCO2 * H_BlowAir
+  \end{minted}
+\end{mdframed}
 
+\(MC_{ExtAir}\) is calculated as the equation given above.
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def MC_ExtAir(self):
+    # Equation (4) in pdf
+    U_ExtCO2 = self.Assuming.U_ExtAir
+    phi_ExtCO2 = self.Coefficients.ActiveClimateControl.phi_ExtCO2
+    A_Flr = self.Coefficients.Construction.floor_area
+
+    return U_ExtCO2 * phi_ExtCO2 / A_Flr
+  \end{minted}
+\end{mdframed}
+
+\(MC_{PadAir}\) is given as the product of \(f_{Pad}\) and the difference in the concentration of \(CO_2\) inside and outside the greenhouse.
+\(f_{Pad}\) is calculated in a separate function.
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def MC_PadAir(self):
+    # Equation (5) in pdf
+    # do not have PadAir with our model
+    f_Pad = self.f_Pad()
+    print(f_Pad)
+    return f_Pad * (self.Weather.CO2_Out - self.CO2_Air)
+  \end{minted}
+\end{mdframed}
+
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def f_Pad(self):
+    U_Pad = self.Assuming.U_Pad
+    phi_Pad = self.Coefficients.ActiveClimateControl.phi_Pad
+    A_Flr = self.Coefficients.Construction.floor_area
+    return U_Pad * phi_Pad / A_Flr
+  \end{minted}
+\end{mdframed}
+
+\(MC_{AirTop}\) is calculated using air flux, with \(f\) being \(f_{ThScr}\).
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def MC_AirTop(self):
+    # Equation (6) in pdf
+    f_ThScr = self.f_ThScr()
+    return self.air_flux(f_ThScr, self.CO2_Air, self.CO2_Top)
+  \end{minted}
+\end{mdframed}
+
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def air_flux(self, f, CO2_from, CO2_to):
+    # Equation (6) in pdf
+    return f * (CO2_from - CO2_to)
+  \end{minted}
+\end{mdframed}
+
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def f_ThScr(self):
+    # Equation (7) in pdf
+    U_ThScr = self.Assuming.U_ThScr
+    K_ThScr = self.Coefficients.Thermalscreen.K_ThScr
+    T_Air = self.ClimateStates.T_Air
+    T_Out = self.Weather.T_Out
+    p_Air = self.air_density()
+    pressure = 101325 * \
+        (1 - 2.5577e-5 * self.Coefficients.Construction.elevation_height) ** 5.25588
+    p_Out = self.Constant.M_AIR * pressure / \
+        ((self.ClimateStates.T_Top + 273.15) * self.Constant.M_GAS)
+    p_Mean = (p_Air + p_Out) / 2
+
+    return (U_ThScr * K_ThScr * abs(T_Air - T_Out) ** (2 / 3)) + (1 - U_ThScr) * math.sqrt(
+        (0.5 * (1 - U_ThScr) * self.Constant.GRAVITY * abs(p_Air - p_Out)) / p_Mean)
+  \end{minted}
+\end{mdframed}
+
+To calculate \(MC_{AirOut}\), we must calculate \(f_{VentSide}\) and \(f_{VentForced}\) separately.
+In this assignment, \(f_{VentForced}\) is assumed to be 0.
+
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def MC_AirOut(self):
+    # Equation (9) in pdf
+    f_VentSide = self.f_VentSide()
+    f_VentForced = self.f_VentForced()
+    f_AirOut = f_VentSide + f_VentForced
+
+    return self.air_flux(f_AirOut, self.CO2_Air, self.Weather.CO2_Out)
+  \end{minted}
+\end{mdframed}
+
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def f_VentSide(self):
+    # Equation (13) in pdf
+    eta_Side = 0  # Note: line 611 / setGlAux / GreenLight
+    eta_Roof = 1  # Note: line 606 / setGlAux / GreenLight
+    eta_InsScr = self.eta_InsScr()
+    d2_f_VentSide = self.d2_f_VentSide()
+    d2_f_VentRoofSide = self.d2_f_VentRoofSide()
+    f_leakage = self.f_leakage()
+    U_ThScr = self.Assuming.U_ThScr
+
+    if eta_Side >= self.Constant.ETA_ROOF_THR:
+        return eta_InsScr * d2_f_VentSide + 0.5 * f_leakage
+    else:
+        return eta_InsScr * (
+            U_ThScr * d2_f_VentSide + (1 - U_ThScr) * d2_f_VentRoofSide * eta_Side) + 0.5 * f_leakage
+  \end{minted}
+\end{mdframed}
+
+Particularly, \(f''_{VentSide}\) is given below.
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def d2_f_VentSide(self):
+    # Equation (10) in pdf with A_roof = 0
+    U_Side = self.Assuming.U_Side
+    A_Side = self.Coefficients.Construction.side_ventilation_area
+    A_Flr = self.Coefficients.Construction.floor_area
+    C_d = self.Coefficients.Ventilation.C_d
+    C_w = self.Coefficients.Ventilation.C_w
+    v_Wind = self.Weather.v_Wind
+    AU_Side = A_Side * U_Side
+    return 0.5 * C_d * AU_Side * v_Wind / A_Flr * math.sqrt(C_w)
+  \end{minted}
+\end{mdframed}
+
+\(MC_{TopOut}\) is calculated similarly with \(f_{VentRoof}\).
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def MC_TopOut(self):
+    # Equation (15) in pdf
+    f_VentRoof = self.f_VentRoof()
+    return self.air_flux(f_VentRoof, self.CO2_Top, self.Weather.CO2_Out)
+  \end{minted}
+\end{mdframed}
+
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def f_VentRoof(self):
+    # Equation (16) in pdf
+    eta_Roof = 1  # Note: line 606 / setGlAux / GreenLight
+    eta_InsScr = self.eta_InsScr()
+    d2_f_VentRoof = self.d2_f_VentRoof()
+    d2_f_VentRoofSide = self.d2_f_VentRoofSide()
+    f_leakage = self.f_leakage()
+    U_ThScr = self.Assuming.U_ThScr
+    if eta_Roof >= self.Constant.ETA_ROOF_THR:
+        return eta_InsScr * d2_f_VentRoof + 0.5 * f_leakage
+    else:
+        return eta_InsScr * (
+            U_ThScr * d2_f_VentRoof + (1 - U_ThScr) * d2_f_VentRoofSide * eta_Roof) + 0.5 * f_leakage
+  \end{minted}
+\end{mdframed}
+
+Finally, we calculate \(MC_{AirCan}\).
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def MC_AirCan(self):
+    # Equation (18) in pdf
+    h_AirCan = 1  # Consider Photosynthesis always happen
+    P = self.photosynthesis_rate()
+    R = self.photorespiration()
+    return self.Constant.M_CH2O * h_AirCan * (P - R)
+  \end{minted}
+\end{mdframed}
+
+Electron transport rate, \(CO_{2 Stom}\), gamma are calculated with specific parameters and variables in the complete program that we attached with the report.
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def photosynthesis_rate(self):
+    # Equation 9.12
+    J = self.electron_transport_rate()
+    CO2_Stom = self.CO2_Stom()
+    gamma = self.gamma()
+    return 0.25 * J * (CO2_Stom - gamma) / (CO2_Stom + 2 * gamma)
+  \end{minted}
+\end{mdframed}
+
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+def photorespiration(self):
+    # Equation 9.13
+    P = self.photosynthesis_rate()
+    gamma = self.gamma()
+    CO2_Stom = self.CO2_Stom()
+    return P * gamma / CO2_Stom
+  \end{minted}
+\end{mdframed}
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Testing the programs}
-% TODO: Graphs/tables
+Function MC\_BlowAir:
+\begin{align*}
+  MC_{BlowAir} = \frac{\eta_{HeatCO_2}U_{Blow}}{A_{Flr}}
+\end{align*}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+    \hline
+          & $\eta_{HeatCO_2}$ & $U_{Blow}$ & $P_{BLOW}$ & $A_{Flr}$ \\
+    \hline
+    Value & 0.057             & 1          & 0          & 78000     \\
+    \hline
+  \end{tabular}
+\end{table}
+
+- Result of this equation: \(MC_{BlowAir} = 0.0\)
+
+Function MC\_ExtAir:
+\begin{align*}
+  MC_{ExtAir} = \frac{U_{ExtCO_2}\phi_{ExtCO_2}}{A_{Flr}}
+\end{align*}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+    \hline
+          & $U_{ExtCO_2}$ & $\phi_{ExtCO_2}$ & $A_{Flr}$ \\
+    \hline
+    Value & 0.11          & 430000           & 78000     \\
+    \hline
+  \end{tabular}
+\end{table}
+
+- Result of this equation: \(MC_{ExtAir} = 0.6064102564102564\)
+
+Function f\_Pad:
+\begin{align*}
+  f_{Pad} = \frac{U_{Pad} \phi_{Pad}}{A_{Flr}}
+\end{align*}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|l|l|}
+    \hline
+          & $U_{Pad}$ & $\phi_{Pad}$ & $A_{Flr}$ \\
+    \hline
+    Value & 1         & 0            & 78000     \\
+    \hline
+  \end{tabular}
+\end{table}
+
+- Result of this equation: \(f_{Pad} = 0\)
+
+Function f\_ThScr:
+\begin{align*}
+  f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Out}| ^{\frac{2}{3}} + (1 - U_{ThScr}) {\left[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Out}|\right]}^{\frac{1}{2}}
+\end{align*}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+          & $U_{ThScr}$ & $K_{ThScr}$ & $T_{Air}$ & $T_{Out}$ & $g$  & $\rho^{Mean}_{Air}$ & $\rho_{Air}$ & $\rho_{Out}$ \\
+    \hline
+    Value & 0.863       & 0.00025     & 19.899999 & 17.7      & 9.81 & 1.201967            & 1.42428      & 0.979646     \\
+    \hline
+  \end{tabular}
+\end{table}
+
+- Result of this equation: \(f_{ThScr} = 0.06867093888863662\)
+
+Function MC\_AirTop:
+\begin{align*}
+  MC_{AirTop} = f_{ThScr} (CO_{2 Air} - CO_{2 Top})
+\end{align*}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+          & $f_{ThScr}$ & $CO_{2 Air}$ & $CO_{2 Top}$ \\
+    \hline
+    Value & 0.0686709   & 440          & 440          \\
+    \hline
+  \end{tabular}
+\end{table}
+
+- Result of this equation: \(MC_{AirTop} = 0\)
+
+Function MC\_AirTop:
+\begin{align*}
+  f_{VentRoof} = 0
+\end{align*}
+
+% TODO
 
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Predicting \(CO_2\) concentration with Euler and Runge-Kutta algorithms}
 \subsection{Euler and Runge-Kutta of order 4 algorithms as computer programs}
+Euler algorithm as computer program:
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
-def isMMFun():
-  return false
+import numpy as np
+def euler(dx, t, CO2_Air, CO2_Top, h):
+    CO2 = np.array([CO2_Air, CO2_Top])
+    d_CO2 = np.array(dx(t, CO2_Air, CO2_Top))
+
+    return CO2 + h * d_CO2
   \end{minted}
 \end{mdframed}
-% TODO
+
+Runge-Kutta of order 4 algorithm as computer program:
+\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10]
+  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+import numpy as np
+def runge_kutta4th(dx, t, CO2_Air, CO2_Top, h):
+    CO2 = np.array([CO2_Air, CO2_Top])
+
+    k1 = np.array(dx(t, CO2_Air, CO2_Top))
+    k2 = np.array(dx(t + h / 2, CO2_Air + 0.5 * h * k1[0], CO2_Top + 0.5 * h * k1[1]))
+    k3 = np.array(dx(t + h / 2, CO2_Air + 0.5 * h * k2[0], CO2_Top + 0.5 * h * k2[1]))
+    k4 = np.array(dx(t + h, CO2_Air + h * k3[0], CO2_Top + h * k3[1]))
+
+    return CO2 + (k1 + 2 * k2 + 2 * k3 + k4) * h / 6
+  \end{minted}
+\end{mdframed}
 
 \subsection{Predicting \(CO_2\) concentration and comparing to actual data}
 % TODO: Predict
 
 Model performance is evaluated in quantitative terms using the relative root mean square error (\(RRMSE\))\cite{kobayashi2000comparing}:
 \begin{align}
+  \label{eq:rrmse}
   RRMSE = \frac{100}{\mean{y}_{Data}} \sqrt{\frac{1}{n} \sum_{i=1}^{n} {\left(y_{Mod,i} - y_{Data,i}\right)}^2}
 \end{align}
-where \(mean{y}_{Data}\) is the mean of measured data over the total time span, \(n\) is the number of measurements, \(y_{Mod,i}\) is the simulated climate value at time constant \(i\) and \(y_{Data,i}\) is the measured climate value at time constant \(i\).
+where \(\mean{y}_{Data}\) is the mean of measured data over the total time span, \(n\) is the number of measurements, \(y_{Mod,i}\) is the simulated climate value at time constant \(i\) and \(y_{Data,i}\) is the measured climate value at time constant \(i\).
 
 % TODO: Compare
 
@@ -1036,15 +1510,14 @@ def isMMFun():
   return false
   \end{minted}
 \end{mdframed}
-% TODO
 
 \subsection{Testing the programs}
 % TODO: Check if the programs work properly
 
 \subsection{Predicting vapor pressure and comparing to actual data}
+Model performance is evaluated in quantitative terms using the relative root mean square error mentioned at~\eqref{eq:rrmse}.
 % TODO: 2 programs to predict vapor pressure
 % TODO: Calculate and compare with actual data
-
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1062,4 +1535,3 @@ def isMMFun():
 \printbibliography[heading=bibintoc]
 
 \end{document}
-

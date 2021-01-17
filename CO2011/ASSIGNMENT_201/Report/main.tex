@@ -113,7 +113,7 @@
   \end{table}
 
   \begin{center}
-    {\footnotesize HO CHI MINH CITY, DECEMBER 2020}
+    {\footnotesize HO CHI MINH CITY, JANUARY 2021}
   \end{center}
 \end{titlepage}
 
@@ -347,8 +347,8 @@ or, solving for \(y\),
 \end{align*}
 When \(t = 1\) and \(y = -2\) this last equation becomes
 \begin{align*}
-  -2 = -(0+4) + C \\
-  \Leftrightarrow C = 2
+  -2                & = -(0+4) + C \\
+  \Leftrightarrow C & = 2
 \end{align*}
 Substitution into the equation for \(y\) gives the particular solution
 \begin{align*}
@@ -486,16 +486,16 @@ We are given the initial point of our solution, \(t_0 = 0 \rightarrow y_0 = 1\).
 
 Applying the explicit Euler method as stated in~\ref{sssec:explicit_euler}, we have:
 \begin{align*}
-  y_1 & = y(t_0 + h) \approx y(t_0) + h\frac{dy}{dt}\biggr|_{t_0} = y_0 + hf(t_0, y_0)                                      \\
-      & = 1 + 0.4 \cdot \left(-\frac{0}{1-3}\right) = 1                                                                     \\
-  y_2 & = y(t_0 + 2h) \approx y(t_1) + h\frac{dy}{dt}\biggr|_{t_1} = y_1 + hf(t_1, y_1)                                     \\
-      & = 1 + 0.4 \cdot \left(-\frac{0.4}{1-3}\right) = \frac{27}{25}                                                       \\
-  y_3 & = y(t_0 + 3h) \approx y(t_2) + h\frac{dy}{dt}\biggr|_{t_2} = y_2 + hf(t_2, y_2)                                     \\
-      & = \frac{27}{25} + 0.4 \cdot \left(-\frac{0.8}{\frac{27}{25} - 3}\right) = \frac{187}{150}                           \\
-  y_4 & = y(t_0 + 4h) \approx y(t_3) + h\frac{dy}{dt}\biggr|_{t_3} = y_3 + hf(t_3, y_3)                                     \\
-      & = \frac{187}{150} + 0.4 \cdot \left(-\frac{1.2}{\frac{187}{150} - 3}\right) = \frac{59981}{39450}                   \\
-  y_5 & = y(t_0 + 5h) \approx y(t_4) + h\frac{dy}{dt}\biggr|_{t_4} = y_4 + hf(t_4, y_4)                                     \\
-      & = \frac{59981}{39450} + 0.4 \cdot \left(-\frac{1.6}{\frac{59981}{39450} - 3}\right) = \frac{4497064589}{2302657050}
+  y_1 & = y(t_0 + h) \approx y(t_0) + h\frac{dy}{dt}\biggr|_{t_0}                           &  & = y_0 + hf(t_0, y_0)            \\
+      & = 1 + 0.4 \cdot \left(-\frac{0}{1-3}\right)                                         &  & = 1                             \\
+  y_2 & = y(t_0 + 2h) \approx y(t_1) + h\frac{dy}{dt}\biggr|_{t_1}                          &  & = y_1 + hf(t_1, y_1)            \\
+      & = 1 + 0.4 \cdot \left(-\frac{0.4}{1-3}\right)                                       &  & = \frac{27}{25}                 \\
+  y_3 & = y(t_0 + 3h) \approx y(t_2) + h\frac{dy}{dt}\biggr|_{t_2}                          &  & = y_2 + hf(t_2, y_2)            \\
+      & = \frac{27}{25} + 0.4 \cdot \left(-\frac{0.8}{\frac{27}{25} - 3}\right)             &  & = \frac{187}{150}               \\
+  y_4 & = y(t_0 + 4h) \approx y(t_3) + h\frac{dy}{dt}\biggr|_{t_3}                          &  & = y_3 + hf(t_3, y_3)            \\
+      & = \frac{187}{150} + 0.4 \cdot \left(-\frac{1.2}{\frac{187}{150} - 3}\right)         &  & = \frac{59981}{39450}           \\
+  y_5 & = y(t_0 + 5h) \approx y(t_4) + h\frac{dy}{dt}\biggr|_{t_4}                          &  & = y_4 + hf(t_4, y_4)            \\
+      & = \frac{59981}{39450} + 0.4 \cdot \left(-\frac{1.6}{\frac{59981}{39450} - 3}\right) &  & = \frac{4497064589}{2302657050}
 \end{align*}
 
 Compare \(y_i\) with the ones obtained when using the exact solution, we have the error table for explicit Euler method (the numbers are rounded to 3 decimal places) as follows:
@@ -1189,7 +1189,7 @@ def photorespiration(self):
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Testing the programs}
-The data used in this model is based on climate of Texas in United States and the photosynthesis is based on tomatoes.
+The data used in this model is based on climate of Texas in United States and the photosynthesis is based on tomatoes. We will consider the first step where the values of the initial state are: \(CO_{2Air} = CO_{2Top} = 440\).
 \begin{itemize}
   \item Function MC\_BlowAir() is equivalent to equation:
         \begin{align*}
@@ -1250,7 +1250,7 @@ The data used in this model is based on climate of Texas in United States and th
             \bottomrule
           \end{tabular}
         \end{table}
-
+  \item[-] Since we do not consider pad and  fan system, $\phi_{Pad} = 0$.
   \item[-] Result of this equation: \(f_{Pad} = 0\)
 
   \item Function f\_ThScr() is equivalent to equation:
@@ -1459,6 +1459,29 @@ The data used in this model is based on climate of Texas in United States and th
 
   \item[-] Result of this equation: \(f_{VentSide} = 0.00016\)
 
+  \item Function MC\_AirOut() is equivalent to equation:
+        \begin{align*}
+          MC_{AirOut} = (f_{VentSide} + f_{VentForced})(CO_{2 Air} - CO_{2 Out})
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS@{}}
+            \toprule
+            \textbf{Variable}  & \textbf{Value} \\
+            \midrule
+            \(f_{VentSide}\)   & 0.00016        \\
+            \(f_{VentForced}\) & 0              \\
+            \(CO_{2 Air}\)     & 440            \\
+            \(CO_{2 Out}\)     & 440            \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \( MC_{AirOut} = 0 \)
+
+  \item Function f\_VentForced() will return \(0\) since we do not consider fan system inside the green house, which is equivalent to \(f_{VentForced} = 0\).
+
   \item Function d2\_f\_VentRoof() is equivalent to equation:
         \begin{align*}
           f''_{VentRoof} = \frac{C_d U_{Roof} A_{Roof}}{2A_{Flr}} {\left[\frac{gh_{Roof}(T_{Air} - T_{Out})}{2T^{Mean}_{Air}} + C_w v^2_{Wind}\right]}^{ \frac{1}{2}}
@@ -1481,7 +1504,213 @@ The data used in this model is based on climate of Texas in United States and th
           \end{tabular}
         \end{table}
 
-  \item[-] Result of this equation: \(f_{VentSide} = 0.00016\)
+  \item[-] Result of this equation: \(f''_{VentRoof} = 0.05727510933246514\)
+
+  \item Function f\_VentRoof() is equivalent to equation:
+        \begin{gather*}
+          f_{VentRoof} =
+          \begin{cases}
+            \eta_{InsScr} f''_{VentRoof} + 0.5f_{leakage} & \text{if~} \eta_{Roof} \geq \eta_{Roof\_Thr} \\
+            \begin{split}
+              & \eta_{InsScr} [U_{ThScr}f''_{VentRoof} + \\
+              & (1-U_{ThScr})f_{VentRoofSide} \eta_{Side}] + 0.5 f_{leakage}
+            \end{split}                   & \text{if~}  \eta_{Roof} < \eta_{Roof\_Thr}
+          \end{cases}
+        \end{gather*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=1.17]@{}}
+            \toprule
+            \textbf{Variable}    & \textbf{Value}      \\
+            \midrule
+            \(\eta_{Roof}\)      & 1                   \\
+            \(\eta_{Roof\_Thr}\) & 0.9                 \\
+            \(\eta_{InsScr}\)    & 0                   \\
+            \(f''_{VentRoof}\)   & 0.05727510933246514 \\
+            \(f_{leakage}\)      & 0.00032             \\
+            \(f_{VentRoofSide}\) & 0.05616000000000001 \\
+            \(U_{ThScr}\)        & 0.863               \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \(f_{VentRoof} = 0.00016\)
+
+  \item Function MC\_TopOut() is equivalent to equation:
+        \begin{align*}
+          MC_{TopOut} = f_{VentRoof}(CO_{2 Top} - CO_{2 Out})
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value} \\
+            \midrule
+            \(f_{VentRoof}\)  & 0.00016        \\
+            \(CO_{2 Top}\)    & 440            \\
+            \(CO_{2 Out}\)    & 440            \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \( MC_{TopOut} = 0 \)
+
+  \item Function CO2\_Stom() is equivalent to equation:
+        \begin{align*}
+          CO_{2Stom} = \eta_{CO_{2Air\_Stom}} \cdot CO_{2Air}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS@{}}
+            \toprule
+            \textbf{Variable}          & \textbf{Value} \\
+            \midrule
+            \(\eta_{CO_{2Air\_Stom}}\) & 0.67           \\
+            \(CO_{2Air}\)              & 440            \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \( CO_{2Stom} = 294.8 \)
+
+  \item Function gamma() is equivalent to equation:
+        \begin{align*}
+          \Gamma = \frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}}c_{\Gamma} T_{Can} + 20 c_{\Gamma} \left(1-\frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}}\right)
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=3.13]@{}}
+            \toprule
+            \textbf{Variable}     & \textbf{Value}   \\
+            \midrule
+            \(J^{MAX}_{25,Leaf}\) & 210              \\
+            \(J^{MAX}_{25,Can}\)  & 588.0            \\
+            \(c_{\Gamma}\)        & 1.7              \\
+            \(T_{Can}\)           & 21.8999999966472 \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] To calculate \(J^{MAX}_{25,Can}\), we use \(J^{MAX}_{25,Can} = J^{MAX}_{25,Leaf} \cdot LAI\) where \(J^{MAX}_{25,Leaf} = 210,\; LAI = 2.8\).
+  \item[-] Result of this equation: \(\Gamma = 35.1535714265358\)
+
+  \item Function electron\_transport\_rate() is equivalent to equation:
+        \begin{align*}
+          J = \frac{J^{POT} + \alpha PAR_{can} - {\sqrt{(J^{POT} + \alpha PAR_{can})}^2 - 4\Theta\cdot J^{POT}\cdot \alpha PAR_{can}}}{2 \Theta}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=3.13]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}    \\
+            \midrule
+            \(\Theta\)        & 0.7               \\
+            \(\alpha\)        & 0.385             \\
+            \(J^{POT}\)       & 513.1617619749536 \\
+            \(PAR_{can}\)     & 345.2316428332696 \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] To calculate \(J^{MAX}_{25,Can}\), we use \(J^{MAX}_{25,Can} = J^{MAX}_{25,Leaf} \cdot LAI\) where \(J^{MAX}_{25,Leaf} = 210,\; LAI = 2.8\).
+  \item[-] To calculate \(J^{POT}\), we use \(J^{POT} = J^{MAX}_{25,Can} \cdot \exp \left(E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}\right) \cdot \frac{1 + \exp \left(\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}}\right)}{1 + \exp \left(\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}}\right)}\) where \(R = 8.314,\; S = 710,\; T_{Can,K} = T_{Can} + 273.15 = 295.04999999664716,\; T_{25,K} = 298.15,\; E_j = 37000,\; H = 220000\).
+  \item[-] Result of this equation: \(J = 121.58788097904258\)
+
+  \item Function photosynthesis\_rate() is equivalent to equation:
+        \begin{align*}
+          P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=3.15]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}     \\
+            \midrule
+            \(J\)             & 121.58788097904258 \\
+            \(\Gamma\)        & 35.1535714265358   \\
+            \(CO_{2Stom}\)    & 294.8              \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \(P = 21.616845679412222\)
+
+  \item Function photorespiration() is equivalent to equation:
+        \begin{align*}
+          R = P \cdot \frac{\Gamma}{CO_{2Stom}}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=3.15]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}     \\
+            \midrule
+            \(P\)             & 21.616845679412222 \\
+            \(\Gamma\)        & 35.1535714265358   \\
+            \(CO_{2Stom}\)    & 294.8              \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \(R = 2.577711426755832\)
+
+  \item Function MC\_AirCan() is equivalent to equation:
+        \begin{align*}
+          MC_{AirCan} = M_{CH_2O} h_{C_{Buf}} (P - R)
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=3.15]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}     \\
+            \midrule
+            \(M_{CH_2O}\)     & 0.03               \\
+            \(h_{C_{Buf}}\)   & 1                  \\
+            \(P\)             & 21.616845679412222 \\
+            \(R\)             & 2.577711426755832  \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+  \item[-] Assuming photosynthesis will always occur even after reaching \(C^{Max}_{Buf}\), \(h_{C_{Buf}}\) is set to be \(1\).
+  \item[-] Result of this equation: \(MC_{AirCan} = 0.5711740275796916\)
+
+  \item The function \textbf{dx} is defined as function dx\_CO2() in the program, it is equivalent to equation:
+        \begin{align*}
+          \begin{cases}
+            \dot{CO_{2Air}} = (MC_{BlowAir} + MC_{ExtAir} + MC_{PadAir} \\ \qquad \qquad \qquad \qquad
+            - MC_{AirCan} - MC_{AirTop} - MC_{AirOut}) / cap_{CO_2Air}  \\
+            \dot{CO_{2Top}} = (MC_{AirTop} - MC_{TopOut}) / cap_{CO_2Top}
+          \end{cases}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=1.17]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}     \\
+            \midrule
+            \(MC_{BlowAir}\)  & 0.0                \\
+            \(MC_{ExtAir}\)   & 0.6064102564102564 \\
+            \(MC_{PadAir}\)   & 0.0                \\
+            \(MC_{AirCan}\)   & 0.5711740275796916 \\
+            \(MC_{AirTop}\)   & 0.0                \\
+            \(MC_{AirOut}\)   & 0.0                \\
+            \(MC_{TopOut}\)   & 0.0                \\
+            \(cap_{CO_2Air}\) & 4.7                \\
+            \(cap_{CO_2Top}\) & 0.4                \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+  \item[-] To calculate \(cap_{CO_2Top}\), we use \(cap_{CO_2Top} = h_{GreenHouse} - cap_{CO_2Air}\) where \(h_{GreenHouse} = 5.1,\; cap_{CO_2Air} = 4.7\).
+  \item[-] This function will return two results: \(\dot{CO_{2Air}} = 0.00749706996394995\) and \(\dot{CO_{2Top}} = 0.0\).
 
 \end{itemize}
 \newpage
@@ -1559,7 +1788,7 @@ Vapor is exchanged between the air and surrounding elements i.e.\ the canopy \(M
 
 The vapor pressure of the air in the top compartment \(VP_{Top}\) is described by:
 \begin{multline*}
-  cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
+  cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
 \end{multline*}
 where \(cap_{VP_{Top}}\) is the capacity of the top compartment to store water vapor, \(MV_{TopCov,in}\) is the vapor exchange between the top compartment and the internal cover layer, and \(MV_{TopOut}\) is the vapor exchange between the top compartment and the outside air.
 
@@ -2028,6 +2257,8 @@ def MV_FogAir(self):
 \end{mdframed}
 
 \subsection{Testing the programs}
+The data used in this model is based on the climate of Texas in United States and the photosynthesis model is based on tomatoes.
+We will consider the first step where the values of the initial state are: \(VP_{Air} = VP_{Top} = 2300\).
 % TODO: Check if the programs work properly
 
 \subsection{Predicting vapor pressure and comparing to actual data}

@@ -20,6 +20,9 @@
 \usepackage[framemethod=tikz]{mdframed}
 \usepackage{minted} % needs --shell-escape flag
 
+% Version history
+\usepackage{vhistory}
+
 % Extra
 \usepackage{caption, float}
 
@@ -28,6 +31,7 @@
 \hypersetup{urlcolor=blue,linkcolor=black,citecolor=red,colorlinks=true}
 \addbibresource{ref.bib}
 \usemintedstyle{emacs}
+\numberwithin{equation}{section}
 \renewcommand{\arraystretch}{1.2} % space between table rows
 
 % Global style setup
@@ -141,11 +145,11 @@
     \midrule
     2            & Vũ Anh Nhi            & 1952380             & Exercise 1: c     & \multirow{4}{*}{100\%}      \\
                  &                       &                     & Exercise 2: a, b  &                             \\
-                 &                       &                     & Exercise 4: a     &                             \\
+                 &                       &                     & Exercise 4: b     &                             \\
                  &                       &                     & Pending           &                             \\
     \midrule
     3            & Nguyễn Phú Nghĩa      & 1952355             & Exercise 1: d     & \multirow{4}{*}{100\%}      \\
-                 &                       &                     & Pending           &                             \\
+                 &                       &                     & Exercise 4: a     &                             \\
                  &                       &                     & Exercise 5        &                             \\
                  &                       &                     & Pending           &                             \\
     \midrule
@@ -177,91 +181,107 @@ In such systems, the time intervals between measurements are negligibly small, m
 Then there are discrete systems (also called maps), which are specified by difference equations.
 
 Another important characteristic of a dynamical system is whether it is time dependent or not.
-For time-dependent systems, the function that specifies \(\dot{x}\) or \(\Delta{x_n}\) depends on the time itself, whereas in time-independent systems, this function does not change.
+For time-dependent systems, the function that specifies \(\dot{x}\) or \(\Delta{x_n}\) depends on time itself, whereas in time-independent systems, this function does not change.
 
 For the analysis, it is important whether a dynamical system is linear or not.
-Linear dynamical systems are simple to analyze, unlike non-linear systems, which typically have intricate dynamical behavior.
+Linear dynamical systems are simple to analyze, unlike non-linear systems, which typically have intricate dynamical behaviors.
 
-A general dynamical system contains 2 elements: the initial state and a function or functions describing the next state.
-We can choose any point in the state space to be the origin, then depending on the requirements, our functions can be differential or difference.
+In general, the form of dynamical systems is as follows\cite{sibirsky1975topology}:
+% https://www.researchgate.net/publication/276140310_Is_the_dynamical_system_stable
+
+\begin{equation*}
+  F(t, x) = \begin{cases}
+    h^{-1}(h(x) + t), & \text{ if } x \in I_n, t \in \mathbb{R}, n \in N;                     \\
+    x,                & \text{ if } x \in I \setminus \bigcup_{n \in N} I_n, t \in \mathbb{R}
+  \end{cases}
+\end{equation*}
+
+where \(I_n \subset I, n \in N \subset \mathbb{N}\), are open and disjoint intervals, and \(h_n : I_n \rightarrow \mathbb{R}, n \in N\), are the homeomorphisms.
+
+Typically, a dynamical system consists of 2 elements: the initial state and a function or set of functions describing the future states.
+We can choose any points in the state space to be the origin, then depending on the type of dynamical system, our functions can be differential or difference.
+
+In the scope of this assignment, we only consider first-order differential equations systems with initial condition at time \(t_0\), which take the form:
 \begin{equation*}
   \begin{cases}
-    a_0           & = C \\
-    \frac{da}{dt} & = f
+    y_0           & = C \\
+    \frac{dy}{dt} & = f
   \end{cases}
 \end{equation*}
 or
 \begin{equation*}
   \begin{cases}
-    a_0       & = C       \\
-    a_{n + 1} & = a_n + X
+    y_0       & = C       \\
+    y_{n + 1} & = y_n + Y
   \end{cases}
 \end{equation*}
-with \(f\) is an arbitrary function or functions, \(C\) and \(X\) are arbitrary variables.
+where \(f\) is an arbitrary function or set of functions, \(C\) and \(Y\) are arbitrary vectors in the state space, and \(y_i\) are the state vectors with \(y_0\) representing the initial state.
 
-In this assignment, we are required to design first-order differential systems to predict the climate inside an arbitrary greenhouse.
+Then, we are required to design first-order differential systems to predict the climate inside an arbitrary greenhouse.
 The main climatic components of a greenhouse include temperature, vapor pressure of water and the \(CO_2\) concentration.
-These components are are normally affected by one or many elements presented inside the greenhouse, thus we will express these components in terms of differential equations.
+These components are typically affected by one or many elements presented inside the greenhouse simultaneously and continuously, thus we will express these components using differential equations in terms of the intermediate variables, which in turn be expressed as the mentioned components as presented later.
 \begin{itemize}
   \item Temperature
         \begin{multline*}
           cap_{Can}\dot{T_{Can}} = {}R_{PAR\_SunCan} + R_{NIR\_SunCan} + R_{PipeCan} \\
           - H_{CanAir} - L_{CanAir} - R_{CanCov,in} \\
-          - R_{CanFlr} - R_{CanSky} - R_{CanThScr} ~~~~ [W\;m^{-2}]
+          - R_{CanFlr} - R_{CanSky} - R_{CanThScr} ~~~~ [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
           cap_{Air}\dot{T_{Air}} = H_{CanAir} + H_{PadAir} + H_{MechAir} + H_{PipeAir} \\
           + H_{PadAir} + H_{BlowAir} + R_{Glob\_SunAir} \\
           - H_{AirFlr} - H_{AirThScr} - H_{AirOut} \\
-          - H_{AirTop} - H_{AirOut\_Pad} - L_{AirFog} ~~~~ [W\;m^{-2}]
+          - H_{AirTop} - H_{AirOut\_Pad} - L_{AirFog} ~~~~ [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
-          cap_{Flr}\dot{T_{Flr}} = H_{AirFlr} + R_{PAR\_SunFlr} + R_{NIR\_SunFlr} + R_{CanFlr} + R_{PipeFlr} \\
-          - H_{FlrSo1} - R_{FlrCov,in} - R_{FlrSky} - R_{FlrThScr} ~~~~ [W\;m^{-2}]
+          cap_{Flr}\dot{T_{Flr}} = H_{AirFlr} + R_{PAR\_SunFlr} + R_{NIR\_SunFlr} \\
+          + R_{CanFlr} + R_{PipeFlr} - H_{FlrSo1} \\
+          - R_{FlrCov,in} - R_{FlrSky} - R_{FlrThScr} ~~~~ [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
-          cap_{So(j)}T_{So(j)} = H_{So(j-1)So_{(j)}} - H_{So(j)So(j+1)} ~~~~~~~~~~~~~~~~ j=1,2\dots5 ~~~~ [W\;m^{-2}]
+          cap_{So(j)}T_{So(j)} = H_{So(j-1)So_{(j)}} - H_{So(j)So(j+1)} ~~~~ j=1,2\dots5 [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
           cap_{ThScr}\dot{T_{ThScr}} = H_{AirThScr} + L_{AirThScr} \\
           + R_{CanThScr} + R_{FlrThScr} + R_{PipeThScr} \\
-          - H_{ThScrTop} - R_{ThScrCov,in} - R_{ThScrSky} ~~~~ [W\;m^{-2}]
+          - H_{ThScrTop} - R_{ThScrCov,in} - R_{ThScrSky} ~~~~ [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
-          cap_{Top}\dot{T_{Top}} = H_{ThScrTop} + H_{AirTop} - H_{TopCov,in} - H_{TopOut} ~~~~~~~~~~~~~~~~ [W\;m^{-2}]
+          cap_{Top}\dot{T_{Top}} = H_{ThScrTop} + H_{AirTop} - H_{TopCov,in} - H_{TopOut} ~~~~ [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
           cap_{Cov,in}\dot{T_{Cov,in}} = H_{TopCov,in} + L_{TopCov,in} + R_{CanCov,in} + R_{FlrCov,in} \\
-          + R_{PipeCov,in} + R_{ThScrCov,in} - H_{Cov,inCov,e} ~~~~ [W\;m^{-2}]
+          + R_{PipeCov,in} + R_{ThScrCov,in} - H_{Cov,inCov,e} ~~~~ [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
-          cap_{Cov,e}\dot{T_{Cov,e}} = R_{Glob\_SunCov} + H_{Cov,inCov,e} - H_{Cov,eOut} - R_{Cov,eSky} ~~~~ [W\;m^{-2}]
+          cap_{Cov,e}\dot{T_{Cov,e}} = R_{Glob\_SunCov} + H_{Cov,inCov,e} \\
+          - H_{Cov,eOut} - R_{Cov,eSky} [W\ m^{-2}]
         \end{multline*}
         \begin{multline*}
           cap_{Pipe}\dot{T_{Pipe}} = H_{BoilPipe} + H_{IndPipe} + H_{GeoPipe} \\
           - R_{PipeSky} - R_{PipeCov,in} - R_{PipeCan} \\
-          - R_{PipeFlr} - R_{PipeThScr} - H_{PipeAir} ~~~~ [W\;m^{-2}]
+          - R_{PipeFlr} - R_{PipeThScr} - H_{PipeAir} ~~~~ [W\ m^{-2}]
         \end{multline*}
   \item Vapor pressure
         \begin{multline*}
           cap_{VP_{Air}}\dot{VP_{Air}} = MV_{CapAir} + MV_{PadAir} + MV_{FogAir} + MV_{BlowAir} \\
           - MV_{AirThScr} - MV_{AirTop} - MV_{AirOut} \\
-          - MV_{AirOut\_Pad} - MV_{AirMech} ~~~~~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
+          - MV_{AirOut\_Pad} - MV_{AirMech} ~~~~~~~~~~~~ [kg\ m^{-2}\ s^{-1}]
         \end{multline*}
         \begin{multline*}
-          cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
+          cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} [kg\ m^{-2}\ s^{-1}]
         \end{multline*}
   \item \(CO_2\) concentration
         \begin{multline*}
           cap_{CO_{2Air}}\dot{CO_{2Air}} = MC_{BlowAir} + MC_{ExtAir} + MC_{PadAir} \\
-          - MC_{AirCan} - MC_{AirTop} - MC_{AirOut} ~~~~ [mg\;m^{-2}\;s^{-1}]
+          - MC_{AirCan} - MC_{AirTop} - MC_{AirOut} ~~~~ [mg\ m^{-2}\ s^{-1}]
         \end{multline*}
         \begin{multline*}
-          cap_{CO_{2Top}}\dot{CO_{2Top}} = MC_{AirTop} - MC_{TopOut} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [mg\;m^{-2}\;s^{-1}]
+          cap_{CO_{2Top}}\dot{CO_{2Top}} = MC_{AirTop} - MC_{TopOut} ~~~~~~~~~~~~~~~~~~~~ [mg\ m^{-2}\ s^{-1}]
         \end{multline*}
 \end{itemize}
 
-\subsection{Necessary and sufficient conditions for this dynamical system}
+\subsection{Necessary and sufficient solvability conditions for this dynamical system}
 All of the differential equations in the dynamical system above are/can be transformed into in the form of:
 \begin{equation*}
   \begin{cases}
@@ -284,14 +304,14 @@ Then there exists an interval \(I=[x_0-h, x_0+h]\) (with \(h \leq a\)) such that
 has a unique solution \(y(x)\) defined on the interval \(I\).
 
 \subsection{Examples of solvable first-order differential equations with exact solutions}
-- First equation:
+\textbf{- First IVP:}
 \begin{equation*}
   \begin{cases}
     \frac{dy}{dt} & = - \frac{t}{y - 3} \\
     y(0)          & = 1
   \end{cases}
 \end{equation*}
-Here, \(\frac{dy}{dt} = f(t)g(y)\) with \(f(t) = -t\) and \(g(y) = \frac{1}{y-3}\)
+We have \(\frac{dy}{dt} = f(t)g(y)\) with \(f(t) = -t\) and \(g(y) = \frac{1}{y-3}\)
 \begin{align*}
   (y - 3) \frac{dy}{dt}                                     & = -t                                                \\
   {\color{black}\Leftrightarrow} ~~~ (y - 3) dy             & = -t dt                                             \\
@@ -300,7 +320,7 @@ Here, \(\frac{dy}{dt} = f(t)g(y)\) with \(f(t) = -t\) and \(g(y) = \frac{1}{y-3}
   {\color{black}\Rightarrow} ~~~~~~~~~~~~~~ y               & = \frac{-(-6) \pm \sqrt{{(-6)}^2 - 4(t^2 - 2C)}}{2} \\
                                                             & = 3 \pm \sqrt{9 - t^2 + 2C}
 \end{align*}
-With \(a = 9 + 2c\)
+Let \(a = 9 + 2C\), we have
 \begin{align*}
   y = 3 \pm \sqrt{a - t^2}
 \end{align*}
@@ -311,10 +331,10 @@ Combining the general solution with the given initial value, we obtain
 \end{align*}
 Thus, the particular solution is
 \begin{align*}
-  y = 3 - \sqrt{4-t^2}
+  y = 3 \pm \sqrt{4-t^2}
 \end{align*}
 
-- Second equation:
+\textbf{- Second equation:}
 \begin{equation*}
   \begin{cases}
     3ty' - y & = lnt + 1, (t > 0) \\
@@ -327,7 +347,7 @@ With \(t > 0\), we write the equation in standard form:
 \end{align*}
 Then the integrating factor is given by
 \begin{align*}
-  v = \exp \left(\int -dt/3t\right) = \exp((-1/3)lnt), \;t > 0
+  v = \exp \left(\int -dt/3t\right) = \exp((-1/3)lnt),\ t > 0
 \end{align*}
 Thus
 \begin{align*}
@@ -380,7 +400,7 @@ Combining with the first-order differential equation, we have:
   f(t,y(t)) \approx \frac{y(t + h) - y(t)}{h}
 \end{align*}
 
-So, when we have \(y(t_1)\) and an arbitrarily small \(h\), we have approximate \(y(t_1 + h)\) by:
+So, when we have \(y(t_1)\) and an arbitrarily small \(h\), we can approximate \(y(t_1 + h)\) by:
 \begin{align*}
   y(t + h) \approx y(t) + h \cdot f(t,y(t))
 \end{align*}
@@ -395,8 +415,8 @@ That is the approximation steps of the Explicit Euler algorithm to solve general
 \subsubsection{Explicit Runge–Kutta of order 4 algorithm}
 Consider the general first-order differential equations and the convention \(t_i\), \(h\) as mentioned in~\ref{sssec:explicit_euler}, let denote \(y_i = y(t_i)\), the explicit Runge–Kutta of order 4 (commonly known as RK4) approximation of \(y_{n+1}\) is
 \begin{align*}
-  y_{n+1} = y_n + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4) \\
-  t_{n+1} = t_n + h
+  y_{n+1} & = y_n + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4) \\
+  t_{n+1} & = t_n + h
 \end{align*}
 where
 \begin{align*}
@@ -439,8 +459,9 @@ Furthermore, we have \(\frac{dy}{dt} = f(t,y)\). By denoting \(f_{abc}\) to be t
 
 For consistency, we expand \(f(t,y)\) around \((t_n, y_n)\) to order \({(t-t_n)}^3\) and \({(y-y_n)}^3\) to get the expansion of \(k_s\) as mentioned above.
 \begin{multline*}
-  f(t,y) = f + f_t(t-t_n) + f_y(y-y_n) + \frac{1}{2}f_{tt}{(t-t_n)}^2 + f_{ty}(t-t_n)(y-y_n) + \frac{1}{2}f_{yy}{(y-y_n)}^2                        \\
-  + \frac{1}{6}f_{ttt}{(t-t_n)}^3 + \frac{1}{2}f_{tty}{(t-t_n)}^2(y-y_n) + \frac{1}{2}f_{tyy}(t-t_n){(y-y_n)}^2 + \frac{1}{6}f_{yyy}{(y-y_n)}^3
+  f(t,y) = f + f_t(t-t_n) + f_y(y-y_n) + \frac{1}{2}f_{tt}{(t-t_n)}^2 \\
+  + f_{ty}(t-t_n)(y-y_n) + \frac{1}{2}f_{yy}{(y-y_n)}^2 + \frac{1}{6}f_{ttt}{(t-t_n)}^3 \\
+  + \frac{1}{2}f_{tty}{(t-t_n)}^2(y-y_n) + \frac{1}{2}f_{tyy}(t-t_n){(y-y_n)}^2 + \frac{1}{6}f_{yyy}{(y-y_n)}^3
 \end{multline*}
 
 Now, we run the following \textit{Mathematica} script to calculate \(y_{n+1}\) with respect to \(y_n\), \(h\), \(b_i\), \(c_i\), and \(a_{ij}\)
@@ -553,7 +574,7 @@ We have
 \begin{align*}
   y_2 & = y_1 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                             \\
       & = 1.0404095942240272 + \frac{1}{6} \cdot 0.4\left(0.20412428986230166 + 2 \cdot 0.3127010492172137\right. \\
-      & \;\left.+\ 2 \cdot 0.316280508173406 + 0.43642437016928914\vphantom{1}\right)                             \\
+      & \ \left.+\ 2 \cdot 0.316280508173406 + 0.43642437016928914\vphantom{1}\right)                             \\
       & \approx 1.1669770458782158
 \end{align*}
 
@@ -569,7 +590,7 @@ We have
 \begin{align*}
   y_3 & = y_2 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                             \\
       & = 1.1669770458782158 + \frac{1}{6} \cdot 0.4\left(0.43643752425527393 + 2 \cdot 0.5728244794580668\right. \\
-      & \;\left.+\ 2 \cdot 0.5819170245155089 + 0.7498799515706484\vphantom{1}\right)                             \\
+      & \ \left.+\ 2 \cdot 0.5819170245155089 + 0.7498799515706484\vphantom{1}\right)                             \\
       & \approx 1.4000304114630875
 \end{align*}
 
@@ -585,7 +606,7 @@ We have
 \begin{align*}
   y_4 & = y_3 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                            \\
       & = 1.4000304114630875 + \frac{1}{6} \cdot 0.4\left(0.7500142556442817 + 2 \cdot 0.9655393905812101\right. \\
-      & \;\left.+\ 2 \cdot 0.9951226830826048 + 1.3312028371489164\vphantom{1}\right)                            \\
+      & \ \left.+\ 2 \cdot 0.9951226830826048 + 1.3312028371489164\vphantom{1}\right)                            \\
       & \approx 1.8001998274711428
 \end{align*}
 
@@ -601,7 +622,7 @@ We have
 \begin{align*}
   y_5 & = y_4 + \frac{1}{6}h(k_1 + 2k_2 + 2k_3 + k_4)                                                            \\
       & = 1.8001998274711428 + \frac{1}{6} \cdot 0.4\left(1.3335554008361483 + 2 \cdot 1.9290762422741867\right. \\
-      & \;\left.+\ 2 \cdot 2.2113431671325614 + 6.343911586149272\vphantom{1}\right)                             \\
+      & \ \left.+\ 2 \cdot 2.2113431671325614 + 6.343911586149272\vphantom{1}\right)                             \\
       & \approx 2.8640868811910707
 \end{align*}
 
@@ -667,23 +688,23 @@ From figure~\ref{fig:CO2}, the fluctuation of \(CO_2\) concentration in the lowe
   \end{cases}
 \end{align}
 
-The notations \(cap_A, CO_{2 A}, \dot{CO_2}_A\) and \(MC_{AB}\) are respectively the capacity to store \(CO_2\) in \(A\) (\(m\)), the \(CO_2\) concentration in \(A\) (\(mg\;m^{-3}\)), the rate of change of \(CO_2\) concentration in \(A\) (\(mg\;m^{-3}\;s^{-1}\)), and the net \(CO_2\) flux from \(A\) to \(B\) (\(mg\;m^{-2}\;s^{-1}\)), where \(Air\) and \(Top\) represent the lower and upper compartments, \(Blow\) represents the direct air heater, \(Ext\) represents the source from the third party, \(Pad\) represents the pad system, \(Can\) represents the total foliage of the plants inside the greenhouse, and \(Out\) represents the space outside the greenhouse.
+The notations \(cap_A, CO_{2 A}, \dot{CO_2}_A\) and \(MC_{AB}\) are respectively the capacity to store \(CO_2\) in \(A\) (\(m\)), the \(CO_2\) concentration in \(A\) (\(mg\ m^{-3}\)), the rate of change of \(CO_2\) concentration in \(A\) (\(mg\ m^{-3}\ s^{-1}\)), and the net \(CO_2\) flux from \(A\) to \(B\) (\(mg\ m^{-2}\ s^{-1}\)), where \(Air\) and \(Top\) represent the lower and upper compartments, \(Blow\) represents the direct air heater, \(Ext\) represents the source from the third party, \(Pad\) represents the pad system, \(Can\) represents the total foliage of the plants inside the greenhouse, and \(Out\) represents the space outside the greenhouse.
 
 In order to solve the equations, we must consider the formulas that calculate each \(MC_{AB}\) that was presented.
 
-The amount of \(CO_2\) going from the direct air heater into the greenhouse air is given by taking the product of the capacity \(P_{Blow}\) (\(W\)) of the heater, the amount of \(CO_2\) generated for each Joule of sensible heat released by the heater \(\eta_{HeatCO_2}\) (\(mg_{CO_2}\;J^{-1}\)), and the dimensionless parameter \(U_{Blow}\), then dividing it by the area of the greenhouse \(A_{Flr}\) (\(m^2\)).
+The amount of \(CO_2\) going from the direct air heater into the greenhouse air is given by taking the product of the capacity \(P_{Blow}\) (\(W\)) of the heater, the amount of \(CO_2\) generated for each Joule of sensible heat released by the heater \(\eta_{HeatCO_2}\) (\(mg_{CO_2}\ J^{-1}\)), and the dimensionless parameter \(U_{Blow}\), then dividing it by the area of the greenhouse \(A_{Flr}\) (\(m^2\)).
 \begin{align}
   MC_{BlowAir} = \frac{\eta_{HeatCO_2}U_{Blow}P_{Blow}}{A_{Flr}}
 \end{align}
 
-Similarly, the amount of \(CO_2\) that is pumped into the greenhouse by the third party equals the third party's ability to pump \(CO_2\) \(\phi_{ExtCO_2}\) (\(mg\;s^{-1}\)) times the dimensionless parameter \(U_{ExtCO_2}\), then divided by the area of the greenhouse.
+Similarly, the amount of \(CO_2\) that is pumped into the greenhouse by the third party equals the third party's ability to pump \(CO_2\) \(\phi_{ExtCO_2}\) (\(mg\ s^{-1}\)) times the dimensionless parameter \(U_{ExtCO_2}\), then divided by the area of the greenhouse.
 \begin{align}
   MC_{ExtAir} = \frac{U_{ExtCO_2}\phi_{ExtCO_2}}{A_{Flr}}
 \end{align}
 
 The amount of \(CO_2\) that enters the greenhouse through the pad system is calculated differently.
 It depends on the difference between the concentration of \(CO_2\) inside and outside the greenhouse, and the ability of the pad system for the air to go through.
-As the pad can be adjusted to let more air in, the flux of the pad \(f_{Pad}\) (\(m^{-1}\)) can be given as the product of the permeability of the pad \(U_{Pad}\) and the ability for the airflow to pass through \(\phi_{Pad}\) (\(m^3\;s^{-1}\)) divided by the area of the greenhouse floor.
+As the pad can be adjusted to let more air in, the flux of the pad \(f_{Pad}\) (\(m^{-1}\)) can be given as the product of the permeability of the pad \(U_{Pad}\) and the ability for the airflow to pass through \(\phi_{Pad}\) (\(m^3\ s^{-1}\)) divided by the area of the greenhouse floor.
 \begin{equation}
   \begin{split}
     MC_{PadAir} & = f_{Pad} (CO_{2 Out} - CO_{2 Air}) \\
@@ -692,7 +713,7 @@ As the pad can be adjusted to let more air in, the flux of the pad \(f_{Pad}\) (
 \end{equation}
 
 The net flux of \(CO_2\) from the lower compartment to the upper compartment of the greenhouse is more complicated.
-It depends on the difference in temperature and air density between the two compartments and the airflow rate through the thermal screen \(f_{ThScr}\) (\(m\;s^{-1}\)).
+It depends on the difference in temperature and air density between the two compartments and the airflow rate through the thermal screen \(f_{ThScr}\) (\(m\ s^{-1}\)).
 \begin{align}
   MC_{AirTop} = f_{ThScr} (CO_{2 Air} - CO_{2 Top})
 \end{align}
@@ -703,9 +724,9 @@ Furthermore, \(f_{ThScr}\) is given by
   + (1 - U_{ThScr}) {\left[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\right]}^{\frac{1}{2}}
 \end{multline}
 
-To calculate the the airflow rate, we consider the screen and the open regions separately, with \(U_{ThScr} \in [0,1]\) representing the percentage of places that are covered by the thermal screen. The flux through the screen depends on the difference between the temperature above and below the screen and the permeability of the screen \(K_{ThScr}\) (\(m\;K^{-\frac{2}{3}}\;s^{-1}\)).
+To calculate the the airflow rate, we consider the screen and the open regions separately, with \(U_{ThScr} \in [0,1]\) representing the percentage of places that are covered by the thermal screen. The flux through the screen depends on the difference between the temperature above and below the screen and the permeability of the screen \(K_{ThScr}\) (\(m\ K^{-\frac{2}{3}}\ s^{-1}\)).
 
-At places that are not covered by the thermal screen, the flux is given by a Navier-Stokes equation depending on the difference of the air density below the screen \(\rho_{Air}\) and the air density above the screen \(\rho_{Top}\) (\(kg\;m^{-3}\)). \(W\) (\(m\)) is width of the thermal screen.
+At places that are not covered by the thermal screen, the flux is given by a Navier-Stokes equation depending on the difference of the air density below the screen \(\rho_{Air}\) and the air density above the screen \(\rho_{Top}\) (\(kg\ m^{-3}\)). \(W\) (\(m\)) is width of the thermal screen.
 
 The net \(CO_2\) flux from the inside to the outside of the greenhouse is given by the following formula
 \begin{align}
@@ -725,7 +746,7 @@ The flux \(f_{VentSide}\) and \(f_{VentForced}\) (\(m s^{-1}\)) are respectively
 The above formula is the sum of the two components multiplied with the ratio between the discharged coefficient \(C_d\) and the area of the greenhouse \(A_{Flr}\) (\(m^2\)).
 
 The first component represents the Stack effect when the ventilation area on the roof \(A_{Roof}\) (\(m^2\)) is non-zero. Stack effect happens when there exists a temperature difference between the interior and exterior of the building. In this case, the first component in the formula is given based on the equation of the Stack effect, that is caused by the temperature difference between the outside and inside of the greenhouse (the space under the thermal screen).
-The second component is given by the pressure difference inside and outside the greenhouse. The pressure from the outside of the greenhouse is caused by the natural airflow through the roof surface, while the pressure from the inside of the greenhouse is caused by the lateral airflow. Based on the Bernoulli principle, the pressure difference can be calculated as the total area of the ventilation openings on the greenhouse divided by two times the natural wind speed \(v_{Wind}\) (\(m\;s^{-1}\)) squared and the global wind pressure coefficient \(C_w\) (dimensionless).
+The second component is given by the pressure difference inside and outside the greenhouse. The pressure from the outside of the greenhouse is caused by the natural airflow through the roof surface, while the pressure from the inside of the greenhouse is caused by the lateral airflow. Based on the Bernoulli principle, the pressure difference can be calculated as the total area of the ventilation openings on the greenhouse divided by two times the natural wind speed \(v_{Wind}\) (\(m\ s^{-1}\)) squared and the global wind pressure coefficient \(C_w\) (dimensionless).
 
 In the presence of an insect screen, the movement speed of the air currents through the ventilation areas will be reduced by a factor of \(\eta_{InsScr}\), where \(\zeta_{InsScr}\) is the porosity, the ratio of the area of the holes in the screen to the total area of the screen.
 \begin{align}
@@ -762,7 +783,7 @@ The flux \(f_{VentForced}\) by the fan system inside the greenhouse is calculate
 \end{align}
 
 The dimensionless parameter \(U_{VentForced} \in [0,1]\) is to adjust the wind speed \(\phi_{VentForced}\) due to
-the system (\(m^3\;s^{-1}\)).
+the system (\(m^3\ s^{-1}\)).
 
 Similarly to \(MC_{AirOut}\), the net \(CO_2\) flux from the greenhouse to outside the greenhouse through the roof openings is calculated by using the formula below, where \(f_{VentRoof}\) is the flux rate through the roof openings.
 \begin{align}
@@ -793,7 +814,7 @@ Finally, we need to consider the amount of \(CO_2\) absorbed into the leaves due
   MC_{AirCan} = M_{CH_2O} h_{C_{Buf}} (P - R)
 \end{align}
 
-Here, \(M_{CH_2O}\) is the molar mass of \(CH_2O\) (\(mg\;\mu mol^{-1}\)), \(P\) is the photosynthetic rate (\(\mu mol_{CO_2}\;m^{-2}\;s{-1}\)), \(R\) is the respiration rate (\(\mu mol_{CO_2}\;m^{-2}\;s^{-1}\)), and \(h_{C_{Buf}}\) shows the cessation of photosynthesis when \(CH_2O\) is \(C_{Buf}\) (\(mg\;m^{-2}\)) has reached \(C_{Max}\) (\(mg\;m^{-2}\)), which is the limit of the carbohydrates storage of the plants. The respiration rate during this process is usually as about \(1\%\) of the photosynthesis rate, and thus can be omitted during further calculation. The photosynthesis rate is described in more detail in Section~\ref{sssec:photo_c3}.
+Here, \(M_{CH_2O}\) is the molar mass of \(CH_2O\) (\(mg\ \mu mol^{-1}\)), \(P\) is the photosynthetic rate (\(\mu mol_{CO_2}\ m^{-2}\ s{-1}\)), \(R\) is the respiration rate (\(\mu mol_{CO_2}\ m^{-2}\ s^{-1}\)), and \(h_{C_{Buf}}\) shows the cessation of photosynthesis when \(CH_2O\) is \(C_{Buf}\) (\(mg\ m^{-2}\)) has reached \(C_{Max}\) (\(mg\ m^{-2}\)), which is the limit of the carbohydrates storage of the plants. The respiration rate during this process is usually as about \(1\%\) of the photosynthesis rate, and thus can be omitted during further calculation. The photosynthesis rate is described in more detail in Section~\ref{sssec:photo_c3}.
 
 %%%%%%%%%%%
 \subsubsection{A model of photosynthesis of C3 plants}\label{sssec:photo_c3}
@@ -807,14 +828,14 @@ The photosynthetic rate \(P\) is defined as the diffusion of \(CO_2\) from air i
   P = \frac{CO_{2Air} - CO_{2Stom}}{Res}
 \end{align}
 
-The notation \(CO_{2Stom}\) is the concentration of \(CO_2\) in the stomata (\(\mu mol\;m^{-3}\)) and \(Res\) is the resistance-to-absorption coefficient (\(s\;m^{-1}\)).
+The notation \(CO_{2Stom}\) is the concentration of \(CO_2\) in the stomata (\(\mu mol\ m^{-3}\)) and \(Res\) is the resistance-to-absorption coefficient (\(s\ m^{-1}\)).
 
 This way of calculating photosynthetic rate \(P\) is different from the model of Vanthoor 2011. In there the author uses:
 \begin{align}
   P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
 \end{align}
 where \(J\) (\(\mu mol \{e^-\} m^{-2} s^{-1}\)) is the electron transport rate, 4 (\(\mu mol \{e^-\} \mu mol^{-1} \{CO_2\}\)) is the
-number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\;mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\} mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
+number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\ mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\} mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
 
 Following by the photorespiration \(R\):
 \begin{align}
@@ -826,14 +847,14 @@ But since we do not consider electron transport rate, we will use equation~\eqre
 In the dark phase, through Michaelis-Menten relationship describing enzyme-substrate reaction, the photosynthetic rate is given by:
 \begin{align}
   \label{eq:photo_dark}
-  P = \frac{P_{Max} \cdot CO_{2Stom}}{CO_{2\;0.5} + CO_{2Stom}}
+  P = \frac{P_{Max} \cdot CO_{2Stom}}{CO_{2\ 0.5} + CO_{2Stom}}
 \end{align}
-where \(CO_{2\;0.5}\) is the concentration of \(CO_2\) in the substrate when \(P = P_{Max}/2\) (\(\mu mol\;m^{-3}\)).
+where \(CO_{2\ 0.5}\) is the concentration of \(CO_2\) in the substrate when \(P = P_{Max}/2\) (\(\mu mol\ m^{-3}\)).
 
 From~\eqref{eq:photo_co2} and~\eqref{eq:photo_dark}, we form a quadratic equation for the rate of photosynthetic \(P\). The photosynthetic rate \(P\) then no longer depends on the concentration of \(CO_2\) in the stomata but only on the concentration of \(CO_2\) in the air, the resistance coefficient \(Res\), and the maximum photosynthetic rate.
 \begin{align}
   \label{eq:resist_photo}
-  ResP^2 - (CO_{2Air} + CO_{2\;0.5} + ResP_{Max})P + CO_{2Air}P_{Max} = 0
+  ResP^2 - (CO_{2Air} + CO_{2\ 0.5} + ResP_{Max})P + CO_{2Air}P_{Max} = 0
 \end{align}
 
 Solving equation~\eqref{eq:resist_photo} requires \(P_{Max}\) to be obtained. For the model for the photosynthesis of one leaf unit, the maximum photosynthetic rate is usually be found through the Arrhenius model.
@@ -842,14 +863,14 @@ Solving equation~\eqref{eq:resist_photo} requires \(P_{Max}\) to be obtained. Fo
   k(T) = k(T_0)\exp \left(-\frac{H_a}{R} \left(\frac{1}{T} - \frac{1}{T_0}\right)\right)
 \end{align}
 where \(k(T)\) is the reaction rate at \(T(K)\), \(T_0\) is the optimum temperature for which the reaction
-rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\;mol^{-1}\)), and \(R\) is the ideal gas constant.
+rate is known (\(K\)), \(H_a\) is the activation energy for the reaction (\(J\ mol^{-1}\)), and \(R\) is the ideal gas constant.
 
 Yet a problem is raised when the temperature increases to a certain threshold, the enzyme activity will be inhibited and the photosynthesis is slowed down and cease to advance. A model represents the activity of the Rubisco enzyme during photosynthesis with temperature as its parameter.
 \begin{align}
   \label{eq:rubisco}
   f(T) = \frac{1 + \exp \left(-\frac{H_d}{R} \left(\frac{1}{T_0} - \frac{1}{\frac{H_d}{S}}\right)\right)}{1 + \exp \left(-\frac{H_d}{R}\left(\frac{1}{T} - \frac{1}{\frac{H_d}{S}}\right)\right)}
 \end{align}
-In the model~\eqref{eq:rubisco}, \(f(T)\) represents the enzyme activity at \(T(K)\), \(H_d\) is the deactivation energy (\(J\;mol^{-1}\)), and \(S\) is the corresponding entropy quantity (\(J\;mol^{-1}\;K^{-1}\)).
+In the model~\eqref{eq:rubisco}, \(f(T)\) represents the enzyme activity at \(T(K)\), \(H_d\) is the deactivation energy (\(J\ mol^{-1}\)), and \(S\) is the corresponding entropy quantity (\(J\ mol^{-1}\ K^{-1}\)).
 
 Combining~\eqref{eq:photo_rate} and~\eqref{eq:rubisco}, we obtain the formula for maximum rate of photosynthetic rate.
 \begin{align}
@@ -857,7 +878,7 @@ Combining~\eqref{eq:photo_rate} and~\eqref{eq:rubisco}, we obtain the formula fo
   P_{Max}(T) = k(T)f(T)
 \end{align}
 
-For a photosynthesis for the whole canopy, considering \(LAI\) (leaf area index), due to Beer's law, the intensity of the transmitted beam \(I\) with the initial state is \(I_0\) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) is equal to
+For a photosynthesis for the whole canopy, considering \(LAI\) (leaf area index), due to Beer's law, the intensity of the transmitted beam \(I\) with the initial state is \(I_0\) (\(\mu mol\{photons\}\ m^{-2}\ s^{-1}\)) is equal to
 \begin{align}
   I = \frac{I_0 \cdot K \cdot \exp \left(-K \cdot LAI\right)}{1 - m}
 \end{align}
@@ -869,7 +890,7 @@ The amount of light absorbed by the canopy can be measured as the difference in 
   L =L_0 \left(1 - \frac{K \cdot \exp \left(-K \cdot LAI\right)}{1 - m}\right)
 \end{align}
 
-In this formula, \(L\) is luminous flux received by the leaves per unit area of the greenhouse floor (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) and \(L_0\) is the initial value of \(L\).
+In this formula, \(L\) is luminous flux received by the leaves per unit area of the greenhouse floor (\(\mu mol\{photons\}\ m^{-2}\ s^{-1}\)) and \(L_0\) is the initial value of \(L\).
 
 For calculating the maximum photosynthetic rate of all leaves in the greenhouse, we apply the modified Arrhenius model.
 \begin{align}
@@ -884,7 +905,7 @@ Unlike the photosynthesis model for one leaf unit, the amount of light energy ab
   P_{Max} (L,T) = \frac{P_{MLT} \cdot P_{Max}(T) \cdot L}{L + L_{0.5}}
 \end{align}
 
-In which, \(L_{0.5}\) is light intensity when \(P_{Max} (L,T) = P_{Max}(T)/2\) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\))
+In which, \(L_{0.5}\) is light intensity when \(P_{Max} (L,T) = P_{Max}(T)/2\) (\(\mu mol\{photons\}\ m^{-2}\ s^{-1}\))
 \(P_{Max}(T)\) is calculated by using the formula~\eqref{eq:photo_max} with \(k(T)\) as in~\eqref{eq:photo_rate_mod}, and \(P_{MLT}\) are the maximum
 photosynthetic rate at the point of light saturation and the optimal temperature \(T\).
 
@@ -895,7 +916,7 @@ The photosynthesis rate is calculated through:
 \begin{align}
   P = \frac{J \cdot (CO_{2Stom} - \Gamma)}{4 \cdot (CO_{2Stom} + 2\Gamma)}
 \end{align}
-where \(J\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the electron transport rate, \(4\) (\(\mu mol \{e^-\} \; \mu mol^{-1} \{CO_2\}\)) is the number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\;mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\}\; mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
+where \(J\) (\(\mu mol\{e^-\}\ m^{-2}\ s^{-1}\)) is the electron transport rate, \(4\) (\(\mu mol \{e^-\}\ \mu mol^{-1} \{CO_2\}\)) is the number of electrons per fixed \(CO_2\) molecule, \(CO_{2Stom}\) (\(\mu mol\{CO_2\}\ mol^{-1}\{air\}\)) is the \(CO_2\) concentration in the stomata and \(\Gamma\) (\(\mu mol \{CO_2\}\ mol^{-1} \{air\}\)) is the \(CO_2\) compensation point.
 
 Following by the photorespiration \(R\):
 \begin{align}
@@ -907,20 +928,20 @@ The electron transport rate, J, is a function of the potential rate of electron 
 \begin{align}
   J = \frac{J^{POT} + \alpha PAR_{can} - {\sqrt{(J^{POT} + \alpha PAR_{can})}^2 - 4\Theta\cdot J^{POT}\cdot \alpha PAR_{can}}}{2 \Theta}
 \end{align}
-where \(J^{POT}\) (\(\mu mol\{e^-\}\;m^{-2}\;s^{-1}\)) is the potential rate of electron transport, \(PAR_{Can}\) (\(PAR\) by the canopy) (\(\mu mol\{photons\}\;m^{-2}\;s^{-1}\)) is the absorbed \(PAR\), \(\alpha\) (\(\mu mol\{e^-\}\;\mu mol^{-1}\{photons\}\)) is the conversion factor from photons to electrons, including an efficiency term, and \(\Theta\) (\(-\)) is the degree of curvature of the electron transport rate.
+where \(J^{POT}\) (\(\mu mol\{e^-\}\ m^{-2}\ s^{-1}\)) is the potential rate of electron transport, \(PAR_{Can}\) (\(PAR\) by the canopy) (\(\mu mol\{photons\}\ m^{-2}\ s^{-1}\)) is the absorbed \(PAR\), \(\alpha\) (\(\mu mol\{e^-\}\ \mu mol^{-1}\{photons\}\)) is the conversion factor from photons to electrons, including an efficiency term, and \(\Theta\) (\(-\)) is the degree of curvature of the electron transport rate.
 
 The potential rate of electron transport \(J^{POT}\), depends on temperature:
 
 \begin{align}
   J^{POT} = J^{MAX}_{25,Can} \cdot \exp \left(E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}\right) \cdot \frac{1 + \exp \left(\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}}\right)}{1 + \exp \left(\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}}\right)}
 \end{align}
-where \(J^{MAX}_{25,Can}\) (\(\mu mol \{e^-\}\;m^{-2}\;s^{-1}\)) is the maximum rate of electron transport at \(25 \celsius\) for the canopy, \(E_j\) (\(J\;mol^{-1}\)) is the activation energy for \(J^{POT}\), \(T_{Can,K}\) (\(K\)) is the canopy temperature, \(T_{25,K}\) (\(K\)) is the reference temperature at \(25 \celsius\), \(R\) (\(J\;mol^{-1}\;K^{-1}\)) is the molar gas constant, \(S\) (\(J\;mol^{-1}\;K^{-1}\)) is the entropy term and \(H\) (\(J\;mol^{-1}\)) is the deactivation energy.
+where \(J^{MAX}_{25,Can}\) (\(\mu mol \{e^-\}\ m^{-2}\ s^{-1}\)) is the maximum rate of electron transport at \(25 \celsius\) for the canopy, \(E_j\) (\(J\ mol^{-1}\)) is the activation energy for \(J^{POT}\), \(T_{Can,K}\) (\(K\)) is the canopy temperature, \(T_{25,K}\) (\(K\)) is the reference temperature at \(25 \celsius\), \(R\) (\(J\ mol^{-1}\ K^{-1}\)) is the molar gas constant, \(S\) (\(J\ mol^{-1}\ K^{-1}\)) is the entropy term and \(H\) (\(J\ mol^{-1}\)) is the deactivation energy.
 
 The maximum rate of electron transport at \(25 \celsius\) for the canopy is calculated by:
 \begin{align}
   J^{MAX}_{25,Can} = LAI \cdot J^{MAX}_{25,Leaf}
 \end{align}
-where \(J^{MAX}_{25,Leaf}\), (\(\mu mol\{e^-\}\;m^{-2}\{leaf\}\;s^{-1}\)) is the maximum rate of electron transport for the leaf at \(25 \celsius\).
+where \(J^{MAX}_{25,Leaf}\), (\(\mu mol\{e^-\}\ m^{-2}\{leaf\}\ s^{-1}\)) is the maximum rate of electron transport for the leaf at \(25 \celsius\).
 
 The total \(PAR\) absorbed by the canopy is the sum of the \(PAR\) transmitted by the greenhouse cover that is directly absorbed, and the \(PAR\) reflected by the greenhouse floor that is indirectly absorbed:
 \begin{align}
@@ -931,13 +952,13 @@ The \(PAR\) which is directly absorbed by the canopy is described by a negative 
 \begin{align}
   PAR_{GhCan} = PAR_{Gh}\cdot (1-\rho_{can})\cdot(1 - \exp \left(-K_1\cdot LAI\right))
 \end{align}
-where \(PAR_{Gh}\) (\(\mu mol \{photons\}\;m^{-2}\;s^{-1}\)) is the \(PAR\) above the canopy, \(\rho_{can}\) (\(-\)) is the reflection coefficient of the canopy for \(PAR\) and \(K_1\) is the extinction coefficient of the canopy for \(PAR\) (\(-\)).
+where \(PAR_{Gh}\) (\(\mu mol \{photons\}\ m^{-2}\ s^{-1}\)) is the \(PAR\) above the canopy, \(\rho_{can}\) (\(-\)) is the reflection coefficient of the canopy for \(PAR\) and \(K_1\) is the extinction coefficient of the canopy for \(PAR\) (\(-\)).
 
 The PAR above the canopy is described by:
 \begin{align}
   PAR_{Gh} = \tau_{Gh} \cdot \eta_{Glob\_PAR}\cdot I_{Glob}
 \end{align}
-where \(\tau_{Gh}\) (\(-\)) is the light transmission of the greenhouse cover \(\eta_{Glob\_PAR}\) (\(\mu mol\{photons\}\;J^{-1}\)) is a conversion factor from global radiation to \(PAR\) and \(I_{Glob}\) (\(W\;m^{-2}\)) is the outside global radiation.
+where \(\tau_{Gh}\) (\(-\)) is the light transmission of the greenhouse cover \(\eta_{Glob\_PAR}\) (\(\mu mol\{photons\}\ J^{-1}\)) is a conversion factor from global radiation to \(PAR\) and \(I_{Glob}\) (\(W\ m^{-2}\)) is the outside global radiation.
 
 Absorption of \(PAR\) reflected by the greenhouse floor is described by:
 \begin{align}
@@ -955,34 +976,24 @@ The \(CO_2\) compensation point (\(\Gamma\)) affects the leaf photosynthesis rat
 \begin{align}
   \Gamma = \frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}}c_{\Gamma} T_{Can} + 20 c_{\Gamma} \left(1-\frac{J^{MAX}_{25,Leaf}}{J^{MAX}_{25,Can}}\right)
 \end{align}
-where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\;mol^{-1}\{air\}\;K^{-1}\)) determines the effect of canopy temperature on the \(CO_2\) compensation point. The right term of the equation above is introduced to assure that, for all values of \(J^{MAX}_{25,Can}\) at a temperature of \(20 \celsius\).
+where \(c_{\Gamma}\) (\(\mu mol\{CO2\}\ mol^{-1}\{air\}\ K^{-1}\)) determines the effect of canopy temperature on the \(CO_2\) compensation point. The right term of the equation above is introduced to assure that, for all values of \(J^{MAX}_{25,Can}\) at a temperature of \(20 \celsius\).
 
 \newpage
 \subsection{Implementing the programs}
-To calculate \(\dot{CO_{2 Air}}\) and \(\dot{CO_{2 Top}}\), we use the following \(dx\) function. Each of the \(MC\) formula will be given and explained further below.
+To calculate \(\dot{CO_{2 Air}}\) and \(\dot{CO_{2 Top}}\), we use the following \(dx\) function. Each of the \(MC\) formula will be given and explained further below. The variables are defined and used more precisely in the program attached with the report, the following is only a summary of the program.
 
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def dx_CO2(self, t, CO2_Air, CO2_Top):
+    # Equation (1) and (2) in pdf
     # Update environment variable at time t (s)
-    self.update(data_Tair[int(t / 300)],
-                data_Tout[int(t / 300)],
-                wind_speed[int(t / 300)])
+    self.update(data_Tair[int(t / 300)], data_Tout[int(t / 300)], wind_speed[int(t / 300)])
 
     self.CO2_Air = CO2_Air
     self.CO2_Top = CO2_Top
 
-    cap_CO2Air = self.Coefficients.Construction.cap_CO2Air
-    cap_CO2Top = self.Coefficients.Construction.cap_CO2Top
-    MC_BlowAir = self.MC_BlowAir()
-    MC_ExtAir = self.MC_ExtAir()
-    MC_PadAir = self.MC_PadAir()
-    MC_AirTop = self.MC_AirTop()
-    MC_AirOut = self.MC_AirOut()
-    MC_TopOut = self.MC_TopOut()
-    MC_AirCan = self.MC_AirCan()
-    return ((MC_BlowAir + MC_ExtAir + MC_PadAir - MC_AirCan - MC_AirTop - MC_AirOut) / cap_CO2Air,
-            (MC_AirTop - MC_TopOut) / cap_CO2Top)
+    return (self.MC_BlowAir() + self.MC_ExtAir() + self.MC_PadAir() - self.MC_AirCan() - self.MC_AirTop() - self.MC_AirOut()) / self.cap_CO2Air, 
+    (self.MC_AirTop() - self.MC_TopOut()) / self.cap_CO2Top
   \end{minted}
 \end{mdframed}
 
@@ -994,7 +1005,11 @@ def MC_BlowAir(self):  # this Assignment assumes MC_BLowAir is zero
     # (P_Blow = 0)
     # Equation (3) in pdf
     H_BlowAir = self.H_BlowAir()
-    return self.Constant.ETA_HEATCO2 * H_BlowAir
+    return ETA_HEATCO2 * H_BlowAir
+    
+def H_BlowAir(self):
+    # Equation  8.53
+    return U_Blow * P_Plow / A_Flr
   \end{minted}
 \end{mdframed}
 
@@ -1003,33 +1018,20 @@ def MC_BlowAir(self):  # this Assignment assumes MC_BLowAir is zero
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def MC_ExtAir(self):
     # Equation (4) in pdf
-    U_ExtCO2 = self.Assuming.U_ExtAir
-    phi_ExtCO2 = self.Coefficients.ActiveClimateControl.phi_ExtCO2
-    A_Flr = self.Coefficients.Construction.floor_area
-
-    return U_ExtCO2 * phi_ExtCO2 / A_Flr
+    return self.U_ExtAir * self.phi_ExtCO2 / self.floor_area
   \end{minted}
 \end{mdframed}
 
-\(MC_{PadAir}\) is given as the product of \(f_{Pad}\) and the difference in the concentration of \(CO_2\) inside and outside the greenhouse.
-\(f_{Pad}\) is calculated in a separate function.
+\(MC_{PadAir}\) is given as the product of \(f_{Pad}\) and the difference in the concentration of \(CO_2\) inside and outside the greenhouse. However, in our model, we do not consider the pad so \(f_{Pad}\) is assumed to be zero.
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def MC_PadAir(self):
     # Equation (5) in pdf
     # do not have PadAir with our model
     f_Pad = self.f_Pad()
-    print(f_Pad)
-    return f_Pad * (self.Weather.CO2_Out - self.CO2_Air)
-  \end{minted}
-\end{mdframed}
-
-\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
-  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+    return f_Pad * (self.CO2_Out - self.CO2_Air)
+    
 def f_Pad(self):
-    U_Pad = self.Assuming.U_Pad
-    phi_Pad = self.Coefficients.ActiveClimateControl.phi_Pad
-    A_Flr = self.Coefficients.Construction.floor_area
     return U_Pad * phi_Pad / A_Flr
   \end{minted}
 \end{mdframed}
@@ -1041,39 +1043,24 @@ def MC_AirTop(self):
     # Equation (6) in pdf
     f_ThScr = self.f_ThScr()
     return self.air_flux(f_ThScr, self.CO2_Air, self.CO2_Top)
-  \end{minted}
-\end{mdframed}
-
-\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
-  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+    
 def air_flux(self, f, CO2_from, CO2_to):
-    # Equation (6) in pdf
+    # Equation 8.46
     return f * (CO2_from - CO2_to)
-  \end{minted}
-\end{mdframed}
-
-\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
-  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+    
 def f_ThScr(self):
     # Equation (7) in pdf
-    U_ThScr = self.Assuming.U_ThScr
-    K_ThScr = self.Coefficients.Thermalscreen.K_ThScr
-    T_Air = self.ClimateStates.T_Air
-    T_Out = self.Weather.T_Out
     p_Air = self.air_density()
-    pressure = 101325 * \
-        (1 - 2.5577e-5 * self.Coefficients.Construction.elevation_height) ** 5.25588
-    p_Out = self.Constant.M_AIR * pressure / \
-        ((self.ClimateStates.T_Top + 273.15) * self.Constant.M_GAS)
+    pressure = 101325 * (1 - 2.5577e-5 * self.elevation_height) ** 5.25588
+    p_Out = M_AIR * pressure / ((self.T_Top + 273.15) * M_GAS)
     p_Mean = (p_Air + p_Out) / 2
 
-    return (U_ThScr * K_ThScr * abs(T_Air - T_Out) ** (2 / 3)) + (1 - U_ThScr) * math.sqrt(
-        (0.5 * (1 - U_ThScr) * self.Constant.GRAVITY * abs(p_Air - p_Out)) / p_Mean)
+    return U_ThScr * K_ThScr * abs(T_Air - T_Out) ** 0.66 + (1 - U_ThScr) / p_Mean * math.sqrt(0.5 * p_Mean * (1 - U_ThScr) * GRAVITY * abs(p_Air - p_Out))
   \end{minted}
 \end{mdframed}
 
 To calculate \(MC_{AirOut}\), we must calculate \(f_{VentSide}\) and \(f_{VentForced}\) separately.
-In this assignment, \(f_{VentForced}\) is assumed to be 0.
+In this assignment, \(f_{VentForced}\) is assumed to be 0, while \(f_{VentSide}\) is given by the following functions.
 
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
@@ -1082,54 +1069,47 @@ def MC_AirOut(self):
     f_VentSide = self.f_VentSide()
     f_VentForced = self.f_VentForced()
     f_AirOut = f_VentSide + f_VentForced
-
-    return self.air_flux(f_AirOut, self.CO2_Air, self.Weather.CO2_Out)
-  \end{minted}
-\end{mdframed}
-
-\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
-  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+    return self.air_flux(f_AirOut, self.CO2_Air, self.CO2_Out)
+    
 def f_VentSide(self):
     # Equation (13) in pdf
-    eta_Side = 0  # Note: line 611 / setGlAux / GreenLight
-    eta_Roof = 1  # Note: line 606 / setGlAux / GreenLight
-    eta_InsScr = self.eta_InsScr()
+    eta_Side = 0
+    eta_Roof = 1
+    eta_InsScr = self.eta_InsScr_()
     d2_f_VentSide = self.d2_f_VentSide()
     d2_f_VentRoofSide = self.d2_f_VentRoofSide()
     f_leakage = self.f_leakage()
-    U_ThScr = self.Assuming.U_ThScr
+    U_ThScr = self.U_ThScr
 
-    if eta_Side >= self.Constant.ETA_ROOF_THR:
+    if eta_Side >= ETA_ROOF_THR:
         return eta_InsScr * d2_f_VentSide + 0.5 * f_leakage
     else:
-        return eta_InsScr * (
-            U_ThScr * d2_f_VentSide + (1 - U_ThScr) * d2_f_VentRoofSide * eta_Side) + 0.5 * f_leakage
+        return eta_InsScr * (U_ThScr * d2_f_VentSide + 
+        (1 - U_ThScr) * d2_f_VentRoofSide * eta_Side) + 0.5 * f_leakage
   \end{minted}
 \end{mdframed}
 
-Particularly, \(f''_{VentSide}\) is given below.
+Particularly, \(f''_{VentSide}\) and \(f_{VentRoofSide}\) is given below.
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def d2_f_VentSide(self):
     # Equation (10) in pdf with A_roof = 0
-    U_Side = self.Assuming.U_Side
-    A_Side = self.Coefficients.Construction.side_ventilation_area
-    A_Flr = self.Coefficients.Construction.floor_area
-    C_d = self.Coefficients.Ventilation.C_d
-    C_w = self.Coefficients.Ventilation.C_w
-    v_Wind = self.Weather.v_Wind
-    AU_Side = A_Side * U_Side
     return 0.5 * C_d * AU_Side * v_Wind / A_Flr * math.sqrt(C_w)
+    
+def d2_f_VentRoofSide(self):
+    # Equation (10) in pdf
+    return C_d / A_Flr * math.sqrt((AU_Roof * AU_Side / math.sqrt(AU_Roof ** 2 + AU_Side ** 2)) ** 2 * (
+            2 * GRAVITY * h_SideRoof * (T_Air - T_Out) / (T_Mean + 273.15)) + 0.25 * (AU_Roof + AU_Side) ** 2 * C_w * v_Wind ** 2)
   \end{minted}
 \end{mdframed}
 
-\(MC_{TopOut}\) is calculated similarly with \(f_{VentRoof}\).
+\(MC_{TopOut}\) is calculated similarly using air\_flux function with \(f_{VentRoof}\).
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def MC_TopOut(self):
     # Equation (15) in pdf
     f_VentRoof = self.f_VentRoof()
-    return self.air_flux(f_VentRoof, self.CO2_Top, self.Weather.CO2_Out)
+    return self.air_flux(f_VentRoof, self.CO2_Top, self.CO2_Out)
   \end{minted}
 \end{mdframed}
 
@@ -1138,16 +1118,11 @@ def MC_TopOut(self):
 def f_VentRoof(self):
     # Equation (16) in pdf
     eta_Roof = 1  # Note: line 606 / setGlAux / GreenLight
-    eta_InsScr = self.eta_InsScr()
-    d2_f_VentRoof = self.d2_f_VentRoof()
-    d2_f_VentRoofSide = self.d2_f_VentRoofSide()
-    f_leakage = self.f_leakage()
-    U_ThScr = self.Assuming.U_ThScr
-    if eta_Roof >= self.Constant.ETA_ROOF_THR:
+    
+    if eta_Roof >= ETA_ROOF_THR:
         return eta_InsScr * d2_f_VentRoof + 0.5 * f_leakage
     else:
-        return eta_InsScr * (
-            U_ThScr * d2_f_VentRoof + (1 - U_ThScr) * d2_f_VentRoofSide * eta_Roof) + 0.5 * f_leakage
+        return eta_InsScr * (U_ThScr * d2_f_VentRoof + (1 - U_ThScr) * d2_f_VentRoofSide * eta_Roof) + 0.5 * f_leakage
   \end{minted}
 \end{mdframed}
 
@@ -1159,11 +1134,11 @@ def MC_AirCan(self):
     h_AirCan = 1  # Consider Photosynthesis always happen
     P = self.photosynthesis_rate()
     R = self.photorespiration()
-    return self.Constant.M_CH2O * h_AirCan * (P - R)
+    return M_CH2O * h_AirCan * (P - R)
   \end{minted}
 \end{mdframed}
 
-Electron transport rate, \(CO_{2 Stom}\), gamma are calculated with specific parameters and variables in the complete program that we attached with the report.
+Electron transport rate, \(CO_{2 Stom}\), gamma are calculated using functions supporting the model in [Van11].
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def photosynthesis_rate(self):
@@ -1172,13 +1147,8 @@ def photosynthesis_rate(self):
     CO2_Stom = self.CO2_Stom()
     gamma = self.gamma()
     return 0.25 * J * (CO2_Stom - gamma) / (CO2_Stom + 2 * gamma)
-  \end{minted}
-\end{mdframed}
-
-\begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
-  \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+    
 def photorespiration(self):
-    # Equation 9.13
     P = self.photosynthesis_rate()
     gamma = self.gamma()
     CO2_Stom = self.CO2_Stom()
@@ -1189,7 +1159,7 @@ def photorespiration(self):
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Testing the programs}
-The data used in this model is based on climate of Texas in United States and the photosynthesis is based on tomatoes. We will consider the first step where the values of the initial state are: \(CO_{2Air} = CO_{2Top} = 440\).
+The data used in this model is based on climate of Texas in United States and the photosynthesis is based on tomatoes. We will consider the first step (\(t = 0\)) where the values of the initial state are: \(CO_{2Air} = CO_{2Top} = 440\).
 \begin{itemize}
   \item Function MC\_BlowAir() is equivalent to equation:
         \begin{align*}
@@ -1205,7 +1175,7 @@ The data used in this model is based on climate of Texas in United States and th
             \(\eta_{HeatCO_2}\) & 0.057          \\
             \(U_{Blow}\)        & 1              \\
             \(P_{Blow}\)        & 0              \\
-            \(A_{Flr}\)         & 78000          \\
+            \(A_{Flr}\)         & 70000          \\
             \bottomrule
           \end{tabular}
         \end{table}
@@ -1226,14 +1196,14 @@ The data used in this model is based on climate of Texas in United States and th
             \midrule
             \(U_{ExtCO_2}\)    & 0.11           \\
             \(\phi_{ExtCO_2}\) & 43000          \\
-            \(A_{Flr}\)        & 78000          \\
+            \(A_{Flr}\)        & 70000          \\
             \bottomrule
           \end{tabular}
         \end{table}
 
-  \item[-] Result of this equation: \(MC_{ExtAir} = 0.6064102564102564\)
+  \item[-] Result of this equation: \(MC_{ExtAir} = 0.6757142857142857\)
 
-  \item Function f\_Pad() is equivalent to equation:
+  \item Function f\_Pad() is equivalent to equation:\label{fPad}
         \begin{align*}
           f_{Pad} = \frac{U_{Pad} \phi_{Pad}}{A_{Flr}}
         \end{align*}
@@ -1246,14 +1216,14 @@ The data used in this model is based on climate of Texas in United States and th
             \midrule
             \(U_{Pad}\)       & 1              \\
             \(\phi_{Pad}\)    & 0              \\
-            \(A_{Flr}\)       & 78000          \\
+            \(A_{Flr}\)       & 70000          \\
             \bottomrule
           \end{tabular}
         \end{table}
-  \item[-] Since we do not consider pad and  fan system, $\phi_{Pad} = 0$.
+  \item[-] Since we do not consider pad and  fan system, \(\phi_{Pad} = 0\).
   \item[-] Result of this equation: \(f_{Pad} = 0\)
 
-  \item Function f\_ThScr() is equivalent to equation:
+  \item Function f\_ThScr() is equivalent to equation:\label{fThScr}
         \begin{multline*}
           f_{ThScr} = U_{ThScr} K_{ThScr} |T_{Air} - T_{Top}|^{\frac{2}{3}} \\
           + (1 - U_{ThScr}) {\left[\frac{g(1 - U_{ThScr})W}{2\rho^{Mean}_{Air}} |\rho_{Air} - \rho_{Top}|\right]}^{\frac{1}{2}}
@@ -1266,6 +1236,7 @@ The data used in this model is based on climate of Texas in United States and th
             \textbf{Variable}     & \textbf{Value}     \\
             \midrule
             \(U_{ThScr}\)         & 0.863              \\
+            \(W\)                 & 1                  \\            % WARNING!!!!!!!!!!!!!!!!!!!!!!!!
             \(K_{ThScr}\)         & 0.00025            \\
             \(T_{Air}\)           & 19.8999999966472   \\
             \(T_{Out}\)           & 17.7               \\
@@ -1353,7 +1324,7 @@ The data used in this model is based on climate of Texas in United States and th
             \midrule
             \(C_d\)            & 0.65             \\
             \(C_w\)            & 0.09             \\
-            \(A_{Flr}\)        & 78000            \\
+            \(A_{Flr}\)        & 70000            \\
             \(A_{Roof}\)       & 14040            \\
             \(U_{Roof}\)       & 1                \\
             \(A_{Side}\)       & 0                \\
@@ -1368,7 +1339,7 @@ The data used in this model is based on climate of Texas in United States and th
           \end{tabular}
         \end{table}
 
-  \item[-] Result of this equation: \(f_{VentRoofSide} = 0.05616000000000001\)
+  \item[-] Result of this equation: \(f_{VentRoofSide} = 0.06257828571428573\)
 
   \item Function d2\_f\_VentRoofSide() is used to calculate \(f''_{VentSide}\), which is equivalent to equation of \(f_{VentRoofSide}\) with \(A_{Roof} = 0\).
 
@@ -1380,7 +1351,7 @@ The data used in this model is based on climate of Texas in United States and th
             \midrule
             \(C_d\)            & 0.65             \\
             \(C_w\)            & 0.09             \\
-            \(A_{Flr}\)        & 78000            \\
+            \(A_{Flr}\)        & 70000            \\
             \(A_{Roof}\)       & 0                \\
             \(U_{Roof}\)       & 1                \\
             \(A_{Side}\)       & 0                \\
@@ -1395,9 +1366,9 @@ The data used in this model is based on climate of Texas in United States and th
           \end{tabular}
         \end{table}
 
-  \item[-] Result of this equation: \(f_{VentRoofSide} = 0.0\)
+  \item[-] Result of this equation: \(f''_{VentSide} = 0.0\)
 
-  \item Function f\_VentSide() is equivalent to equation:
+  \item Function f\_VentSide() is equivalent to equation:\label{fVentSide}
         \begin{gather*}
           f_{VentSide} =
           \begin{cases}
@@ -1420,38 +1391,7 @@ The data used in this model is based on climate of Texas in United States and th
             \(\eta_{InsScr}\)    & 0                   \\
             \(f_{leakage}\)      & 0.00032             \\
             \(U_{ThScr}\)        & 0.863               \\
-            \(f_{VentRoofSide}\) & 0.05616000000000001 \\
-            \(f''_{VentSide}\)   & 0.0                 \\
-            \bottomrule
-          \end{tabular}
-        \end{table}
-
-  \item[-] Result of this equation: \(f_{VentSide} = 0.00016\)
-
-  \item Function f\_VentSide() is equivalent to equation:
-        \begin{gather*}
-          f_{VentSide} =
-          \begin{cases}
-            \eta_{InsScr} f''_{VentSide} + 0.5f_{leakage} & \text{if~} \eta_{Side} \geq \eta_{Side\_Thr} \\
-            \begin{split}
-              & \eta_{InsScr} [U_{ThScr}f''_{VentSide} + \\
-              & (1-U_{ThScr})f_{VentRoofSide} \eta_{Side}] + 0.5 f_{leakage}
-            \end{split}                   & \text{if~} \eta_{Side} < \eta_{Side\_Thr}
-          \end{cases}
-        \end{gather*}
-
-        \begin{table}[H]
-          \centering
-          \begin{tabular}{@{}lS[table-format=1.17]@{}}
-            \toprule
-            \textbf{Variable}    & \textbf{Value}      \\
-            \midrule
-            \(\eta_{Side}\)      & 0                   \\
-            \(\eta_{Roof}\)      & 1                   \\
-            \(\eta_{InsScr}\)    & 0                   \\
-            \(f_{leakage}\)      & 0.00032             \\
-            \(U_{ThScr}\)        & 0.863               \\
-            \(f_{VentRoofSide}\) & 0.05616000000000001 \\
+            \(f_{VentRoofSide}\) & 0.06257828571428573 \\
             \(f''_{VentSide}\)   & 0.0                 \\
             \bottomrule
           \end{tabular}
@@ -1480,7 +1420,7 @@ The data used in this model is based on climate of Texas in United States and th
 
   \item[-] Result of this equation: \( MC_{AirOut} = 0 \)
 
-  \item Function f\_VentForced() will return \(0\) since we do not consider fan system inside the green house, which is equivalent to \(f_{VentForced} = 0\).
+  \item Function f\_VentForced() will return \(0\) since we do not consider fan system inside the green house, which is equivalent to \(f_{VentForced} = 0\). \label{fVentForced}
 
   \item Function d2\_f\_VentRoof() is equivalent to equation:
         \begin{align*}
@@ -1495,18 +1435,18 @@ The data used in this model is based on climate of Texas in United States and th
             \midrule
             \(C_d\)              & 0.65                \\
             \(C_w\)              & 0.09                \\
-            \(A_{Flr}\)          & 78000               \\
+            \(A_{Flr}\)          & 70000               \\
             \(g\)                & 9.81                \\
             \(h_{Roof}\)         & 0                   \\
-            \(f_{VentRoofSide}\) & 0.05616000000000001 \\
+            \(f_{VentRoofSide}\) & 0.06257828571428573 \\
             \(f''_{VentSide}\)   & 0.0                 \\
             \bottomrule
           \end{tabular}
         \end{table}
 
-  \item[-] Result of this equation: \(f''_{VentRoof} = 0.05727510933246514\)
+  \item[-] Result of this equation: \(f''_{VentRoof} = 0.0638208361133183\)
 
-  \item Function f\_VentRoof() is equivalent to equation:
+  \item Function f\_VentRoof() is equivalent to equation:\label{fVentRoof}
         \begin{gather*}
           f_{VentRoof} =
           \begin{cases}
@@ -1527,15 +1467,15 @@ The data used in this model is based on climate of Texas in United States and th
             \(\eta_{Roof}\)      & 1                   \\
             \(\eta_{Roof\_Thr}\) & 0.9                 \\
             \(\eta_{InsScr}\)    & 0                   \\
-            \(f''_{VentRoof}\)   & 0.05727510933246514 \\
+            \(f''_{VentRoof}\)   & 0.0638208361133183  \\
             \(f_{leakage}\)      & 0.00032             \\
-            \(f_{VentRoofSide}\) & 0.05616000000000001 \\
+            \(f_{VentRoofSide}\) & 0.06257828571428573 \\
             \(U_{ThScr}\)        & 0.863               \\
             \bottomrule
           \end{tabular}
         \end{table}
 
-  \item[-] Result of this equation: \(f_{VentRoof} = 0.00016\)
+  \item[-] Result of this equation: \(f_{VentRoof} = 0.0639808361133183\)
 
   \item Function MC\_TopOut() is equivalent to equation:
         \begin{align*}
@@ -1546,11 +1486,11 @@ The data used in this model is based on climate of Texas in United States and th
           \centering
           \begin{tabular}{@{}lS@{}}
             \toprule
-            \textbf{Variable} & \textbf{Value} \\
+            \textbf{Variable} & \textbf{Value}     \\
             \midrule
-            \(f_{VentRoof}\)  & 0.00016        \\
-            \(CO_{2 Top}\)    & 440            \\
-            \(CO_{2 Out}\)    & 440            \\
+            \(f_{VentRoof}\)  & 0.0639808361133183 \\
+            \(CO_{2 Top}\)    & 440                \\
+            \(CO_{2 Out}\)    & 440                \\
             \bottomrule
           \end{tabular}
         \end{table}
@@ -1595,7 +1535,12 @@ The data used in this model is based on climate of Texas in United States and th
           \end{tabular}
         \end{table}
 
-  \item[-] To calculate \(J^{MAX}_{25,Can}\), we use \(J^{MAX}_{25,Can} = J^{MAX}_{25,Leaf} \cdot LAI\) where \(J^{MAX}_{25,Leaf} = 210,\; LAI = 2.8\).
+  \item[-] In this function, \(J^{MAX}_{25,Can}\) is described as: \(J^{MAX}_{25,Can} = J^{MAX}_{25,Leaf} \cdot LAI\) where \(J^{MAX}_{25,Leaf} = 210,\ LAI = 2.8\).
+        \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
+          \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+  J_max_25Can = J_max_25Leaf * LAI
+          \end{minted}
+        \end{mdframed}
   \item[-] Result of this equation: \(\Gamma = 35.1535714265358\)
 
   \item Function electron\_transport\_rate() is equivalent to equation:
@@ -1617,8 +1562,18 @@ The data used in this model is based on climate of Texas in United States and th
           \end{tabular}
         \end{table}
 
-  \item[-] To calculate \(J^{MAX}_{25,Can}\), we use \(J^{MAX}_{25,Can} = J^{MAX}_{25,Leaf} \cdot LAI\) where \(J^{MAX}_{25,Leaf} = 210,\; LAI = 2.8\).
-  \item[-] To calculate \(J^{POT}\), we use \(J^{POT} = J^{MAX}_{25,Can} \cdot \exp \left(E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}\right) \cdot \frac{1 + \exp \left(\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}}\right)}{1 + \exp \left(\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}}\right)}\) where \(R = 8.314,\; S = 710,\; T_{Can,K} = T_{Can} + 273.15 = 295.04999999664716,\; T_{25,K} = 298.15,\; E_j = 37000,\; H = 220000\).
+  \item[-] In this function, \(J^{MAX}_{25,Can}\) is described as: \(J^{MAX}_{25,Can} = J^{MAX}_{25,Leaf} \cdot LAI\) where \(J^{MAX}_{25,Leaf} = 210,\ LAI = 2.8\).
+        \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
+          \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+  J_max_25Can = J_max_25Leaf * LAI
+          \end{minted}
+        \end{mdframed}
+  \item[-] In this function, \(J^{POT}\) is described as: \(J^{POT} = J^{MAX}_{25,Can} \cdot \exp \left(E_j\frac{T_{Can,K}-T_{25,K}}{R\cdot T_{Can,K}\cdot T_{25,K}}\right) \cdot \frac{1 + \exp \left(\frac{S\cdot T_{25,K}-H}{R\cdot T_{25,K}}\right)}{1 + \exp \left(\frac{S\cdot T_{Can,K}-H}{R\cdot T_{Can,K}}\right)}\) where \(R = 8.314,\ S = 710,\ T_{Can,K} = T_{Can} + 273.15 = 295.04999999664716,\ T_{25,K} = 298.15,\ E_j = 37000,\ H = 220000\).
+        \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
+          \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+  J_POT = J_max_25Can * math.exp(Ej * (T_CanK - T_25K) / (R * T_CanK * T_25K)) * (1 + math.exp((S * T_25K - H) / (R * T_25K))) / (1 + math.exp((S * T_CanK - H) / (R * T_CanK)))
+          \end{minted}
+        \end{mdframed}
   \item[-] Result of this equation: \(J = 121.58788097904258\)
 
   \item Function photosynthesis\_rate() is equivalent to equation:
@@ -1709,10 +1664,11 @@ The data used in this model is based on climate of Texas in United States and th
             \bottomrule
           \end{tabular}
         \end{table}
-  \item[-] To calculate \(cap_{CO_2Top}\), we use \(cap_{CO_2Top} = h_{GreenHouse} - cap_{CO_2Air}\) where \(h_{GreenHouse} = 5.1,\; cap_{CO_2Air} = 4.7\).
-  \item[-] This function will return two results: \(\dot{CO_{2Air}} = 0.00749706996394995\) and \(\dot{CO_{2Top}} = 0.0\).
-
+  \item[-] To calculate \(cap_{CO_2Top}\), we use \(cap_{CO_2Top} = h_{GreenHouse} - cap_{CO_2Air}\) where \(h_{GreenHouse} = 5.1,\ cap_{CO_2Air} = 4.7\).
+  \item[-] This function will return two results: \(\dot{CO_{2Air}} = 0.02224260811374343\) and \(\dot{CO_{2Top}} = 0.0\).
 \end{itemize}
+
+
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Predicting \texorpdfstring{\(CO_2\)}{} concentration with Euler and Runge-Kutta algorithms}
@@ -1732,8 +1688,9 @@ def euler(dx, t, CO2_Air, CO2_Top, h):
 Runge-Kutta of order 4 algorithm as computer program:
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
+# in the program, the function is named 'runge_kutta4th'
 import numpy as np
-def runge_kutta4th(dx, t, CO2_Air, CO2_Top, h):
+def rk4(dx, t, CO2_Air, CO2_Top, h):
     CO2 = np.array([CO2_Air, CO2_Top])
 
     k1 = np.array(dx(t, CO2_Air, CO2_Top))
@@ -1746,17 +1703,60 @@ def runge_kutta4th(dx, t, CO2_Air, CO2_Top, h):
 \end{mdframed}
 
 \subsection{Predicting \texorpdfstring{\(CO_2\)}{} concentration and comparing to actual data}
-% TODO: Predict
-
-Model performance is evaluated in quantitative terms using the relative root mean square error (\(RRMSE\))\cite{kobayashi2000comparing}:
+\subsubsection{Relative root mean square error}
+Model performance is evaluated in quantitative terms using the root mean square error (\(RMSE\)):
 \begin{align}
-  \label{eq:rrmse}
-  RRMSE = \frac{100}{\mean{y}_{Data}} \sqrt{\frac{1}{n} \sum_{i=1}^{n} {\left(y_{Mod,i} - y_{Data,i}\right)}^2}
+  \label{eq:rmse}
+  RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} {\left(y_{Mod,i} - y_{Data,i}\right)}^2}
 \end{align}
-where \(\mean{y}_{Data}\) is the mean of measured data over the total time span, \(n\) is the number of measurements, \(y_{Mod,i}\) is the simulated climate value at time constant \(i\) and \(y_{Data,i}\) is the measured climate value at time constant \(i\).
+where \(n\) is the number of measurements, \(y_{Mod,i}\) is the simulated climate value at time constant \(i\) and \(y_{Data,i}\) is the measured climate value at time constant \(i\).
 
-% TODO: Compare
+\subsubsection{Approximation values}
+From initial state at which \(t = 0\), we have \(CO_{2Air} = CO_{2Top}\). Using Euler's and Runge-Kutta's method of approximation, we can predict the next state of the data, or function \(\frac{dy}{dx} = f(x, t)\) to calculate \(y(t)\), which in this case is the current \(CO_{2Air}\) and \(CO_{2Top}\).
 
+Choosing \(CO_{2Air} = CO_{2Top} = 440 mg m^{-3}\) as initial values, we have the following approximation of values of \(CO_{2Air}, CO_{2Top}\) in the next 5 minutes, 10 minutes, 20 minutes, \dots represented in the table and graph below. The actual values of \(CO_{2Top}\) are not available for comparison.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}lSSSSS@{}}
+    \toprule
+    \textbf{Time} & \(CO_{2Air}\)(euler) & \(CO_{2Air}\)(rk4) & \textbf{Actual data} & \textbf{Diff(euler)} & \textbf{Diff(rk4)} \\
+    \midrule
+    5             & 440.1112             & 440.1078           & 427                  & 13.1112              & 13.1078            \\
+    10            & 445.8829             & 445.8805           & 443                  & 2.8829               & 2.8805             \\
+    15            & 451.3585             & 451.3538           & 443.9999             & 7.3586               & 7.3539             \\
+    20            & 456.5620             & 456.5554           & 441.9999             & 14.5621              & 14.5555            \\
+    25            & 461.4923             & 461.4840           & 442.9999             & 18.4924              & 18.4841            \\
+    30            & 466.2014             & 466.1916           & 430                  & 36.2014              & 36.1916            \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}lSSSSS@{}}
+    \toprule
+    \textbf{Time} & \(CO_{2Top}\)(euler) & \(CO_{2Top}\)(rk4) & \textbf{Actual data} & \textbf{Diff(euler)} & \textbf{Diff(rk4)} \\
+    \midrule
+    5             & 440.0000             & 440.0261           & x                    & x                    & x                  \\
+    10            & 445.7062             & 445.7038           & x                    & x                    & x                  \\
+    15            & 451.1771             & 451.1725           & x                    & x                    & x                  \\
+    20            & 456.3765             & 456.3698           & x                    & x                    & x                  \\
+    25            & 461.3023             & 461.2941           & x                    & x                    & x                  \\
+    30            & 466.0072             & 465.9975           & x                    & x                    & x                  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The approximate values of \(CO_{2Air}, CO_{2Top}\) (\(mg\ m^{-3}\)) with respect to time (minutes).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{CO2_compare.png}
+  \caption{\(CO_2\) values approximation using Euler method (left) and Runge-Kutta of order 4 (right)}
+\end{figure}
+
+The Euler method and Runge-Kutta of order 4 method yields nearly identical set of values as an approximation, even though the result obtain from the function rk4 is slightly more accurate. The \(RMSE\) of this calculation using Euler's method is \(117.7122\ mg\ m^{-3}\), and using Runge-Kutta's method is \(117.7114\ mg\ m^{-3}\). However, the values are not close to the actual data, since the difference is fairly large and is clearly noticeable in the graph.
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1781,14 +1781,14 @@ The vapor pressure of the greenhouse air \(VP_{Air}\) is described by:
 \begin{multline*}
   cap_{VP_{Air}}\dot{VP_{Air}} = MV_{CanAir} + MV_{PadAir} + MV_{FogAir} + MV_{BlowAir} \\
   - MV_{AirThScr} - MV_{AirTop} - MV_{AirOut} \\
-  - MV_{AirOut\_Pad} - MV_{AirMech} ~~~~ [kg\;m^{-2}\;s^{-1}]
+  - MV_{AirOut\_Pad} - MV_{AirMech} ~~~~ [kg\ m^{-2}\ s^{-1}]
 \end{multline*}
 where \(cap_{VP_{Air}}\) is the capacity of the air to store water vapor.
 Vapor is exchanged between the air and surrounding elements i.e.\ the canopy \(MP_{CanAir}\), the outlet air of the pad \(MV_{PadAir}\), the fogging system \(MV_{FogAir}\), the direct air heater \(MV_{BlowAir}\), the thermal screen \(MV_{AirThScr}\), the top compartment air \(MV_{AirTop}\), the outdoor air \(MV_{AirOut}\), the outdoor air due to the air exchange caused by the pad and fan system \(MV_{AirOut\_Pad}\), and the mechanical cooling system \(MV_{AirMech}\).
 
 The vapor pressure of the air in the top compartment \(VP_{Top}\) is described by:
 \begin{multline*}
-  cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~ [kg\;m^{-2}\;s^{-1}]
+  cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~ [kg\ m^{-2}\ s^{-1}]
 \end{multline*}
 where \(cap_{VP_{Top}}\) is the capacity of the top compartment to store water vapor, \(MV_{TopCov,in}\) is the vapor exchange between the top compartment and the internal cover layer, and \(MV_{TopOut}\) is the vapor exchange between the top compartment and the outside air.
 
@@ -1801,7 +1801,7 @@ Therefore, the vapor flux from the air to an object by condensation is described
     6.4 \cdot 10^{-9} HEC_{12}(VP_1 - VP_2) & \text{if~} VP_1 > VP_2 \\
   \end{cases}
 \end{align}
-where \(MV_{12}\) (\(kg\;m^{-2}\;s^{-1}\)) is the vapor flux from air of location 1 to object 2, \(6.4 \cdot 10^{-9}\) is the conversion factor relating the heat exchange coefficient (\(W\;m^{-2}\;K^{-1}\)) to the vapor exchange coefficient (\(kg\;m^{-2}\;s^{-1}\;Pa^{-1}\)), \(HEC_{12}\) (\(W\;m^{-2}\;K^{-1}\)) is the heat exchange coefficient between the air of location 1 to object 2 and \(VP_1\) (\(Pa\)) is the vapor pressure of the air of location 1 and \(VP_2\) is the saturated vapor pressure of object 2 at its temperature.
+where \(MV_{12}\) (\(kg\ m^{-2}\ s^{-1}\)) is the vapor flux from air of location 1 to object 2, \(6.4 \cdot 10^{-9}\) is the conversion factor relating the heat exchange coefficient (\(W\ m^{-2}\ K^{-1}\)) to the vapor exchange coefficient (\(kg\ m^{-2}\ s^{-1}\ Pa^{-1}\)), \(HEC_{12}\) (\(W\ m^{-2}\ K^{-1}\)) is the heat exchange coefficient between the air of location 1 to object 2 and \(VP_1\) (\(Pa\)) is the vapor pressure of the air of location 1 and \(VP_2\) is the saturated vapor pressure of object 2 at its temperature.
 
 Because this model should consist of only differentiable functions, equation~\eqref{eq:vapor_conden} was smoothed to:
 \begin{align}
@@ -1827,14 +1827,14 @@ whereby their associated heat change coefficients are:
   HEC_{AirThScr}  & = 1.7 U_{ThScr} |T_{Air} - T_{ThScr}|^{0.33}                        \\
   HEC_{TopCov,in} & = {c_{HECin} (T_{Top} - T_{Cov,in})}^{0.33} \frac{A_{Cov}}{A_{Flr}}
 \end{align}
-with \(U_{ThScr} \in [0,1]\) representing the percentage of places that are covered by the thermal screen, \(T_X\) (\(\celsius\)) is the temperature at location \(X\), \(c_{HECin}\) (\(W\;m^{-2}\;K^{-2}\)) is the convective heat exchange parameter between cover and outdoor air depending on the greenhouse shape, \(A_{Cov}\) (\(m^2\)) is the surface of the cover including the side-walls, and \(A_{Flr}\) (\(m^2\)) is the surface of the greenhouse floor.
+with \(U_{ThScr} \in [0,1]\) representing the percentage of places that are covered by the thermal screen, \(T_X\) (\(\celsius\)) is the temperature at location \(X\), \(c_{HECin}\) (\(W\ m^{-2}\ K^{-2}\)) is the convective heat exchange parameter between cover and outdoor air depending on the greenhouse shape, \(A_{Cov}\) (\(m^2\)) is the surface of the cover including the side-walls, and \(A_{Flr}\) (\(m^2\)) is the surface of the greenhouse floor.
 
 The general form of a vapor flux accompanying an air flux is described by:
 \begin{align}
   \label{eq:vapor_air}
   MV_{12} = \frac{M_{Water}}{R} f_{12} \left(\frac{VP_1}{T_1 + 273.15} - \frac{VP_2}{T_2 + 273.15}\right)
 \end{align}
-where \(MV_{12}\) (\(kg\;m^{-2}\;s^{-1}\)) is the vapor flux from location 1 to location 2, \(f_{12}\) (\(m^3\;m^{-2}\;s^{-1}\)) is the air flux from location 1 to location 2, \(T_1\) and \(T_2\) (\(\celsius\)) are the temperature at location 1 and 2 respectively.
+where \(MV_{12}\) (\(kg\ m^{-2}\ s^{-1}\)) is the vapor flux from location 1 to location 2, \(f_{12}\) (\(m^3\ m^{-2}\ s^{-1}\)) is the air flux from location 1 to location 2, \(T_1\) and \(T_2\) (\(\celsius\)) are the temperature at location 1 and 2 respectively.
 
 % AirTop
 The vapor fluxes from the air compartment to the top compartment, the air compartment to the outdoor air, and the top compartment to the outdoor air are described analogously to equation~\eqref{eq:vapor_air}:
@@ -1851,13 +1851,13 @@ The canopy transpiration is described by:
 \begin{align}
   MV_{CanAir} = VEC_{CanAir}(VP_{Can} - VP_{Air})
 \end{align}
-where \(VEC_{CanAir}\) (\(kg\;Pa\;s^{-1}\)) is the vapor exchange coefficient between the canopy and air, \(VP_{Can}\) is the saturated vapor pressure at canopy temperature.
+where \(VEC_{CanAir}\) (\(kg\ Pa\ s^{-1}\)) is the vapor exchange coefficient between the canopy and air, \(VP_{Can}\) is the saturated vapor pressure at canopy temperature.
 
 According to Stanghellini (1987), the vapor transfer coefficient of the canopy transpiration can be calculated by:
 \begin{align}
   VEC_{CanAir} = \frac{2 \rho_{Air} c_{p,Air}LAI}{\Delta H \gamma (r_b + r_s)}
 \end{align}
-where \(\rho_{Air}\) (\(kg\;m^{-3}\)) is the density of the greenhouse air, \(c_{p,Air}\) (\(J\;K^{-1}\;kg^{-1}\)) is the specific heat capacity of the greenhouse air, \(LAI\) (\(m^2\;m^{-2}\)) is the leaf area index, \(\Delta H\) (\(J\;kg^{-1}\)) is the latent heat of evaporation of water, \(\gamma\) (\(Pa\;K^{-1}\)) is the psychometric constant, \(r_b\) (\(s\;m^{-1}\)) is the boundary layer resistance of the canopy for vapor transport and \(r_s\) (\(s\;m^{-1}\)) is the stomatal resistance of the canopy for vapor transport.
+where \(\rho_{Air}\) (\(kg\ m^{-3}\)) is the density of the greenhouse air, \(c_{p,Air}\) (\(J\ K^{-1}\ kg^{-1}\)) is the specific heat capacity of the greenhouse air, \(LAI\) (\(m^2\ m^{-2}\)) is the leaf area index, \(\Delta H\) (\(J\ kg^{-1}\)) is the latent heat of evaporation of water, \(\gamma\) (\(Pa\ K^{-1}\)) is the psychometric constant, \(r_b\) (\(s\ m^{-1}\)) is the boundary layer resistance of the canopy for vapor transport and \(r_s\) (\(s\ m^{-1}\)) is the stomatal resistance of the canopy for vapor transport.
 
 The boundary layer resistance for vapor transport depends on the wind speed in the greenhouse and the temperature difference between the canopy and surrounding air\cite{stanghellini1987transpiration}.
 However, the wind speed in the greenhouse is not measured nor simulated and therefore a constant boundary layer resistance was used.
@@ -1865,7 +1865,7 @@ The stomatal resistance of the canopy is described by a simplification of the st
 \begin{align}
   r_s = r_{s,\min} \cdot rf(R_{Can}) \cdot rf(CO_{2Air\_ppm}) \cdot rf(VP_{Can} - VP_{Air})
 \end{align}
-where \(r_{s,\min}\) (\(s\;m^{-1}\)) is the minimum canopy resistance and \(rf\) is the resistance factor for high radiation levels, high \(CO_2\) levels and large vapor pressure differences.
+where \(r_{s,\min}\) (\(s\ m^{-1}\)) is the minimum canopy resistance and \(rf\) is the resistance factor for high radiation levels, high \(CO_2\) levels and large vapor pressure differences.
 The resistance factors are described according to Stangellini (1987):
 \begin{equation}
   \begin{split}
@@ -1875,13 +1875,13 @@ The resistance factors are described according to Stangellini (1987):
   \end{split}
 \end{equation}
 
-where \(R_{Can}\) (\(W\;m^{-2}\)) is the global radiation above the canopy, \(c_{evap1}\) (\(W\;m^{-2}\)), \(c_{evap2}\) (\(W\;m^{-2}\)), \(c_{evap3}\) (\(ppm^{-2}\)), \(c_{evap4}\) (\(Pa^{-2}\)) are empirically determined parameters and \(\eta_{mg\_ppm}\) (\(ppm\;mg^{-1}\;m^3\)) is the conversion factor from \(mg\;m^{-3}\;CO_2\) to \(ppm\).
+where \(R_{Can}\) (\(W\ m^{-2}\)) is the global radiation above the canopy, \(c_{evap1}\) (\(W\ m^{-2}\)), \(c_{evap2}\) (\(W\ m^{-2}\)), \(c_{evap3}\) (\(ppm^{-2}\)), \(c_{evap4}\) (\(Pa^{-2}\)) are empirically determined parameters and \(\eta_{mg\_ppm}\) (\(ppm\ mg^{-1}\ m^3\)) is the conversion factor from \(mg\ m^{-3}\ CO_2\) to \(ppm\).
 Stanghellini limited the resistance factor for high \(CO_2\) levels to 1.5 and the resistance factor for large vapor pressure differences to 5.8 and determined the transpiration variables \(c_{evap3}\) and \(c_{evap4}\) for day time and night time.
 The values of the transpiration parameters \(c_{evap3}\) and \(c_{evap4}\) differed between the night period and day period which means that the accompanying equations are not differentiable at sunrise and sunset. Therefore the parameters \(c_{evap3}\) and \(c_{evap4}\) were smoothed using the differentiable switch function:
 \begin{align}
   S_{r_s} = \frac{1}{1 + \exp \left(s_{r_s} (R_{Can} - R_{Can\_SP})\right)}
 \end{align}
-where \(S_{r_s}\) (\(-\)) is the value of the differentiable switch, \(s_{r_s}\) (\(m\;W^{-2}\)) is the slope of the differentiable switch for the stomatal resistance model and \(R_{Can\_SP}\) (\(W\;m^{-2}\)) is the radiation value above the canopy to define sunrise and sunset.
+where \(S_{r_s}\) (\(-\)) is the value of the differentiable switch, \(s_{r_s}\) (\(m\ W^{-2}\)) is the slope of the differentiable switch for the stomatal resistance model and \(R_{Can\_SP}\) (\(W\ m^{-2}\)) is the radiation value above the canopy to define sunrise and sunset.
 Using the differential switch, the smoothed transpiration parameters were described by:
 \begin{align}
   c_{evap3} & = c_{evap3}^{night} (1 - S_{r_s}) + c_{evap3}^{night} S_{r_s} \\
@@ -1893,20 +1893,20 @@ The vapor flux from the heat blower to the greenhouse air is proportional to the
 \begin{align}
   MV_{BlowAir} = \eta_{HeatVap} H_{BlowAir}
 \end{align}
-where \(\eta_{HeatVap}\) (\(kg\{vapor\}\;J^{-1}\)) is the amount of vapor which is released when 1 Joule of sensible energy is produced by the direct air heater.
+where \(\eta_{HeatVap}\) (\(kg\{vapor\}\ J^{-1}\)) is the amount of vapor which is released when 1 Joule of sensible energy is produced by the direct air heater.
 
 % PadAir
 The vapor flux from the pad and fan to the greenhouse air is described by:
 \begin{align}
   MV_{PadAir} = \rho_{Air} f_{Pad} (\eta_{Pad} (x_{Pad} - x_{Out}) + x_{Out})
 \end{align}
-where \(f_{Pad}\) (\(m^3\;m^{-2}\;s^{-1}\)) is the ventilation flux due to the pad and fan system, \(\eta_{Pad}\) (\(-\)) is the efficiency of the pad and fan system, \(x_{Pad}\) (\(kg\{water\} kg^{-1}\{air\}\)) is the water vapor content of the pad and \(x_{Out}\) (\(kg\{water\} kg^{-1}\{air\}\)) is the water vapor content of the outdoor air.
+where \(f_{Pad}\) (\(m^3\ m^{-2}\ s^{-1}\)) is the ventilation flux due to the pad and fan system, \(\eta_{Pad}\) (\(-\)) is the efficiency of the pad and fan system, \(x_{Pad}\) (\(kg\{water\} kg^{-1}\{air\}\)) is the water vapor content of the pad and \(x_{Out}\) (\(kg\{water\} kg^{-1}\{air\}\)) is the water vapor content of the outdoor air.
 
 The ventilation flux due to the pad and fan system is desribed by:
 \begin{align}
   f_{Pad} = \frac{U_{Pad} \phi_{Pad}}{A_{Flr}}
 \end{align}
-where \(U_{Pad}\) (\(-\)) is the control valve of the pad and fan system and \(\phi_{Pad}\) (\(m^3\;s^{-1}\)) is the capacity of the air flux through the pad.
+where \(U_{Pad}\) (\(-\)) is the control valve of the pad and fan system and \(\phi_{Pad}\) (\(m^3\ s^{-1}\)) is the capacity of the air flux through the pad.
 
 % AirOut_Pad
 The vapor flux from the greenhouse air to the outside air when using the pad and fan system is described by:
@@ -1933,7 +1933,7 @@ The latent heat flux from the greenhouse air depends on the vapor flux from the 
 \begin{align}
   MV_{FogAir} = \frac{U_{Fog} \phi_{Fog}}{A_{Flr}}
 \end{align}
-where \(U_{Fog}\) (\(-\)) is the control valve of the fogging system and \(\phi_{Fog}\) (\(kg\{water\}\;s^{-1}\)) is the capacity of the fogging system.
+where \(U_{Fog}\) (\(-\)) is the control valve of the fogging system and \(\phi_{Fog}\) (\(kg\{water\}\ s^{-1}\)) is the capacity of the fogging system.
 
 \subsection{Implementing the programs}
 To calculate \(\dot{VP_{Air}}\) and \(\dot{VP_{Top}}\), we use the following \(dx\) function.
@@ -1993,8 +1993,8 @@ def saturation_vapor_pressure(temp):
 \end{mdframed}
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
-def eta_InsScr(self):
-    eta_InsScr = self.Coefficients.Ventilation.eta_InsScr
+def eta_InsScr_(self):
+    eta_InsScr = self.eta_InsScr
     return eta_InsScr * (1 - eta_InsScr)
   \end{minted}
 \end{mdframed}
@@ -2062,19 +2062,18 @@ def MV_AirTop(self):
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def f_ThScr(self):
-    U_ThScr = self.Assuming.U_ThScr
-    K_ThScr = self.Coefficients.Thermalscreen.K_ThScr
-    T_Air = self.ClimateStates.T_Air
-    T_Out = self.Weather.T_Out
+    # Equation 8.41
+    U_ThScr = self.U_ThScr
+    K_ThScr = self.K_ThScr
+    T_Air = self.T_Air
+    T_Out = self.T_Out
     p_Air = self.air_density()
-    pressure = 101325 * \
-        (1 - 2.5577e-5 * self.Coefficients.Construction.elevation_height) ** 5.25588
-    p_Out = self.Constant.M_AIR * pressure / \
-        ((self.ClimateStates.T_Top + 273.15) * self.Constant.M_GAS)
+    pressure = 101325 * (1 - 2.5577e-5 * self.elevation_height) ** 5.25588
+    p_Out = M_AIR * pressure / ((self.T_Top + 273.15) * M_GAS)
     p_Mean = (p_Air + p_Out) / 2
 
-    return (U_ThScr * K_ThScr * abs(T_Air - T_Out) ** (2 / 3)) + (1 - U_ThScr) * math.sqrt(
-        (0.5 * (1 - U_ThScr) * self.Constant.GRAVITY * abs(p_Air - p_Out)) / p_Mean)
+    return U_ThScr * K_ThScr * abs(T_Air - T_Out) ** 0.66 + (1 - U_ThScr) / p_Mean * math.sqrt(
+        0.5 * p_Mean * (1 - U_ThScr) * GRAVITY * abs(p_Air - p_Out))
   \end{minted}
 \end{mdframed}
 
@@ -2121,22 +2120,22 @@ def f_VentForced(self):
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def d2_f_VentRoofSide(self):
-    U_Roof = self.Assuming.U_Roof
-    U_Side = self.Assuming.U_Side
-    A_Roof = self.Coefficients.Construction.roof_ventilation_area
-    A_Side = self.Coefficients.Construction.side_ventilation_area
-    A_Flr = self.Coefficients.Construction.floor_area
-    h_SideRoof = self.Coefficients.Ventilation.h_SideRoof
-    C_d = self.Coefficients.Ventilation.C_d
-    C_w = self.Coefficients.Ventilation.C_w
-    T_Air = self.ClimateStates.T_Air
-    T_Out = self.Weather.T_Out
+    U_Roof = self.U_Roof
+    U_Side = self.U_Side
+    A_Roof = self.roof_ventilation_area
+    A_Side = self.side_ventilation_area
+    A_Flr = self.floor_area
+    h_SideRoof = self.h_SideRoof
+    C_d = self.C_d
+    C_w = self.C_w
+    T_Air = self.T_Air
+    T_Out = self.T_Out
     T_Mean = (T_Air + T_Out) / 2
-    v_Wind = self.Weather.v_Wind
+    v_Wind = self.v_Wind
     AU_Roof = A_Roof * U_Roof
     AU_Side = A_Side * U_Side
     return C_d / A_Flr * math.sqrt((AU_Roof * AU_Side / math.sqrt(AU_Roof ** 2 + AU_Side ** 2)) ** 2 * (
-        2 * self.Constant.GRAVITY * h_SideRoof * (T_Air - T_Out) / (T_Mean + 273.15)) + 0.25 * (
+        2 * GRAVITY * h_SideRoof * (T_Air - T_Out) / (T_Mean + 273.15)) + 0.25 * (
         AU_Roof + AU_Side) ** 2 * C_w * v_Wind ** 2)
   \end{minted}
 \end{mdframed}
@@ -2186,14 +2185,14 @@ def f_VentRoof(self):
 def MV_CanAir(self):
     # ================= VEC Can Air
     p_Air = self.air_density()
-    LAI = self.Tomato.LAI
-    VEC_CanAir = 2 * p_Air * self.Constant.C_PAIR * LAI / (
-        self.Constant.EVAPORATION_LATENT_HEAT * self.Constant.GAMMA * (
-            self.Constant.BOUNDARY_LAYER_RESISTANCE + self.Constant.MIN_CANOPY_TRANSPIRATION_RESISTANCE))
+    LAI = self.LAI
+    VEC_CanAir = 2 * p_Air * C_PAIR * LAI / (
+        EVAPORATION_LATENT_HEAT * GAMMA * (
+            BOUNDARY_LAYER_RESISTANCE + MIN_CANOPY_TRANSPIRATION_RESISTANCE))
     # =================
 
-    VP_Air = self.ClimateStates.VP_Air
-    VP_Can = self.saturation_vapor_pressure(self.Tomato.T_Can)
+    VP_Air = self.VP_Air
+    VP_Can = self.saturation_vapor_pressure(self.T_Can)
     return VEC_CanAir * (VP_Can - VP_Air)
   \end{minted}
 \end{mdframed}
@@ -2203,10 +2202,10 @@ def MV_CanAir(self):
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def MV_BlowAir(self):
-    U_Blow = self.Assuming.U_Blow
-    P_Plow = self.Coefficients.ActiveClimateControl.P_Blow
-    A_Flr = self.Coefficients.Construction.floor_area
-    return self.Constant.ETA_HEATVAP * U_Blow * P_Plow / A_Flr
+    U_Blow = self.U_Blow
+    P_Plow = self.P_Blow
+    A_Flr = self.floor_area
+    return ETA_HEATVAP * U_Blow * P_Plow / A_Flr
   \end{minted}
 \end{mdframed}
 
@@ -2225,12 +2224,12 @@ def MV_PadAir(self):
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def MV_AirOutPad(self):
-    U_Pad = self.Assuming.U_Pad
-    phi_Pad = self.Coefficients.ActiveClimateControl.phi_Pad
-    A_Flr = self.Coefficients.Construction.floor_area
-    VP_Air = self.ClimateStates.VP_Air
-    T_Air = self.ClimateStates.T_Air
-    return U_Pad * phi_Pad / A_Flr * self.Constant.M_WATER / self.Constant.M_GAS * VP_Air / (T_Air + 273.15)
+    U_Pad = self.U_Pad
+    phi_Pad = self.phi_Pad
+    A_Flr = self.floor_area
+    VP_Air = self.VP_Air
+    T_Air = self.T_Air
+    return U_Pad * phi_Pad / A_Flr * M_WATER / M_GAS * VP_Air / (T_Air + 273.15)
   \end{minted}
 \end{mdframed}
 
@@ -2249,9 +2248,9 @@ def MV_AirMech(self):
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=magenta!10,nobreak=true]
   \begin{minted}[linenos,breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 def MV_FogAir(self):
-    U_Fog = self.Assuming.U_Fog
-    phi_Fog = self.Coefficients.ActiveClimateControl.phi_Fog
-    A_Flr = self.Coefficients.Construction.floor_area
+    U_Fog = self.U_Fog
+    phi_Fog = self.phi_Fog
+    A_Flr = self.floor_area
     return U_Fog * phi_Fog / A_Flr
   \end{minted}
 \end{mdframed}
@@ -2259,12 +2258,293 @@ def MV_FogAir(self):
 \subsection{Testing the programs}
 The data used in this model is based on the climate of Texas in United States and the photosynthesis model is based on tomatoes.
 We will consider the first step where the values of the initial state are: \(VP_{Air} = VP_{Top} = 2300\).
-% TODO: Check if the programs work properly
+\begin{itemize}
+  \item Function MV\_AirThScr() is equivalent to equation:
+        \begin{align*}
+          MV_{AirThScr} & = \begin{cases}
+            0                                                       & \text{if~} VP_{Air} < VP_{ThScr} \\
+            6.4 \cdot 10^{-9} HEC_{AirThScr}(VP_{Air} - VP_{ThScr}) & \text{if~} VP_{Air} > VP_{ThScr} \\
+          \end{cases}
+        \end{align*}
+        where
+        \begin{align*}
+          HEC_{AirThScr} & = 1.7 U_{ThScr} |T_{Air} - T_{ThScr}|^{0.33}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=4.17]@{}}
+            \toprule
+            \textbf{Variable}  & \textbf{Value}     \\
+            \midrule
+            \(U_{ThScr}\)      & 0.863              \\
+            \(T_{Air}\)        & 19.8999999966472   \\
+            \(T_{ThScr}\)      & 20.8999999966472   \\
+            \(HEC_{AirThScr}\) & 1.4670999999999998 \\
+            \(VP_{Air}\)       & 2300               \\
+            \(VP_{ThScr}\)     & 2458.2757172240395 \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \(MV_{AirThScr} = 0\)
+
+  \item Function MV\_TopCovin() is equivalent to equation:
+        \begin{align*}
+          MV_{TopCov,in} & = \begin{cases}
+            0                                                         & \text{if~} VP_{Top} < VP_{Cov,in} \\
+            6.4 \cdot 10^{-9} HEC_{TopCov,in}(VP_{Top} - VP_{Cov,in}) & \text{if~} VP_{Top} > VP_{Cov,in} \\
+          \end{cases}
+        \end{align*}
+        where
+        \begin{align*}
+          HEC_{TopCov,in} & = {c_{HECin} (T_{Top} - T_{Cov,in})}^{0.33} \frac{A_{Cov}}{A_{Flr}}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=4.17]@{}}
+            \toprule
+            \textbf{Variable}  & \textbf{Value}     \\
+            \midrule
+            \(c_{HECin}\)      & 1.86               \\
+            \(T_{Top}\)        & 21.3999999966472   \\
+            \(T_{Covin}\)      & 20.8999999966472   \\
+            \(A_{Cov}\)        & 80000              \\
+            \(A_{Flr}\)        & 70000              \\
+            \(HEC_{TopCovin}\) & 1.7266165225401122 \\
+            \(VP_{Top}\)       & 2300               \\
+            \(VP_{Covin}\)     & 2458.2757172240395 \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \(MV_{TopCov,in} = 0\)
+
+  \item Function MV\_AirTop() is equivalent to equation:
+        \begin{align*}
+          MV_{AirTop}  = \frac{M_{Water}}{R} f_{ThScr} (\frac{VP_{Air}}{T_{Air} + 273.15} - \frac{VP_{Top}}{T_{Top} + 273.15})
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=4.17]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}      \\
+            \midrule
+            \(M_{Water}\)     & 18.01528            \\
+            \(R\)             & 8314                \\
+            \(f_{ThScr}\)     & 0.06867093888863662 \\
+            \(VP_{Air}\)      & 2300                \\
+            \(T_{Air}\)       & 19.8999999966472    \\
+            \(VP_{Top}\)      & 2300                \\
+            \(T_{Top}\)       & 21.3999999966472    \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item [-] Function \hyperref[fThScr]{\underline{\(f\_ThScr()\)}} is already described in Chapter 3, we will use those data.
+  \item[-] Result of this equation: \(MV_{AirTop} = 5.947333929242592 \times 10^{-6} \)
+
+  \item Function MV\_AirOut() is equivalent to equation:
+        \begin{align*}
+          MV_{AirOut}  = \frac{M_{Water}}{R} (f_{VentSide} + f_{VentForced}) (\frac{VP_{Air}}{T_{Air} + 273.15} - \frac{VP_{Out}}{T_{Out} + 273.15})
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=4.13]@{}}
+            \toprule
+            \textbf{Variable}  & \textbf{Value}   \\
+            \midrule
+            \(M_{Water}\)      & 18.01528         \\
+            \(R\)              & 8314             \\
+            \(f_{VentSide}\)   & 0.00016          \\
+            \(f_{VentForced}\) & 0                \\
+            \(VP_{Air}\)       & 2300             \\
+            \(T_{Air}\)        & 19.8999999966472 \\
+            \(VP_{Top}\)       & 2300             \\
+            \(T_{Top}\)        & 21.3999999966472 \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+  \item [-] Function \hyperref[fVentSide]{\underline{\(f\_VentSide()\)}} and \hyperref[fVentForced]{\underline{\(f\_VentForced()\)}} are already described in Chapter 3, we will use those data.
+  \item[-] Result of this equation: \(MV_{AirOut} = 3.1823066420082356 \times 10^{-7} \)
+
+  \item Function MV\_TopOut() is equivalent to equation:
+        \begin{align*}
+          MV_{TopOut}  = \frac{M_{Water}}{R} f_{VentRoof} (\frac{VP_{Top}}{T_{Top} + 273.15} - \frac{VP_{Out}}{T_{Out} + 273.15})
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=4.17]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}     \\
+            \midrule
+            \(M_{Water}\)     & 18.01528           \\
+            \(R\)             & 8314               \\
+            \(f_{VentRoof}\)  & 0.0639808361133183 \\
+            \(VP_{Air}\)      & 2300               \\
+            \(T_{Air}\)       & 19.8999999966472   \\
+            \(VP_{Top}\)      & 2300               \\
+            \(T_{Top}\)       & 21.3999999966472   \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+  \item [-] Function \hyperref[fVentRoof]{\underline{\(f\_VentRoof()\)}} is already described in Chapter 3, we will use those data.
+  \item[-] Result of this equation: \(MV_{TopOut} = 3.0437366087337557 \times 10^{-7} \)
+
+  \item Function MV\_CanAir() is equivalent to equation:
+        \begin{align*}
+          MV_{CanAir} = VEC_{CanAir}(VP_{Can} - VP_{Air})
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=4.20]@{}}
+            \toprule
+            \textbf{Variable} & \textbf{Value}                       \\
+            \midrule
+            \(VEC_{CanAir}\)  & \(1.385879873932686 \times 10^{-7}\) \\
+            \(VP_{Can}\)      & 2612.9460025358017                   \\
+            \(VP_{Air}\)      & 2300                                 \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+
+  \item[-] Result of this equation: \(MV_{CanAir} = 4.3370556654205484 \times 10^{-5}\)
+
+  \item Function MV\_BlowAir() is equivalent to equation:
+        \begin{align*}
+          MV_{BlowAir} = \eta_{HeatVap} H_{BlowAir}
+        \end{align*}
+
+  \item[-] Because we do not consider fan system inside the green house, \(H_{BlowAir} = 0\).
+  \item[-] Result of this equation: \(MV_{BlowAir} = 0.0\)
+
+  \item Function MV\_PadAir() is equivalent to equation:
+        \begin{align*}
+          MV_{PadAir} = \rho_{Air} f_{Pad} (\eta_{Pad} (x_{Pad} - x_{Out}) + x_{Out})
+        \end{align*}
+
+  \item[-] Since we do not consider pad and fan system, \(f_{Pad} = 0\).
+  \item[-] Result of this equation: \(MV_{PadAir} = 0\)
+
+  \item Function MV\_AirOutPad() is equivalent to equation:
+        \begin{align*}
+          MV_{AirOut\_Pad} = f_{Pad}
+          \frac{M_{Water}}{R} \left(\frac{VP_{Air}}{T_{Air} + 273.15}\right)
+        \end{align*}
+
+  \item[-] Since we do not consider pad and fan system, \(f_{Pad} = 0\).
+  \item[-] Result of this equation: \(MV_{AirOut\_Pad} = 0\)
+
+  \item Function MV\_AirMech() is equivalent to equation:
+        \begin{align*}
+          MV_{AirMech} = \begin{cases}
+            0                                                     & \text{if~} VP_{Air} < VP_{Mech} \\
+            6.4 \cdot 10^{-9} HEC_{AirMech}(VP_{Air} - VP_{Mech}) & \text{if~} VP_{Air} > VP_{Mech} \\
+          \end{cases}
+        \end{align*}
+
+  \item[-] Since we do not consider the mechanical cooling system, \(HEC_{AirMech} = 0\).
+  \item[-] Result of this equation: \(MV_{AirMech} = 0\)
+
+  \item Function MV\_FogAir() is equivalent to equation:
+        \begin{align*}
+          MV_{FogAir} = \frac{U_{Fog} \phi_{Fog}}{A_{Flr}}
+        \end{align*}
+
+  \item[-] Since we do not consider the fogging system, \(U_{Fog} = 0\).
+  \item[-] Result of this equation: \(MV_{FogAir} = 0\)
+
+  \item The function \textbf{dx} is defined as function dx\_VP() in the program, it is equivalent to equation:
+        \begin{align*}
+          \begin{cases}
+            \dot{VP_{Air}} = (MV_{CanAir} + MV_{PadAir} + MV_{FogAir} + MV_{BlowAir} \\ \qquad \qquad \qquad
+            - MV_{AirThScr} - MV_{AirTop} - MV_{AirOut}                              \\ \qquad \qquad \qquad \qquad
+            - MV_{AirOut\_Pad} - MV_{AirMech}) / cap_{VP_{Air}}                      \\
+            \dot{VP_{Top}} = (MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut}) / cap_{VP_{Top}}
+          \end{cases}
+        \end{align*}
+
+        \begin{table}[H]
+          \centering
+          \begin{tabular}{@{}lS[table-format=1.17]@{}}
+            \toprule
+            \textbf{Variable}    & \textbf{Value}                        \\
+            \midrule
+            \(MV_{AirThScr}\)    & 0.0                                   \\
+            \(MV_{TopCov,in}\)   & 0.0                                   \\
+            \(MV_{AirTop}\)      & \(5.947333929242592 \times 10^{-6}\)  \\
+            \(MV_{AirOut}\)      & \(3.1823066420082356 \times 10^{-7}\) \\
+            \(MV_{TopOut}\)      & \(3.0437366087337557 \times 10^{-7}\) \\
+            \(MV_{CanAir}\)      & \(4.3370556654205484 \times 10^{-5}\) \\
+            \(MV_{BlowAir}\)     & 0.0                                   \\
+            \(MV_{PadAir}\)      & 0.0                                   \\
+            \(MV_{AirOut\_Pad}\) & 0.0                                   \\
+            \(MV_{AirMech}\)     & 0.0                                   \\
+            \(MV_{FogAir}\)      & 0.0                                   \\
+            \(cap_{VP_{Air}}\)   & \(3.475258614357003 \times 10^{-5}\)  \\
+            \(cap_{VP_{Top}}\)   & \(4.413907418545823 \times 10^{-6}\)  \\
+            \bottomrule
+          \end{tabular}
+        \end{table}
+  \item[-] To calculate \(cap_{VP_{Air}}\), we use \(cap_{VP_{Air}} = \frac{M_{Water} h_{Air}}{R (T_{Air} + 273.15)}\) where \(h_{Air} = 4.7,\ T_{Air} = 19.8999999966472\).
+  \item[-] To calculate \(cap_{VP_{Top}}\), we use \(cap_{VP_{Top}} = \frac{M_{Water} h_{Top}}{R (T_{Top} + 273.15)}\) where \(h_{Top} = 0.5999999999999996,\ T_{Top} = 21.3999999966472\).
+  \item[-] This function will return two results: \(\dot{VP_{Air}} = 1.067690097\) and \(\dot{VP_{Top}} = 1.278450075\).
+\end{itemize}
 
 \subsection{Predicting vapor pressure and comparing to actual data}
-Model performance is evaluated in quantitative terms using the relative root mean square error mentioned at~\eqref{eq:rrmse}.
-% TODO: 2 programs to predict vapor pressure
-% TODO: Calculate and compare with actual data
+Model performance is evaluated in quantitative terms using the relative root mean square error mentioned at~\eqref{eq:rmse}.
+
+\subsubsection{Approximation values}
+From initial state at which \(t = 0\), we have \(VP_{Air} = VP_{Top}\). Using Euler's and Runge-Kutta's method of approximation, we can predict the next state of the data, or function \(\frac{dy}{dx} = f(x, t)\) to calculate \(y(t)\), which in this case is the current \(VP_{Air}\) and \(VP_{Top}\).
+
+Choosing \(VP_{Air} = VP_{Top} = 2300 Pa\) as initial values, we have the following approximation of values of \(VP_{Air} = VP_{Top}\) in the next 5 minutes, 10 minutes, 20 minutes, \dots represented in the table and graph below. The actual values of \(VP_{2Top}\) are not available for comparison.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}lSSSSS@{}}
+    \toprule
+    \textbf{Time} & \(VP_{Air}\)(euler) & \(VP_{Air}\)(rk4) & \textbf{Actual data} & \textbf{Diff(euler)} & \textbf{Diff(rk4)} \\
+    \midrule
+    5             & 2305.3385           & 2305.3165         & 2311.6681            & 6.3296               & 6.3516             \\
+    10            & 2501.4375           & 2500.4391         & 2311.6681            & 189.7694             & 188.771            \\
+    15            & 2560.6041           & 2560.0055         & 2311.6681            & 248.936              & 248.3374           \\
+    20            & 2577.0352           & 2576.6800         & 2283.2823            & 293.7529             & 293.3977           \\
+    25            & 2560.9046           & 2560.9780         & 2311.6681            & 249.2365             & 249.3099           \\
+    30            & 2577.3399           & 2577.2309         & 2297.4369            & 279.903              & 279.794            \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{@{}lSSSSS@{}}
+    \toprule
+    \textbf{Time} & \(VP_{Top}\)(euler) & \(VP_{Top}\)(rk4) & \textbf{Actual data} & \textbf{Diff(euler)} & \textbf{Diff(rk4)} \\
+    \midrule
+    5             & 2306.3921           & 2306.1393         & x                    & x                    & x                  \\
+    10            & 2509.0252           & 2508.0072         & x                    & x                    & x                  \\
+    15            & 2569.2241           & 2568.6128         & x                    & x                    & x                  \\
+    20            & 2586.2386           & 2585.8234         & x                    & x                    & x                  \\
+    25            & 2569.6755           & 2569.8068         & x                    & x                    & x                  \\
+    30            & 2586.4011           & 2586.2593         & x                    & x                    & x                  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The approximate values of \(VP_{Air}, VP_{Top}\) (Pa) with respect to time (minutes).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{VP_compare.png}
+  \caption{\(VP\) values approximation using Euler method (left) and Runge- Kutta of order 4 (right)}\label{fig:VP_compare.png}
+\end{figure}
+
+The Euler method and Runge-Kutta of order 4 method yields nearly identical set of values. The \(RMSE\) of this calculation using Euler's method is \(315.3542\ Pa\), and using Runge-Kutta's method is \(315.3341\ Pa\). The values are obtained with high accuracy compared to the actual data.
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2281,5 +2561,16 @@ Model performance is evaluated in quantitative terms using the relative root mea
 \newpage
 
 \printbibliography[heading=bibintoc]
+
+\begin{versionhistory}
+  \vhEntry{0.1}{21.12.2020}{NH}{Created report}
+  \vhEntry{0.2}{28.12.2020}{PN}{Completed 1b}
+  \vhEntry{0.3}{29.12.2020}{NH,AN}{Completed 1a, 1c}
+  \vhEntry{0.4}{04.01.2021}{NH,CK,AN}{Updated 1a; Completed 2a}
+  \vhEntry{0.5}{13.01.2021}{CK,PN}{Updated 2a; Completed 1d}
+  \vhEntry{0.6}{14.01.2021}{HM,AN,PN}{Updated 1c, 1d; Completed 1e, 2b, 4a}
+  \vhEntry{0.7}{17.01.2021}{CK,HM,PN}{Updated 1e; Completed 3}
+  \vhEntry{0.8}{19.01.2021}{NH,CK,AN}{Completed 4b, 5}
+\end{versionhistory}
 
 \end{document}

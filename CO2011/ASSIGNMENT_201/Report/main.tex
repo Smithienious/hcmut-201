@@ -920,7 +920,7 @@ Following by the photorespiration \( R \):
 The electron transport rate, J, is a function of the potential rate of electron transport and of the absorbed \( PAR \) by the canopy:
 
 \begin{align}
-  J = \frac{J^{POT} + \alpha PAR_{can} - {\sqrt{(J^{POT} + \alpha PAR_{can})}^2 - 4\Theta\cdot J^{POT}\cdot \alpha PAR_{can}}}{2 \Theta}
+  J = \frac{J^{POT} + \alpha PAR_{can} - {\sqrt{{(J^{POT} + \alpha PAR_{can})}^2 - 4\Theta\cdot J^{POT}\cdot \alpha PAR_{can}}}}{2 \Theta}
 \end{align}
 where \( J^{POT} \) (\( \mu mol\{e^-\}\ m^{-2}\ s^{-1} \)) is the potential rate of electron transport, \( PAR_{Can} \) (\( PAR \) by the canopy) (\( \mu mol\{photons\}\ m^{-2}\ s^{-1} \)) is the absorbed \( PAR \), \( \alpha \) (\( \mu mol\{e^-\}\ \mu mol^{-1}\{photons\} \)) is the conversion factor from photons to electrons, including an efficiency term, and \( \Theta \) (\( - \)) is the degree of curvature of the electron transport rate.
 
@@ -952,7 +952,7 @@ The PAR above the canopy is described by:
 \begin{align}
   PAR_{Gh} = \tau_{Gh} \cdot \eta_{Glob\_PAR}\cdot I_{Glob}
 \end{align}
-where \( \tau_{Gh} \) (\( - \)) is the light transmission of the greenhouse cover \( \eta_{Glob\_PAR} \) (\( \mu mol\{photons\}\ J^{-1} \)) is a conversion factor from global radiation to \( PAR \) and \( I_{Glob} \) (\( W\ m^{-2} \)) is the outside global radiation.
+where \( \tau_{Gh} \) (\( - \)) is the light transmission of the greenhouse cover \( \eta_{Glob\_PAR} \) \\    (\( \mu mol\{photons\}\ J^{-1} \)) is a conversion factor from global radiation to \( PAR \) and \( I_{Glob} \) (\( W\ m^{-2} \)) is the outside global radiation.
 
 Absorption of \( PAR \) reflected by the greenhouse floor is described by:
 \begin{align}
@@ -1781,7 +1781,7 @@ Vapor is exchanged between the air and surrounding elements i.e.\ the canopy \( 
 
 The vapor pressure of the air in the top compartment \( VP_{Top} \) is described by:
 \begin{multline*}
-  cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~~~~~ [kg\ m^{-2}\ s^{-1}]
+  cap_{VP_{Top}}\dot{VP_{Top}} = MV_{AirTop} - MV_{TopCov,in} - MV_{TopOut} ~~~~ [kg\ m^{-2}\ s^{-1}]
 \end{multline*}
 where \( cap_{VP_{Top}} \) is the capacity of the top compartment to store water vapor, \( MV_{TopCov,in} \) is the vapor exchange between the top compartment and the internal cover layer, and \( MV_{TopOut} \) is the vapor exchange between the top compartment and the outside air.
 
@@ -2543,7 +2543,7 @@ The Euler's method and fourth-order Runge-Kutta method yield nearly identical se
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Applying deep learning models}
+\section{(Bonus exercise) Applying deep learning models}
 \subsection{An approach to solving a simple ODE model}
 %Introduction
 In the previous chapters, we have solved ordinary differential equations (ODE) using finite-difference methods, which are Euler and Runge-Kutta schemes. However, these methods have some limitations, such as accumulating the approximation errors, since it depends on the result of the previous step, and taking up a huge amount of space to store the result. Therefore, in this chapter, we will explore the techniques in Deep Learning to solve ODE in a closed continuous analytical form. More specifically, we will use an artificial neural network (ANN) to tackle the problem.
@@ -2658,7 +2658,7 @@ To test the stability of our ANN method, the ANN model is trained 2000 times (de
 The program used to implement this method is written in Python, which means in order to apply it to certain model users need to rewrite the method following the rules guarded by Python Programming Language.
 
 \subsubsection{A simple ODE example}
-To illustrate practical implementation of the deep learning model above, we consider this ODE as an example:
+To illustrate practical implementation of the deep learning model above, we consider this ODE with initial value as an example:
 \begin{align*}
   \begin{cases}
     \frac{dy}{dt} & = \frac{-t}{y - 3} \\
@@ -2666,7 +2666,7 @@ To illustrate practical implementation of the deep learning model above, we cons
   \end{cases}
 \end{align*}
 
-Using Calculus, this ODE can be solved and yields an unique solution:
+Using Calculus, this ODE can be solved and yields a unique solution:
 \begin{align}
   y = 3 - \sqrt{4-t^2}
 \end{align}
@@ -2694,7 +2694,7 @@ nn
   \end{minted}
 \end{mdframed}
 
-With \texttt{f} is the function we defined above, \texttt{t} is input of the function \( y(t) \), y0\_list is the value at initial state of the ODE. Using ``nn'' in the second line of the code will print the current state of the model we just declare:
+With \texttt{f} is the function we defined above, \texttt{t} is input of the function \( y(t) \), \texttt{y0\_list} is the value at initial state of the ODE. Using \texttt{nn} in the second line of the code will print the current state of the model we just declared:
 \begin{mdframed}[leftline=false,rightline=false,backgroundcolor=Turquoise!10,nobreak=true]
   \begin{minted}[breaklines,breaksymbolleft=,obeytabs=true,tabsize=2]{Python}
 Neural ODE Solver
@@ -2779,8 +2779,6 @@ Root Mean Squared Error:  [0.08718057]
 \subsubsection{Conclusion}
 Through observation, we see that the root mean square error is not too large. This means that this model predicts with decent accuracy and can be practically used.
 
-\subsection{A deep learning model for \texorpdfstring{\( CO_2 \)}{} concentration}
-% TODO: Train a deep learning model for CO2 concentration
 
 \newpage
 
